@@ -149,4 +149,58 @@ describe("browser runner engine", () => {
     expect(result.coPurchaseLinks.length).toBeGreaterThan(0);
     expect(result.unexpectedPairs).toHaveLength(6);
   });
+
+  it("trains deterministic Product2Vec embeddings from co-purchase context", async () => {
+    const product2VecPipeline: PipelineSnapshot = {
+      name: "Learned SKU embeddings",
+      bindingCount: 2,
+      tasks: [
+        {
+          id: "embed",
+          name: "Train Product2Vec",
+          componentId: "product2vec",
+          arguments: {
+            id_column: "sku",
+            context_column: "copurchase_skus",
+            dimensions: "16",
+            epochs: "80",
+            learning_rate: "0.04",
+            negative_samples: "4",
+            seed: "42",
+          },
+        },
+        {
+          id: "neighbors",
+          name: "Find learned neighbours",
+          componentId: "nearest-neighbors",
+          arguments: { neighbors: "3" },
+        },
+      ],
+    };
+    const first = await executeBrowserPipeline(product2VecPipeline, productCsv);
+    const second = await executeBrowserPipeline(
+      product2VecPipeline,
+      productCsv,
+    );
+
+    expect(first.kind).toBe("embedding");
+    expect(second.kind).toBe("embedding");
+    if (first.kind !== "embedding" || second.kind !== "embedding")
+      throw new Error("Expected Product2Vec embeddings");
+    expect(first.algorithm).toBe("product2vec");
+    expect(first.dimensions).toBe(16);
+    expect(first.training).not.toBeNull();
+    expect(first.training?.epochs).toBe(80);
+    expect(first.training?.pairCount).toBeGreaterThan(500);
+    expect(first.training?.finalLoss).toBeLessThan(
+      first.training?.initialLoss ?? 0,
+    );
+    expect(first.training?.contextSimilarity).toBeGreaterThan(
+      first.training?.baselineSimilarity ?? 1,
+    );
+    expect(first.neighbors).toEqual(second.neighbors);
+    expect(first.training?.lossCurve).toEqual(second.training?.lossCurve);
+    expect(first.products).toHaveLength(160);
+    expect(first.points).toHaveLength(160);
+  });
 });

@@ -238,10 +238,16 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                   <div className="flex items-center justify-between rounded-md border border-sky-300 bg-sky-50 px-2.5 py-2 dark:border-sky-800 dark:bg-sky-950">
                     <div>
                       <Text size="xs" weight="semibold" className="block">
-                        {run.result.dimensions}D product vectors
+                        {run.result.dimensions}D{" "}
+                        {run.result.algorithm === "product2vec"
+                          ? "Product2Vec"
+                          : "text"}{" "}
+                        vectors
                       </Text>
                       <Text size="xs" tone="subdued" className="block">
-                        {run.result.vocabularySize} vocabulary terms
+                        {run.result.training
+                          ? `${run.result.training.epochs} epochs · loss ${run.result.training.finalLoss.toFixed(3)}`
+                          : `${run.result.vocabularySize} vocabulary terms`}
                       </Text>
                     </div>
                     <Icon name="Boxes" className="text-sky-500" />

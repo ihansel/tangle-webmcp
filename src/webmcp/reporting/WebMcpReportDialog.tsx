@@ -26,7 +26,7 @@ const descriptions = {
   clustering:
     "Segment shape, relative value, defining behaviours, representative customers, and recommended actions.",
   embedding:
-    "Product positioning, semantic neighbours, category cohesion, co-purchase structure, and bundle opportunities.",
+    "Embedding training, learned neighbours, category cohesion, co-purchase structure, and bundle opportunities.",
 };
 
 export function WebMcpReportDialog({ result }: { result: BrowserRunResult }) {

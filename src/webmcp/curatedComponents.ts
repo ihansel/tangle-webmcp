@@ -195,6 +195,28 @@ const components: CuratedComponent[] = [
     outputs: [{ name: "vectors", type: "Embeddings" }],
   },
   {
+    id: "product2vec",
+    name: "Train Product2Vec",
+    description:
+      "Train a compact skip-gram embedding model locally from SKU co-purchase context.",
+    category: "embeddings",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "id_column", type: "String", default: "sku" },
+      {
+        name: "context_column",
+        type: "String",
+        default: "copurchase_skus",
+      },
+      { name: "dimensions", type: "Integer", default: "16" },
+      { name: "epochs", type: "Integer", default: "80" },
+      { name: "learning_rate", type: "Float", default: "0.04" },
+      { name: "negative_samples", type: "Integer", default: "4" },
+      { name: "seed", type: "Integer", default: "42" },
+    ],
+    outputs: [{ name: "vectors", type: "Embeddings" }],
+  },
+  {
     id: "nearest-neighbors",
     name: "Find similar products",
     description:

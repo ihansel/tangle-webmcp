@@ -2,6 +2,7 @@ import type {
   BrowserMetricSet,
   BrowserModelResult,
   BrowserRunResult,
+  EmbeddingRunResult,
   PipelineSnapshot,
   RunnerProgress,
 } from "../types";
@@ -455,6 +456,231 @@ function cosine(a: number[], b: number[]) {
   return dot / Math.max(Number.EPSILON, aNorm * bNorm);
 }
 
+function normalizeVector(vector: number[]) {
+  const norm = Math.sqrt(vector.reduce((sum, value) => sum + value ** 2, 0));
+  return vector.map((value) => value / Math.max(Number.EPSILON, norm));
+}
+
+function projectEmbeddings(vectors: number[][]) {
+  const dimensions = vectors[0]?.length ?? 0;
+  if (!dimensions) return vectors.map(() => ({ x: 0, y: 0 }));
+  const means = Array.from(
+    { length: dimensions },
+    (_, dimension) =>
+      vectors.reduce((sum, vector) => sum + vector[dimension], 0) /
+      vectors.length,
+  );
+  const centered = vectors.map((vector) =>
+    vector.map((value, dimension) => value - means[dimension]),
+  );
+  const covariance = Array.from({ length: dimensions }, (_, row) =>
+    Array.from(
+      { length: dimensions },
+      (_, column) =>
+        centered.reduce(
+          (sum, vector) => sum + vector[row] * vector[column],
+          0,
+        ) / Math.max(1, centered.length - 1),
+    ),
+  );
+  const principalComponent = (offset: number, orthogonalTo?: number[]) => {
+    let component = normalizeVector(
+      Array.from({ length: dimensions }, (_, index) =>
+        Math.sin((index + 1) * (offset + 1.37)),
+      ),
+    );
+    for (let iteration = 0; iteration < 40; iteration++) {
+      let next = covariance.map((row) =>
+        row.reduce((sum, value, index) => sum + value * component[index], 0),
+      );
+      if (orthogonalTo) {
+        const projection = next.reduce(
+          (sum, value, index) => sum + value * orthogonalTo[index],
+          0,
+        );
+        next = next.map(
+          (value, index) => value - projection * orthogonalTo[index],
+        );
+      }
+      component = normalizeVector(next);
+    }
+    return component;
+  };
+  const xComponent = principalComponent(1);
+  const yComponent = principalComponent(2, xComponent);
+  const raw = centered.map((vector) => ({
+    x: vector.reduce((sum, value, index) => sum + value * xComponent[index], 0),
+    y: vector.reduce((sum, value, index) => sum + value * yComponent[index], 0),
+  }));
+  const scaleX = Math.max(Number.EPSILON, ...raw.map(({ x }) => Math.abs(x)));
+  const scaleY = Math.max(Number.EPSILON, ...raw.map(({ y }) => Math.abs(y)));
+  return raw.map(({ x, y }) => ({ x: x / scaleX, y: y / scaleY }));
+}
+
+function trainProduct2Vec(
+  rows: Row[],
+  task: Task,
+  idColumn: string,
+  dimensions: number,
+  options: EngineOptions,
+) {
+  const contextColumn = stringArg(task, "context_column", "copurchase_skus");
+  const epochs = Math.min(
+    240,
+    Math.max(10, Math.round(numberArg(task, "epochs", 80))),
+  );
+  const initialRate = Math.min(
+    0.2,
+    Math.max(0.005, numberArg(task, "learning_rate", 0.04)),
+  );
+  const negativeSamples = Math.min(
+    6,
+    Math.max(1, Math.round(numberArg(task, "negative_samples", 4))),
+  );
+  const seed = Math.round(numberArg(task, "seed", 42));
+  const ids = rows.map((row) => row[idColumn]);
+  if (ids.some((id) => !id))
+    throw new Error(`Every row needs a value in ${idColumn}.`);
+  const indexById = new Map(ids.map((id, index) => [id, index]));
+  if (indexById.size !== ids.length)
+    throw new Error(`${idColumn} values must be unique for Product2Vec.`);
+  const pairKeys = new Set<string>();
+  rows.forEach((row, source) => {
+    (row[contextColumn] || "")
+      .split("|")
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .slice(0, 12)
+      .forEach((id) => {
+        const target = indexById.get(id);
+        if (target === undefined || target === source) return;
+        pairKeys.add(`${source}:${target}`);
+        pairKeys.add(`${target}:${source}`);
+      });
+  });
+  const pairs = [...pairKeys].map(
+    (key) => key.split(":").map(Number) as [number, number],
+  );
+  if (pairs.length < 4)
+    throw new Error(
+      `Product2Vec needs at least two valid SKU links in ${contextColumn}.`,
+    );
+
+  const positives = new Set(pairKeys);
+  const random = seededRandom(seed);
+  const scale = 0.5 / Math.max(1, dimensions);
+  const inputVectors = rows.map(() =>
+    Array.from({ length: dimensions }, () => (random() - 0.5) * scale),
+  );
+  const contextVectors = rows.map(() =>
+    Array.from({ length: dimensions }, () => (random() - 0.5) * scale),
+  );
+  const update = (
+    source: number,
+    target: number,
+    label: 0 | 1,
+    rate: number,
+  ) => {
+    const sourceVector = inputVectors[source];
+    const targetVector = contextVectors[target];
+    const score = sourceVector.reduce(
+      (sum, value, dimension) => sum + value * targetVector[dimension],
+      0,
+    );
+    const probability = sigmoid(score);
+    const error = label - probability;
+    for (let dimension = 0; dimension < dimensions; dimension++) {
+      const sourceValue = sourceVector[dimension];
+      const targetValue = targetVector[dimension];
+      sourceVector[dimension] +=
+        rate * (error * targetValue - 0.0001 * sourceValue);
+      targetVector[dimension] +=
+        rate * (error * sourceValue - 0.0001 * targetValue);
+    }
+    return -(
+      label * Math.log(Math.max(1e-7, probability)) +
+      (1 - label) * Math.log(Math.max(1e-7, 1 - probability))
+    );
+  };
+
+  const lossCurve: Array<{ epoch: number; loss: number }> = [];
+  const recordEvery = Math.max(1, Math.floor(epochs / 12));
+  for (let epoch = 1; epoch <= epochs; epoch++) {
+    guard(options.signal);
+    const shuffled = [...pairs];
+    for (let index = shuffled.length - 1; index > 0; index--) {
+      const other = Math.floor(random() * (index + 1));
+      [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+    }
+    const rate = initialRate * (1 - 0.8 * ((epoch - 1) / epochs));
+    let loss = 0;
+    let observations = 0;
+    for (const [source, target] of shuffled) {
+      loss += update(source, target, 1, rate);
+      observations++;
+      for (let sample = 0; sample < negativeSamples; sample++) {
+        let negative = Math.floor(random() * rows.length);
+        let attempts = 0;
+        while (
+          (negative === source || positives.has(`${source}:${negative}`)) &&
+          attempts < rows.length
+        ) {
+          negative = (negative + 1) % rows.length;
+          attempts++;
+        }
+        loss += update(source, negative, 0, rate);
+        observations++;
+      }
+    }
+    if (epoch === 1 || epoch % recordEvery === 0 || epoch === epochs) {
+      lossCurve.push({ epoch, loss: loss / Math.max(1, observations) });
+      report(
+        options,
+        "embedding",
+        20 + Math.round((epoch / epochs) * 52),
+        `Training Product2Vec · epoch ${epoch}/${epochs}`,
+      );
+    }
+  }
+
+  const vectors = inputVectors.map((input, row) =>
+    normalizeVector(
+      input.map((value, dimension) => value + contextVectors[row][dimension]),
+    ),
+  );
+  const contextSimilarity =
+    pairs.reduce(
+      (sum, [source, target]) => sum + cosine(vectors[source], vectors[target]),
+      0,
+    ) / pairs.length;
+  const baselinePairs = pairs.map(([source], index) => {
+    let target = (source + Math.floor(rows.length / 2) + index) % rows.length;
+    while (target === source || positives.has(`${source}:${target}`))
+      target = (target + 1) % rows.length;
+    return [source, target] as const;
+  });
+  const baselineSimilarity =
+    baselinePairs.reduce(
+      (sum, [source, target]) => sum + cosine(vectors[source], vectors[target]),
+      0,
+    ) / baselinePairs.length;
+  return {
+    vectors,
+    seed,
+    vocabularySize: rows.length,
+    training: {
+      epochs,
+      pairCount: pairs.length,
+      negativeSamples,
+      initialLoss: lossCurve[0].loss,
+      finalLoss: lossCurve.at(-1)?.loss ?? lossCurve[0].loss,
+      contextSimilarity,
+      baselineSimilarity,
+      lossCurve,
+    },
+  };
+}
+
 async function classification(
   pipeline: PipelineSnapshot,
   rows: Row[],
@@ -819,17 +1045,18 @@ function embeddings(
   started: number,
   options: EngineOptions,
 ): BrowserRunResult {
-  const task = pipeline.tasks.find(
+  const product2VecTask = pipeline.tasks.find(
+    (candidate) => candidate.componentId === "product2vec",
+  );
+  const textTask = pipeline.tasks.find(
     (candidate) => candidate.componentId === "text-embedding",
   );
+  const task = product2VecTask ?? textTask;
   if (!task)
-    throw new Error("Add a text embedding task before running this pipeline.");
+    throw new Error(
+      "Add a supported embedding task before running this pipeline.",
+    );
   const idColumn = stringArg(task, "id_column", "sku");
-  const columns = listArg(task, "text_columns", [
-    "name",
-    "category",
-    "description",
-  ]);
   const dimensions = Math.min(
     64,
     Math.max(8, Math.round(numberArg(task, "dimensions", 24))),
@@ -841,34 +1068,61 @@ function embeddings(
     5,
     Math.max(1, Math.round(numberArg(neighborTask, "neighbors", 3))),
   );
-  report(options, "embedding", 28, "Building a local product vocabulary");
-  const documents: string[][] = rows.map((row) =>
-    tokenise(columns.map((column) => row[column] ?? "").join(" ")),
-  );
-  const vocabulary = [...new Set(documents.flat())].sort();
-  const frequencies = new Map(
-    vocabulary.map((token) => [
-      token,
-      documents.filter((document) => document.includes(token)).length,
-    ]),
-  );
-  const vectors = documents.map((document) => {
-    const vector = new Array(dimensions).fill(0);
-    const counts = new Map<string, number>();
-    document.forEach((token) =>
-      counts.set(token, (counts.get(token) ?? 0) + 1),
+  let algorithm: "tf-idf" | "product2vec" = "tf-idf";
+  let seed = 42;
+  let vocabularySize = 0;
+  let training: EmbeddingRunResult["training"] = null;
+  let vectors: number[][];
+  if (product2VecTask) {
+    algorithm = "product2vec";
+    report(options, "embedding", 16, "Preparing co-purchase training pairs");
+    const fitted = trainProduct2Vec(
+      rows,
+      product2VecTask,
+      idColumn,
+      dimensions,
+      options,
     );
-    counts.forEach((count, token) => {
-      const hash = [...token].reduce(
-        (value, character) => (value * 31 + character.charCodeAt(0)) >>> 0,
-        7,
+    vectors = fitted.vectors;
+    seed = fitted.seed;
+    vocabularySize = fitted.vocabularySize;
+    training = fitted.training;
+  } else {
+    const columns = listArg(textTask, "text_columns", [
+      "name",
+      "category",
+      "description",
+    ]);
+    report(options, "embedding", 28, "Building deterministic text features");
+    const documents: string[][] = rows.map((row) =>
+      tokenise(columns.map((column) => row[column] ?? "").join(" ")),
+    );
+    const vocabulary = [...new Set(documents.flat())].sort();
+    const frequencies = new Map(
+      vocabulary.map((token) => [
+        token,
+        documents.filter((document) => document.includes(token)).length,
+      ]),
+    );
+    vectors = documents.map((document) => {
+      const vector = new Array(dimensions).fill(0);
+      const counts = new Map<string, number>();
+      document.forEach((token) =>
+        counts.set(token, (counts.get(token) ?? 0) + 1),
       );
-      const idf =
-        Math.log((rows.length + 1) / ((frequencies.get(token) ?? 0) + 1)) + 1;
-      vector[hash % dimensions] += (count / document.length) * idf;
+      counts.forEach((count, token) => {
+        const hash = [...token].reduce(
+          (value, character) => (value * 31 + character.charCodeAt(0)) >>> 0,
+          7,
+        );
+        const idf =
+          Math.log((rows.length + 1) / ((frequencies.get(token) ?? 0) + 1)) + 1;
+        vector[hash % dimensions] += (count / document.length) * idf;
+      });
+      return normalizeVector(vector);
     });
-    return vector;
-  });
+    vocabularySize = vocabulary.length;
+  }
   report(options, "embedding", 72, "Comparing cosine similarity");
   const productGroups = rows.map((row, index) => {
     const nearest = rows
@@ -901,24 +1155,13 @@ function embeddings(
     })
     .sort((a, b) => b.similarity - a.similarity)
     .slice(0, 6);
-  const rawPoints = vectors.map((vector) => ({
-    x: vector.reduce(
-      (sum, value, index) => sum + value * Math.sin((index + 1) * 1.73),
-      0,
-    ),
-    y: vector.reduce(
-      (sum, value, index) => sum + value * Math.cos((index + 1) * 2.17),
-      0,
-    ),
-  }));
-  const pointScaleX = Math.max(1, ...rawPoints.map(({ x }) => Math.abs(x)));
-  const pointScaleY = Math.max(1, ...rawPoints.map(({ y }) => Math.abs(y)));
-  const points = rawPoints.map((point, index) => ({
+  const projectedPoints = projectEmbeddings(vectors);
+  const points = projectedPoints.map((point, index) => ({
     sku: rows[index][idColumn],
     name: rows[index].name || rows[index][idColumn],
     category: rows[index].category || "uncategorised",
-    x: point.x / pointScaleX,
-    y: point.y / pointScaleY,
+    x: point.x,
+    y: point.y,
   }));
   const categoryNames = [
     ...new Set(rows.map((row) => row.category || "uncategorised")),
@@ -1001,11 +1244,13 @@ function embeddings(
   return {
     kind: "embedding",
     runId: `browser-${Date.now().toString(36)}`,
-    seed: 42,
+    seed,
     rowCount: rows.length,
     durationMs: Math.round(performance.now() - started),
+    algorithm,
     dimensions,
-    vocabularySize: vocabulary.length,
+    vocabularySize,
+    training,
     neighbors,
     products: productGroups,
     points,
@@ -1013,7 +1258,10 @@ function embeddings(
     categoryCohesion,
     coPurchaseLinks,
     unexpectedPairs,
-    insight: `${neighbors[0].item} and ${neighbors[0].match} are the strongest semantic match at ${Math.round(neighbors[0].similarity * 100)}%.`,
+    insight:
+      algorithm === "product2vec"
+        ? `${neighbors[0].item} and ${neighbors[0].match} are the strongest learned co-purchase match at ${Math.round(neighbors[0].similarity * 100)}%.`
+        : `${neighbors[0].item} and ${neighbors[0].match} are the strongest semantic match at ${Math.round(neighbors[0].similarity * 100)}%.`,
   };
 }
 
@@ -1028,7 +1276,13 @@ export async function executeBrowserPipeline(
   const rows = parseCsv(csvText);
   if (pipeline.tasks.some((task) => task.componentId === "k-means"))
     return clustering(pipeline, rows, started, options);
-  if (pipeline.tasks.some((task) => task.componentId === "text-embedding"))
+  if (
+    pipeline.tasks.some(
+      (task) =>
+        task.componentId === "text-embedding" ||
+        task.componentId === "product2vec",
+    )
+  )
     return embeddings(pipeline, rows, started, options);
   return classification(pipeline, rows, started, options);
 }

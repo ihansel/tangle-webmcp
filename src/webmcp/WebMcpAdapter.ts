@@ -32,6 +32,7 @@ const componentIds = [
   "k-means",
   "profile-clusters",
   "text-embedding",
+  "product2vec",
   "nearest-neighbors",
 ] as const;
 
@@ -396,7 +397,8 @@ export class WebMcpAdapter {
         id === "logistic-regression" ||
         id === "decision-tree" ||
         id === "k-means" ||
-        id === "text-embedding"
+        id === "text-embedding" ||
+        id === "product2vec"
       );
     });
     const browserIssues = [
@@ -490,8 +492,10 @@ export class WebMcpAdapter {
     }
     return {
       ...base,
+      algorithm: result.algorithm,
       dimensions: result.dimensions,
       vocabularySize: result.vocabularySize,
+      training: result.training,
       neighbors: result.neighbors,
       insight: result.insight,
     };

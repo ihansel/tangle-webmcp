@@ -284,13 +284,13 @@ export const DEMO_RECIPES: DemoRecipe[] = [
     title: "Embed a product catalogue",
     shortTitle: "SKU embeddings",
     description:
-      "Map 160 products into local vectors, explore neighbours, category cohesion, and co-purchase links.",
-    outcome: "Product map · similarity · co-purchase network",
-    eyebrow: "Vector similarity",
+      "Train a compact Product2Vec model from co-purchase context, then explore learned neighbours and bundle opportunities.",
+    outcome: "Training loss · product map · learned neighbours",
+    eyebrow: "Browser-trained embeddings",
     icon: "Boxes",
     accent: "sky",
     pipelineName: "Product SKU embeddings",
-    steps: ["Load catalogue", "Create vectors", "Find neighbours"],
+    steps: ["Load catalogue", "Train Product2Vec", "Find neighbours"],
     batch: {
       tasks: [
         {
@@ -303,18 +303,22 @@ export const DEMO_RECIPES: DemoRecipe[] = [
         },
         {
           clientId: "embed",
-          componentId: "text-embedding",
-          name: "Embed product text",
+          componentId: "product2vec",
+          name: "Train Product2Vec",
           configuration: {
             id_column: "sku",
-            text_columns: "name,category,description",
-            dimensions: 32,
+            context_column: "copurchase_skus",
+            dimensions: 16,
+            epochs: 80,
+            learning_rate: 0.04,
+            negative_samples: 4,
+            seed: 42,
           },
         },
         {
           clientId: "neighbors",
           componentId: "nearest-neighbors",
-          name: "Find semantic neighbours",
+          name: "Find learned neighbours",
           configuration: { neighbors: 3 },
         },
       ],

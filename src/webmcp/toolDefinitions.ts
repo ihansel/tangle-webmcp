@@ -101,6 +101,7 @@ export function createWebMcpToolDefinitions(
                     "k-means",
                     "profile-clusters",
                     "text-embedding",
+                    "product2vec",
                     "nearest-neighbors",
                   ],
                 },

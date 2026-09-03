@@ -11,6 +11,7 @@ export type CuratedComponentId =
   | "k-means"
   | "profile-clusters"
   | "text-embedding"
+  | "product2vec"
   | "nearest-neighbors";
 
 export interface BrowserMetricSet {
@@ -136,8 +137,19 @@ export interface EmbeddingPoint {
 
 export interface EmbeddingRunResult extends BrowserRunBase {
   kind: "embedding";
+  algorithm: "tf-idf" | "product2vec";
   dimensions: number;
   vocabularySize: number;
+  training: {
+    epochs: number;
+    pairCount: number;
+    negativeSamples: number;
+    initialLoss: number;
+    finalLoss: number;
+    contextSimilarity: number;
+    baselineSimilarity: number;
+    lossCurve: Array<{ epoch: number; loss: number }>;
+  } | null;
   neighbors: NeighborMatch[];
   products: ProductNeighborGroup[];
   points: EmbeddingPoint[];
