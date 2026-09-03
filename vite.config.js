@@ -73,7 +73,7 @@ export default defineConfig(async ({ mode }) => {
               viteEnvironment: { name: "server" },
               config: {
                 main: "src/sites-worker.ts",
-                compatibility_date: "2026-06-01",
+                compatibility_date: "2026-05-22",
                 assets: {
                   binding: "ASSETS",
                   not_found_handling: "single-page-application",

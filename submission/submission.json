@@ -1,0 +1,186 @@
+{
+  "project_name": "Tangle WebMCP",
+  "alternative_names": ["Tangle Agent Canvas", "Tangle Local Lab"],
+  "pitch": "Tangle gives people and agents one visible ML canvas: WebMCP tools build and undo pipelines, then train classifiers, clusters and Product2Vec locally without exposing data.",
+  "pitch_character_count": 172,
+  "about": {
+    "inspiration": "Visual ML tools make pipelines understandable, but coordinate-based agents have to guess at nodes, ports, and state. Tangle already had a real graph, validation, and undo, so the project makes that same workspace structured and safely actionable through WebMCP.",
+    "what_it_does": "People and agents assemble, validate, run, and interpret curated classification, clustering, and embedding pipelines in the browser. Four recipes and human-readable reports use deterministic synthetic equipment and commerce data.",
+    "why_webmcp": "The page exposes stable names, JSON schemas, task IDs, port names, typed results, and explicit errors instead of relying on visual scraping. This makes multi-step graph edits and analysis more reliable while preserving a narrow capability boundary.",
+    "better_user_experience": "Agent changes appear on the same visible canvas, use normal undo, and are reported in a status panel. A person must grant one-time execution permission and can explore the same result report.",
+    "people_and_agents_together": "The agent can inspect, search, build, configure, connect, validate, request execution, and interpret; the person reviews, edits, authorizes, explores, and undoes.",
+    "how_built": "A thin TypeScript adapter reuses Tangle's React/MobX/React Flow state and undo APIs. Deterministic models execute in an ES-module Web Worker; React components render classifier, cluster, and embedding reports. OpenAI Sites hosts the demo.",
+    "webmcp_implementation": "The editor calls document.modelContext.registerTool for ten bounded tools. Curated component IDs, runtime validation, separate browser compatibility checks, one-run permission, safe errors, and concise summary tools define the boundary.",
+    "challenges": "Selecting a safe public surface, separating editor validity from browser capability, keeping results useful without returning rows, producing readable agent graph layouts, preserving deep links, and validating declared schemas at runtime.",
+    "accomplishments": "Ten real deployed tools; visible undoable changes; working one-run permission; live churn, four-cluster, and Product2Vec runs; deterministic documented data; and 2,260 runnable tests passing.",
+    "learnings": "Intention-level tools are more trustworthy than mirroring every UI command; agents should share real app state and undo; JSON Schema needs runtime enforcement; browser-local ML needs both agent-readable and human-explorable outputs.",
+    "next": "Push the reviewed release, restore and enable judge access, deploy strict no-input validation, return a concise run result, add visible cancellation and saved comparisons, and test more clients.",
+    "submission_period_changes": "From upstream d7768e85, ten commits dated 3 September 2026 added the WebMCP adapter/tools, Worker runner, bounded models including Product2Vec, synthetic datasets, four recipes, commerce landing page, reports, readable layout, permission UI, Sites routing, tests, and documentation. Official event dates require owner confirmation."
+  },
+  "built_with": [
+    "TypeScript",
+    "JavaScript",
+    "React 19",
+    "React Flow",
+    "MobX Keystone",
+    "Vite 8",
+    "Tailwind CSS 4",
+    "Zod",
+    "Comlink",
+    "WebMCP document.modelContext.registerTool",
+    "Web Workers",
+    "Vitest",
+    "Testing Library",
+    "ESLint",
+    "pnpm",
+    "Cloudflare Workers runtime",
+    "OpenAI Sites",
+    "OpenAI Codex desktop",
+    "OpenAI ImageGen"
+  ],
+  "urls": {
+    "live": {
+      "url": "https://tangle-webmcp.ian347727.chatgpt.site",
+      "verification": "owner_authenticated_only",
+      "anonymous_http_status": 401
+    },
+    "public_repository": {
+      "url": "https://github.com/ihansel/tangle-webmcp",
+      "verification": "created_source_push_pending"
+    },
+    "upstream_repository": {
+      "url": "https://github.com/TangleML/tangle-ui",
+      "verification": "verified_public_upstream_only"
+    },
+    "video": {
+      "url": null,
+      "verification": "blocked"
+    },
+    "project_page": {
+      "url": null,
+      "verification": "not_verified"
+    }
+  },
+  "app_status": {
+    "label": "functional beta",
+    "existing_project": true,
+    "classification": "existing project substantially updated during the submission period, pending official date confirmation"
+  },
+  "provenance": {
+    "upstream_commit": "d7768e85d515ac824adec6dabd1f3f7f88f1cf2e",
+    "branch": "webmcp-hackathon",
+    "latest_committed_hackathon_revision": "c13d2cb4",
+    "hackathon_commit_count": 10,
+    "commit_date": "2026-09-03",
+    "official_submission_period_confirmed": false,
+    "license": "Apache-2.0"
+  },
+  "webmcp": {
+    "real_registration_verified": true,
+    "registered_tool_count": 10,
+    "tools": [
+      "get_pipeline_summary",
+      "search_components",
+      "add_pipeline_tasks",
+      "configure_task",
+      "connect_tasks",
+      "validate_pipeline",
+      "run_browser_pipeline",
+      "get_run_summary",
+      "inspect_model_metrics",
+      "undo_pipeline_change"
+    ],
+    "deployed_empty_input_strictness": "failed",
+    "local_strictness_fix_added": true
+  },
+  "testing": {
+    "judge_instructions_path": "submission/testing-instructions.md",
+    "full_suite": {
+      "status": "pass",
+      "test_files_passed": 216,
+      "tests_passed": 2260,
+      "tests_todo": 2,
+      "tests_failed": 0,
+      "command": "NODE_OPTIONS=--no-webstorage pnpm test"
+    },
+    "workflows": [
+      "hosted home and recipe navigation",
+      "all ten WebMCP tools",
+      "Product2Vec embedding",
+      "churn classification",
+      "customer clustering",
+      "one-run permission",
+      "invalid inputs and empty states",
+      "visible 404 error and undo recovery"
+    ]
+  },
+  "tested_clients": [
+    {
+      "name": "ChatGPT in-app Browser",
+      "environment": "Codex desktop Browser runtime",
+      "version": null,
+      "date": "2026-09-04",
+      "result": "partially_verified",
+      "limitations": [
+        "owner-authenticated Site only",
+        "strict no-input fix not deployed"
+      ],
+      "evidence": [
+        "submission/evidence/webmcp-tools.md",
+        "submission/evidence/test-results.md",
+        "submission/assets/gallery"
+      ]
+    }
+  ],
+  "ai_tools_used": [
+    {
+      "name": "OpenAI Codex desktop",
+      "contribution": "implementation, repository inspection, local checks, WebMCP browser testing, screenshot capture, and submission preparation"
+    },
+    {
+      "name": "OpenAI ImageGen",
+      "contribution": "original submission thumbnail artwork"
+    }
+  ],
+  "assets": {
+    "thumbnail": {
+      "path": "submission/assets/thumbnail.png",
+      "format": "png",
+      "width": 1800,
+      "height": 1200,
+      "bytes": 2327065,
+      "ratio": "3:2",
+      "validation": "pass"
+    },
+    "thumbnail_source": "submission/assets/thumbnail-source.png",
+    "gallery": {
+      "path": "submission/assets/gallery",
+      "count": 7,
+      "formats": ["png"],
+      "all_under_5mb": true,
+      "all_3_2": true,
+      "validation": "pass"
+    }
+  },
+  "video": {
+    "script_path": "submission/video/script.md",
+    "runtime_seconds": 158,
+    "runtime_display": "2:38",
+    "under_three_minutes": true,
+    "recorded": false,
+    "uploaded": false
+  },
+  "blockers": [
+    "Live Site is not accessible anonymously to judges.",
+    "The public repository exists but the reviewed branch has not yet been pushed.",
+    "No public demo video URL exists.",
+    "Strict no-input runtime validation fix is not deployed."
+  ],
+  "user_input_requests": [
+    "Approve public Site access or provide an approved judge-access method.",
+    "Confirm the official submission-period dates.",
+    "Record and upload the public demo video, then provide its URL.",
+    "Confirm whether additional AI tools or personal attribution must be disclosed."
+  ],
+  "overall_readiness_status": "NOT READY — ACTION REQUIRED"
+}

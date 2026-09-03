@@ -18,6 +18,17 @@ function annotations(readOnlyHint: boolean) {
   };
 }
 
+function requireEmptyObject(input: unknown) {
+  if (
+    typeof input !== "object" ||
+    input === null ||
+    Array.isArray(input) ||
+    Object.keys(input).length > 0
+  ) {
+    throw new Error("This tool accepts an empty object only.");
+  }
+}
+
 export function createWebMcpToolDefinitions(
   adapter: WebMcpAdapter,
 ): ModelContextToolDefinition[] {
@@ -44,9 +55,10 @@ export function createWebMcpToolDefinitions(
         "Inspect the open Tangle pipeline as a bounded task and connection summary. Use before planning edits and after mutations.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
-      execute: execute("get_pipeline_summary", () =>
-        adapter.getPipelineSummary(),
-      ),
+      execute: execute("get_pipeline_summary", (input) => {
+        requireEmptyObject(input);
+        return adapter.getPipelineSummary();
+      }),
     },
     {
       name: "search_components",
@@ -202,7 +214,10 @@ export function createWebMcpToolDefinitions(
         "Validate the live Tangle graph and separately report whether every task is supported by the curated browser runner.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
-      execute: execute("validate_pipeline", () => adapter.validatePipeline()),
+      execute: execute("validate_pipeline", (input) => {
+        requireEmptyObject(input);
+        return adapter.validatePipeline();
+      }),
     },
     {
       name: "run_browser_pipeline",
@@ -210,9 +225,10 @@ export function createWebMcpToolDefinitions(
         "Run the validated curated pipeline locally in a cancellable worker. The person must first allow the next agent run in the visible panel.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(false),
-      execute: execute("run_browser_pipeline", () =>
-        adapter.runBrowserPipeline(true),
-      ),
+      execute: execute("run_browser_pipeline", (input) => {
+        requireEmptyObject(input);
+        return adapter.runBrowserPipeline(true);
+      }),
     },
     {
       name: "get_run_summary",
@@ -220,7 +236,10 @@ export function createWebMcpToolDefinitions(
         "Read bounded classification, clustering, or embedding insights for the current or latest local browser run without returning dataset rows.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
-      execute: execute("get_run_summary", () => adapter.getRunSummary()),
+      execute: execute("get_run_summary", (input) => {
+        requireEmptyObject(input);
+        return adapter.getRunSummary();
+      }),
     },
     {
       name: "inspect_model_metrics",
@@ -244,9 +263,10 @@ export function createWebMcpToolDefinitions(
         "Undo the most recent normal Tangle pipeline change, including a batched agent-created edit, and return the updated bounded summary.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(false),
-      execute: execute("undo_pipeline_change", () =>
-        adapter.undoPipelineChange(),
-      ),
+      execute: execute("undo_pipeline_change", (input) => {
+        requireEmptyObject(input);
+        return adapter.undoPipelineChange();
+      }),
     },
   ];
 }

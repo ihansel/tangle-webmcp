@@ -63,6 +63,12 @@ describe("WebMcpAdapter", () => {
     expect(undone.success).toBe(true);
     expect(spec.tasks).toHaveLength(0);
     expect(spec.bindings).toHaveLength(0);
+
+    const emptyUndo = await adapter.undoPipelineChange();
+    expect(emptyUndo).toEqual({
+      success: false,
+      error: "There is no pipeline change to undo.",
+    });
   });
 
   it("does not accept arbitrary component IDs", () => {
@@ -98,5 +104,26 @@ describe("WebMcpAdapter", () => {
     await expect(tool?.execute({})).resolves.toEqual(
       expect.objectContaining({ taskCount: 0, bindingCount: 0 }),
     );
+  });
+
+  it("rejects unexpected input for no-input tools before side effects", async () => {
+    const { adapter, spec } = createHarness();
+    adapter.addPipelineTasks({ tasks: FAILURE_DEMO_BATCH.tasks.slice(0, 1) });
+    const noInputTools = createWebMcpToolDefinitions(adapter).filter((tool) =>
+      [
+        "get_pipeline_summary",
+        "validate_pipeline",
+        "run_browser_pipeline",
+        "get_run_summary",
+        "undo_pipeline_change",
+      ].includes(tool.name),
+    );
+
+    for (const tool of noInputTools) {
+      await expect(tool.execute({ unexpected: true })).rejects.toThrow(
+        "empty object only",
+      );
+    }
+    expect(spec.tasks).toHaveLength(1);
   });
 });

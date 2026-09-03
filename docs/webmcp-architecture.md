@@ -62,10 +62,17 @@ Curated component references carry a `webmcp://components/<id>` URL and an
 explicit `browser.webmcp.dev/executable` annotation. The runner rejects every
 other component before execution.
 
-The MVP worker executes only the equipment-failure classification path:
+The MVP worker executes three curated workload families:
 
-`Load CSV -> Select columns -> Fill missing values -> Encode categories -> Train/test split -> Logistic regression + Decision tree -> Evaluate -> Compare`
+- classification: `Load CSV -> Select columns -> Fill missing values -> Encode
+categories -> Train/test split -> Logistic regression + Decision tree ->
+Evaluate -> Compare`;
+- clustering: customer features -> K-means -> bounded segment profile; and
+- embeddings: product catalogue -> deterministic TF-IDF or browser-trained
+  Product2Vec -> nearest-neighbour report.
 
-Training is deterministic, bounded, cancellable by terminating the worker, and
-keeps the CSV and derived arrays in the browser. An agent-triggered run is
-blocked until the person authorises the next local run in the visible panel.
+Training and analysis are deterministic, bounded, cancellable by terminating the
+worker, and keep the CSV and derived arrays in the browser. An agent-triggered
+run is blocked until the person authorises the next local run in the visible
+panel. The tool-facing summaries return metrics and concise insights rather than
+dataset rows.

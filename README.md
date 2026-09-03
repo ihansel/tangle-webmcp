@@ -4,13 +4,89 @@ Tangle is a web app that allows the users to build and run Machine Learning pipe
 
 [![image](https://github.com/user-attachments/assets/0ce7ccc0-dad7-4f6a-8677-f2adcd83f558)](https://tangleml-tangle.hf.space/#/quick-start)
 
+## WebMCP hackathon demo
+
+This branch extends Tangle with an open browser-agent interface and a curated
+browser-native ML runner. A WebMCP-capable agent can inspect and edit the same
+visible graph as the person, validate it, request a one-time local run, and read
+bounded model, clustering, or embedding results. Agent edits use Tangle's normal
+undo history, and imported rows remain inside the page.
+
+![Tangle WebMCP commerce demo](submission/assets/gallery/01-home.png)
+
+- Hosted build: <https://tangle-webmcp.ian347727.chatgpt.site> (currently
+  access-controlled; public judging access has not yet been enabled)
+- Public source: <https://github.com/ihansel/tangle-webmcp>
+- Architecture: [docs/webmcp-architecture.md](docs/webmcp-architecture.md)
+- Upstream baseline and attribution: [UPSTREAM.md](UPSTREAM.md)
+- Submission evidence and judge guide: [submission/README.md](submission/README.md)
+
+### Why WebMCP
+
+Visual browser automation would have to scrape node labels and guess coordinates.
+Here the page instead registers structured, discoverable tools with
+`document.modelContext.registerTool`. Stable task IDs, bounded schemas, explicit
+errors, and concise return values let an agent perform multi-step work while the
+person can see every graph mutation, approve execution, review the report, and
+undo changes normally.
+
+The registered tools are:
+
+`get_pipeline_summary`, `search_components`, `add_pipeline_tasks`,
+`configure_task`, `connect_tasks`, `validate_pipeline`, `run_browser_pipeline`,
+`get_run_summary`, `inspect_model_metrics`, and `undo_pipeline_change`.
+
+### Demo workflows
+
+- Compare logistic regression and a small decision tree for equipment failure or
+  customer churn, with recall-first model selection.
+- Cluster 1,800 synthetic commerce customers and inspect segment profiles.
+- Train a compact Product2Vec embedding from SKU co-purchase context and explore
+  learned neighbours.
+- Review charts and operational recommendations produced entirely in the browser.
+
+Example agent prompts:
+
+- “Inspect the open pipeline, validate it, and tell me what can run locally.”
+- “Add a CSV loader and selector, connect them, then show me the updated graph.”
+- “After I allow the next run, run this pipeline and compare classifier recall.”
+- “Undo your most recent graph change.”
+
+### Run and test this branch
+
+Use Node.js, pnpm 10.28.0, and the committed lockfile:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm start
+```
+
+No backend or API key is required for the curated local demos. With a supporting
+client, open an experiment in the v2 editor to discover the WebMCP tools. To run
+the verification suite:
+
+```sh
+NODE_OPTIONS=--no-webstorage pnpm test
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
+`--no-webstorage` avoids Node 25's incomplete built-in Web Storage globals so the
+jsdom test environment can install its own implementation. The browser runner is
+deliberately limited to the curated components above; it does not execute
+arbitrary Python, component YAML, containers, shell commands, or every component
+supported by upstream Tangle. The generated Northstar Commerce dataset is
+synthetic and documented in
+[public/datasets/northstar-commerce/provenance.md](public/datasets/northstar-commerce/provenance.md).
+
 This is the frontend repo. It contains the entire user interface portion of the app. It is built primarily on Typescript + React + Tailwind CSS, and powered by NodeJS + Vite.
 
 > Go to the [backend repo](https://github.com/TangleML/tangle).
 
 ## Demo
 
-[Demo](<[https://cloud-pipelines.net/pipeline-studio-app](https://tangleml-tangle.hf.space/#/quick-start)>)
+[Demo](https://tangleml-tangle.hf.space/#/quick-start)
 
 The experimental new version of the Tangle app is now available at <https://tangleml-tangle.hf.space/#/quick-start> . No registration is required to experiment with building pipelines. To install your own app instance, [duplicate](https://huggingface.co/spaces/TangleML/tangle?duplicate=true) the HuggingFace space or follow the [backend installation instructions](https://github.com/Cloud-Pipelines/backend?tab=readme-ov-file#installation).
 
