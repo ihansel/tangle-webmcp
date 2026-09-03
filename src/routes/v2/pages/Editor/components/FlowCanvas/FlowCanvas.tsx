@@ -5,7 +5,7 @@ import {
   useConnection,
 } from "@xyflow/react";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { BlockStack } from "@/components/ui/layout";
 import { cn } from "@/lib/utils";
@@ -49,6 +49,7 @@ export const FlowCanvas = observer(function FlowCanvas({
   const { containerRef, handleViewportChange } = useViewportScaling();
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
+  const fittedSpecId = useRef<string | null>(null);
   const focusModeActive = focusModeStore.active;
 
   const metaKeyPressed = keyboard.pressed.has(CMDALT);
@@ -80,6 +81,30 @@ export const FlowCanvas = observer(function FlowCanvas({
   const dropBehavior = useDropBehavior(spec, reactFlowInstance);
   const doubleClickBehavior = useDoubleClickBehavior(spec);
   const paneClickBehavior = usePaneClickBehavior(spec, reactFlowInstance);
+
+  useEffect(() => {
+    const specId = spec?.$id;
+    if (
+      !reactFlowInstance ||
+      !specId ||
+      displayNodes.length === 0 ||
+      fittedSpecId.current === specId
+    )
+      return;
+
+    // Recipes and restored pipelines can populate immediately after the
+    // ReactFlow instance mounts. Fit once the task cards have been measured,
+    // otherwise the initial viewport is calculated from an empty canvas.
+    const timer = window.setTimeout(() => {
+      fittedSpecId.current = specId;
+      void reactFlowInstance.fitView({
+        ...FLOW_CANVAS_DEFAULT_PROPS.fitViewOptions,
+        duration: 300,
+      });
+    }, 75);
+
+    return () => window.clearTimeout(timer);
+  }, [displayNodes.length, reactFlowInstance, spec?.$id]);
 
   return (
     <BlockStack

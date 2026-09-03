@@ -19,27 +19,27 @@ export const autoLayoutNodes = (
       config = {
         rankdir: "LR",
         ranker: "network-simplex",
-        nodesep: 30,
-        edgesep: 10,
-        ranksep: 20,
+        nodesep: 100,
+        edgesep: 24,
+        ranksep: 140,
       };
       break;
     case "digco":
       config = {
         rankdir: "LR",
         ranker: "tight-tree",
-        nodesep: 30,
-        edgesep: 10,
-        ranksep: 80,
+        nodesep: 100,
+        edgesep: 24,
+        ranksep: 160,
       };
       break;
     case "dwyer":
       config = {
         rankdir: "LR",
         ranker: "longest-path",
-        nodesep: 60,
-        edgesep: 15,
-        ranksep: 100,
+        nodesep: 120,
+        edgesep: 24,
+        ranksep: 180,
       };
       break;
     case "sugiyama":
@@ -47,9 +47,9 @@ export const autoLayoutNodes = (
       config = {
         rankdir: "LR",
         ranker: "network-simplex",
-        nodesep: 40,
-        edgesep: 20,
-        ranksep: 80,
+        nodesep: 100,
+        edgesep: 24,
+        ranksep: 160,
       };
   }
 

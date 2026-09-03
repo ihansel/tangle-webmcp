@@ -17,7 +17,10 @@ import type { ComponentSpec } from "@/models/componentSpec";
 import { EDITOR_POSITION_ANNOTATION } from "@/utils/annotations";
 
 const DEFAULT_POSITION = { x: 250, y: 250 };
-const POSITION_OFFSET = 200;
+// Task cards are 300-350px wide in the v2 editor. Keep a full gutter between
+// an existing graph and newly-created entities so their labels and handles do
+// not overlap before the user runs auto-layout.
+const POSITION_OFFSET = 420;
 
 export interface BridgeDeps {
   getSpec: () => ComponentSpec | null;

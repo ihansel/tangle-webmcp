@@ -6,6 +6,7 @@ import {
   autoLayoutNodes,
   type LayoutAlgorithm,
 } from "@/components/shared/ReactFlow/FlowCanvas/utils/autolayout";
+import { READABLE_FIT_MIN_ZOOM } from "@/routes/v2/shared/flowCanvasDefaults";
 import { CMDALT, SHIFT } from "@/routes/v2/shared/shortcuts/keys";
 import { useSharedStores } from "@/routes/v2/shared/store/SharedStoreContext";
 
@@ -30,7 +31,11 @@ export function useAutoLayoutShortcut(
       applyLayout(layoutedNodes);
 
       requestAnimationFrame(() => {
-        fitView({ maxZoom: 1, duration: 300 });
+        fitView({
+          minZoom: READABLE_FIT_MIN_ZOOM,
+          maxZoom: 1,
+          duration: 300,
+        });
       });
     };
 

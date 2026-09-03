@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ComponentSpec } from "@/models/componentSpec";
 import { UndoStore } from "@/routes/v2/pages/Editor/store/undoStore";
+import { EDITOR_POSITION_ANNOTATION } from "@/utils/annotations";
 
 import { FAILURE_DEMO_BATCH } from "./failureDemoFixture";
 import { createWebMcpToolDefinitions } from "./toolDefinitions";
@@ -31,6 +32,29 @@ describe("WebMcpAdapter", () => {
     expect(spec.tasks).toHaveLength(10);
     expect(spec.bindings).toHaveLength(12);
     expect(undo.undoLevels).toBe(1);
+
+    const positions = spec.tasks.map((task) =>
+      task.annotations.get(EDITOR_POSITION_ANNOTATION),
+    ) as Array<{ x: number; y: number }>;
+    const columns = new Map<number, number[]>();
+    for (const position of positions) {
+      columns.set(position.x, [...(columns.get(position.x) ?? []), position.y]);
+    }
+    const orderedColumns = [...columns.keys()].sort((a, b) => a - b);
+    expect(orderedColumns).toHaveLength(8);
+    expect(
+      orderedColumns
+        .slice(1)
+        .every((x, index) => x - orderedColumns[index] >= 440),
+    ).toBe(true);
+    expect(
+      [...columns.values()].every((rows) =>
+        rows.length < 2
+          ? true
+          : Math.min(...rows.slice(1).map((y, index) => y - rows[index])) >=
+            480,
+      ),
+    ).toBe(true);
 
     const validation = await adapter.validatePipeline();
     expect(validation.browserExecutable).toBe(true);

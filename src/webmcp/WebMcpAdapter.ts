@@ -53,6 +53,74 @@ const connectionSchema = z.object({
   targetPort: z.string().min(1).max(100),
 });
 
+const BATCH_COLUMN_GAP = 440;
+const BATCH_ROW_GAP = 480;
+
+function computeReadableBatchPositions(
+  tasks: AddPipelineTasksInput["tasks"],
+  connections: AddPipelineTasksInput["connections"],
+  origin: { x: number; y: number },
+) {
+  const taskIds = new Set(tasks.map((task) => task.clientId));
+  const depthById = new Map(tasks.map((task) => [task.clientId, 0]));
+  const outgoing = new Map<string, string[]>();
+  const indegree = new Map(tasks.map((task) => [task.clientId, 0]));
+
+  for (const connection of connections ?? []) {
+    if (
+      !taskIds.has(connection.sourceClientId) ||
+      !taskIds.has(connection.targetClientId)
+    )
+      continue;
+    outgoing.set(connection.sourceClientId, [
+      ...(outgoing.get(connection.sourceClientId) ?? []),
+      connection.targetClientId,
+    ]);
+    indegree.set(
+      connection.targetClientId,
+      (indegree.get(connection.targetClientId) ?? 0) + 1,
+    );
+  }
+
+  const queue = tasks
+    .filter((task) => indegree.get(task.clientId) === 0)
+    .map((task) => task.clientId);
+  for (let cursor = 0; cursor < queue.length; cursor++) {
+    const sourceId = queue[cursor];
+    const sourceDepth = depthById.get(sourceId) ?? 0;
+    for (const targetId of outgoing.get(sourceId) ?? []) {
+      depthById.set(
+        targetId,
+        Math.max(depthById.get(targetId) ?? 0, sourceDepth + 1),
+      );
+      const nextIndegree = (indegree.get(targetId) ?? 0) - 1;
+      indegree.set(targetId, nextIndegree);
+      if (nextIndegree === 0) queue.push(targetId);
+    }
+  }
+
+  const columns = new Map<number, string[]>();
+  for (const task of tasks) {
+    const depth = depthById.get(task.clientId) ?? 0;
+    columns.set(depth, [...(columns.get(depth) ?? []), task.clientId]);
+  }
+
+  return new Map(
+    tasks.map((task) => {
+      const depth = depthById.get(task.clientId) ?? 0;
+      const column = columns.get(depth) ?? [task.clientId];
+      const row = column.indexOf(task.clientId);
+      return [
+        task.clientId,
+        {
+          x: origin.x + depth * BATCH_COLUMN_GAP,
+          y: origin.y + (row - (column.length - 1) / 2) * BATCH_ROW_GAP,
+        },
+      ];
+    }),
+  );
+}
+
 export interface WebMcpAdapterDeps {
   getSpec: () => ComponentSpec | null;
   getActiveSubgraphPath: () => string[];
@@ -179,53 +247,16 @@ export class WebMcpAdapter {
 
     this.deps.undo.withGroup("WebMCP: add pipeline tasks", () => {
       const origin = computeNextPosition(spec);
-      let preprocessingColumn = 0;
-      let trainingLane = 0;
-      let evaluationLane = 0;
-      parsed.tasks.forEach((item, index) => {
+      const positions = computeReadableBatchPositions(
+        parsed.tasks,
+        parsed.connections,
+        origin,
+      );
+      parsed.tasks.forEach((item) => {
         const component = CURATED_COMPONENT_BY_ID.get(item.componentId);
         if (!component)
           throw new Error(`Unsupported component: ${item.componentId}`);
-        let position: { x: number; y: number };
-        if (
-          item.componentId === "load-csv" ||
-          item.componentId === "select-columns" ||
-          item.componentId === "fill-missing" ||
-          item.componentId === "encode-categories" ||
-          item.componentId === "train-test-split"
-        ) {
-          position = {
-            x: origin.x + preprocessingColumn * 220,
-            y: origin.y,
-          };
-          preprocessingColumn++;
-        } else if (
-          item.componentId === "logistic-regression" ||
-          item.componentId === "decision-tree" ||
-          item.componentId === "k-means" ||
-          item.componentId === "text-embedding"
-        ) {
-          position = {
-            x: origin.x + preprocessingColumn * 220,
-            y: origin.y + (trainingLane++ === 0 ? -120 : 120),
-          };
-        } else if (item.componentId === "evaluate") {
-          position = {
-            x: origin.x + (preprocessingColumn + 1) * 220,
-            y: origin.y + (evaluationLane++ === 0 ? -120 : 120),
-          };
-        } else if (
-          item.componentId === "compare-metrics" ||
-          item.componentId === "profile-clusters" ||
-          item.componentId === "nearest-neighbors"
-        ) {
-          position = {
-            x: origin.x + (preprocessingColumn + 2) * 220,
-            y: origin.y,
-          };
-        } else {
-          position = { x: origin.x + index * 220, y: origin.y };
-        }
+        const position = positions.get(item.clientId) ?? origin;
         const task = addTask(
           this.deps.undo,
           spec,
