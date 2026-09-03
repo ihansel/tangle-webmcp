@@ -56,7 +56,7 @@ BUILT WITH
 TypeScript; JavaScript; React 19; React Flow; MobX Keystone; Vite 8; Tailwind CSS 4; Zod; Comlink; document.modelContext.registerTool; Web Workers; Fetch; deterministic logistic regression, decision tree, K-means, TF-IDF, cosine similarity and Product2Vec; Vitest; Testing Library; ESLint; TypeScript; pnpm; Cloudflare Workers runtime; OpenAI Sites; OpenAI Codex desktop; OpenAI ImageGen.
 
 TRY IT OUT
-Live application: https://tangle-webmcp.ian347727.chatgpt.site — BLOCKED for unauthenticated judges (HTTP 401).
+Live application: https://tangle-webmcp.ian347727.chatgpt.site — BLOCKED; route and Sites control operations returned HTTP 404 during the public-release attempt.
 Public repository: https://github.com/ihansel/tangle-webmcp — verified public; default branch main; Apache-2.0 detected.
 Public video: [PUBLIC YOUTUBE URL REQUIRED]
 Upstream: https://github.com/TangleML/tangle-ui
@@ -65,7 +65,7 @@ APP STATUS
 Functional beta; existing project substantially updated during the submission period, pending confirmation of official dates.
 
 TESTED CLIENT
-ChatGPT in-app Browser, Codex desktop runtime (version not surfaced), tested 4 September 2026. Tool discovery, all ten tools, Product2Vec, churn, clustering, one-run permission, invalid inputs, visible error and undo recovery were tested. Owner flow works; public access and deployed strict no-input validation remain blocked/partial.
+ChatGPT in-app Browser, Codex desktop runtime (version not surfaced), tested 4 September 2026. Tool discovery, all ten tools, Product2Vec, churn, clustering, one-run permission, invalid inputs, visible error and undo recovery were tested. The historical owner flow worked; the current Sites route/control plane returns 404, and deployed strict no-input validation remains blocked.
 
 AI TOOLS USED
 OpenAI Codex desktop: implementation, inspection, testing, screenshots, and submission preparation.

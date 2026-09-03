@@ -6,8 +6,8 @@ The written submission, evidence, real screenshot gallery, original thumbnail,
 judge guide, and sub-three-minute video plan are complete. Three mandatory
 publication items remain:
 
-1. make the live Site accessible to judges (an unauthenticated request currently
-   receives HTTP 401);
+1. restore the existing Site, whose route and Sites control plane returned HTTP
+   404 during the public-release attempt;
 2. record and publicly upload the planned demo video; and
 3. deploy and verify the strict no-input guard on Sites.
 
@@ -45,8 +45,8 @@ The ready-to-paste fields are in [submission-form.md](submission-form.md) and
 
 ## Final owner actions
 
-1. Approve changing the Sites access mode from custom/owner-only to public, or
-   provide an approved judge-access method.
+1. Restore/reconnect the Sites control plane, then publish the prepared artifact
+   publicly and verify the production URL anonymously.
 2. Confirm the official submission-period dates.
 3. Record the 2:38 script, edit to under 3:00, upload publicly to YouTube, and add
    the URL to `links.md`, both submission forms, and `submission.json`.

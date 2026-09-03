@@ -27,10 +27,10 @@ repository is <https://github.com/ihansel/tangle-webmcp>, configured as the
 | Tool inventory     | PASS    | All ten tools listed.                                                                           |
 | Example prompts    | PASS    | Four representative prompts included.                                                           |
 | Architecture       | PASS    | Architecture note linked and updated for three workload families.                               |
-| Deployment         | PARTIAL | Hosted URL and Sites configuration exist; public access is unresolved.                          |
+| Deployment         | BLOCKED | Validated release artifact exists; existing Sites route/control plane returned HTTP 404.        |
 | Limitations        | PASS    | Curated scope, client coverage, deployed validation gap, and publication blockers are explicit. |
 | License            | PASS    | Root `LICENSE` is Apache-2.0; upstream GitHub detects a license.                                |
-| Demo/live links    | PARTIAL | Live URL exists but is owner-only; video and public repo URLs are missing.                      |
+| Demo/live links    | PARTIAL | Public repository works; Sites URL is unavailable and public video is missing.                  |
 
 ## Reproducibility
 

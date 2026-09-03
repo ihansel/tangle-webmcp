@@ -61,9 +61,10 @@ the recipe for a fresh state. Pipeline state is stored in browser storage.
 
 ## Known limitations
 
-- Public judge access is not yet enabled.
+- The existing production route and Sites control plane returned HTTP 404 during
+  the 4 September public-release attempt; restore/redeploy before judge testing.
 - Only curated browser components execute locally.
-- The local strict empty-input validation fix must be deployed before relying on
+- The strict empty-input validation fix must be deployed before relying on
   `additionalProperties: false` for the five no-input tools.
 - Results are educational synthetic-data demonstrations, not production
   predictions.

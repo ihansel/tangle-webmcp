@@ -49,7 +49,8 @@ Vite selected 3001. The local server was then stopped cleanly.
   and visible failure state rendered.
 - **VERIFIED:** churn, clustering, and Product2Vec reports contained charts,
   tables, and operational summaries.
-- **BLOCKED for judges:** anonymous request returned HTTP 401.
+- **BLOCKED for judges:** the existing production route and Sites control plane
+  returned HTTP 404 during the public-release attempt.
 
 ## Hosted WebMCP interface
 
@@ -70,13 +71,13 @@ Vite selected 3001. The local server was then stopped cleanly.
 
 ## Failures and unresolved limitations
 
-1. Public site access is blocked by a custom owner-only access policy.
-2. No public repository for the hackathon branch is configured.
-3. No public video exists.
-4. The new strict no-input guard is not present in deployed version 10.
-5. Full run results can be large; concise agent use should prefer
+1. The existing production route and Sites control operations return HTTP 404;
+   the rebuilt release archive is ready but could not be uploaded/deployed.
+2. No public video exists.
+3. The new strict no-input guard is not present in deployed version 10.
+4. Full run results can be large; concise agent use should prefer
    `get_run_summary`.
-6. Chrome/WebMCP was not tested.
+5. Chrome/WebMCP was not tested.
 
 ## Post-fix verification
 
@@ -84,3 +85,7 @@ Vite selected 3001. The local server was then stopped cleanly.
 - Lint: **PASS** with the same non-failing React-version warning.
 - Typecheck: **PASS**.
 - Production build: **PASS** with the same documented bundle warnings.
+- Public repository: **PASS** — anonymous GitHub API HTTP 200; `main` resolves;
+  Apache-2.0 detected.
+- Public release attempt: **BLOCKED** — Sites control plane and production route
+  returned HTTP 404 after repeated checks.

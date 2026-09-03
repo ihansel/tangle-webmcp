@@ -41,8 +41,8 @@
   "urls": {
     "live": {
       "url": "https://tangle-webmcp.ian347727.chatgpt.site",
-      "verification": "owner_authenticated_only",
-      "anonymous_http_status": 401
+      "verification": "blocked_sites_route_and_control_plane_404",
+      "anonymous_http_status": 404
     },
     "public_repository": {
       "url": "https://github.com/ihansel/tangle-webmcp",
@@ -122,7 +122,7 @@
       "date": "2026-09-04",
       "result": "partially_verified",
       "limitations": [
-        "owner-authenticated Site only",
+        "historical owner flow verified; current Sites route/control plane returns 404",
         "strict no-input fix not deployed"
       ],
       "evidence": [
@@ -171,12 +171,12 @@
     "uploaded": false
   },
   "blockers": [
-    "Live Site is not accessible anonymously to judges.",
+    "Existing production route and Sites control operations return HTTP 404; the prepared release could not be deployed.",
     "No public demo video URL exists.",
     "Strict no-input runtime validation fix is not deployed."
   ],
   "user_input_requests": [
-    "Approve public Site access or provide an approved judge-access method.",
+    "Restore or reconnect the Sites project/control plane so the prepared release can be deployed publicly.",
     "Confirm the official submission-period dates.",
     "Record and upload the public demo video, then provide its URL.",
     "Confirm whether additional AI tools or personal attribution must be disclosed."

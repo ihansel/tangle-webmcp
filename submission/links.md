@@ -2,7 +2,7 @@
 
 | Link                       | Value                                          | Verification                                                                                                                                 |
 | -------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Live application           | <https://tangle-webmcp.ian347727.chatgpt.site> | **PARTIALLY VERIFIED** — HTTPS and primary flows work in the authenticated owner's in-app Browser; unauthenticated HTTP request returns 401. |
+| Live application           | <https://tangle-webmcp.ian347727.chatgpt.site> | **BLOCKED** — previously verified owner flows, but the route and Sites control operations returned HTTP 404 during the 4 Sep public release. |
 | Public source repository   | <https://github.com/ihansel/tangle-webmcp>     | **VERIFIED** public — anonymous API request returned HTTP 200; default branch `main`; Apache-2.0 detected.                                   |
 | Upstream source            | <https://github.com/TangleML/tangle-ui>        | **VERIFIED** public; Apache-2.0 license is visible, but this is not a substitute for the hackathon repository.                               |
 | Architecture documentation | `../docs/webmcp-architecture.md`               | **VERIFIED** local file.                                                                                                                     |
@@ -11,4 +11,5 @@
 | Submission/project page    | `[OPTIONAL PROJECT PAGE URL]`                  | **NOT VERIFIED** — optional.                                                                                                                 |
 
 Do not paste the live URL into the final submission as judge-ready until the
-access policy has been changed or an approved judge-access route has been tested.
+Sites project is restored, the prepared release is deployed publicly, and the
+URL is tested anonymously.

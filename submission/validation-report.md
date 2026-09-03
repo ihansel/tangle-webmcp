@@ -24,21 +24,21 @@ Overall: **NOT READY — ACTION REQUIRED**
 
 ## Application and publication checks
 
-| Requirement                            | Status  | Evidence                                                                 | Required action                                             | Owner               |
-| -------------------------------------- | ------- | ------------------------------------------------------------------------ | ----------------------------------------------------------- | ------------------- |
-| Lockfile install                       | PASS    | Frozen install completed.                                                | None.                                                       | Submission producer |
-| Local startup                          | PASS    | After compatibility fix, Vite served HTTP 200 on localhost.              | Publish the fix.                                            | Project owner       |
-| Lint                                   | PASS    | Final exit code 0; one non-failing configuration warning.                | Optional warning cleanup.                                   | Project team        |
-| Typecheck                              | PASS    | Final exit code 0.                                                       | None.                                                       | Submission producer |
-| Focused WebMCP/model tests             | PASS    | Final focused run result recorded below.                                 | None.                                                       | Submission producer |
-| Production build                       | PASS    | Final exit code 0; non-failing bundle warnings documented.               | Optional code splitting.                                    | Project team        |
-| Full test suite                        | PASS    | 216 files, 2,260 passed, 2 todo, 0 failed using documented Node 25 flag. | None.                                                       | Submission producer |
-| Live application reachable for owner   | PASS    | HTTPS home and recipes loaded in authenticated in-app Browser.           | None.                                                       | Project owner       |
-| Live application reachable anonymously | BLOCKED | `curl` returned HTTP 401.                                                | Change/approve access, redeploy if needed, test logged out. | Project owner       |
-| Live primary workflow                  | PASS    | Product2Vec, churn, clustering, permission, reports, 404 recovery.       | Retest strict-input fix after deployment.                   | Submission producer |
-| Deployed strict no-input handling      | FAIL    | Five handlers accepted unexpected fields; local regression fix only.     | Deploy and rerun.                                           | Project owner       |
-| Public repository resolves             | PASS    | Anonymous API HTTP 200; public `main`; Apache-2.0 detected.              | None for current release.                                   | Project owner       |
-| Public video resolves                  | BLOCKED | URL is null.                                                             | Record/upload and verify.                                   | Project owner       |
+| Requirement                            | Status  | Evidence                                                                 | Required action                                      | Owner               |
+| -------------------------------------- | ------- | ------------------------------------------------------------------------ | ---------------------------------------------------- | ------------------- |
+| Lockfile install                       | PASS    | Frozen install completed.                                                | None.                                                | Submission producer |
+| Local startup                          | PASS    | After compatibility fix, Vite served HTTP 200 on localhost.              | Publish the fix.                                     | Project owner       |
+| Lint                                   | PASS    | Final exit code 0; one non-failing configuration warning.                | Optional warning cleanup.                            | Project team        |
+| Typecheck                              | PASS    | Final exit code 0.                                                       | None.                                                | Submission producer |
+| Focused WebMCP/model tests             | PASS    | Final focused run result recorded below.                                 | None.                                                | Submission producer |
+| Production build                       | PASS    | Final exit code 0; non-failing bundle warnings documented.               | Optional code splitting.                             | Project team        |
+| Full test suite                        | PASS    | 216 files, 2,260 passed, 2 todo, 0 failed using documented Node 25 flag. | None.                                                | Submission producer |
+| Live application reachable for owner   | PASS    | HTTPS home and recipes loaded in authenticated in-app Browser.           | None.                                                | Project owner       |
+| Live application reachable anonymously | BLOCKED | Production route and Sites control operations returned HTTP 404.         | Restore Sites, deploy publicly, and test logged out. | Project owner       |
+| Live primary workflow                  | PASS    | Product2Vec, churn, clustering, permission, reports, 404 recovery.       | Retest strict-input fix after deployment.            | Submission producer |
+| Deployed strict no-input handling      | FAIL    | Five handlers accepted unexpected fields; local regression fix only.     | Deploy and rerun.                                    | Project owner       |
+| Public repository resolves             | PASS    | Anonymous API HTTP 200; public `main`; Apache-2.0 detected.              | None for current release.                            | Project owner       |
+| Public video resolves                  | BLOCKED | URL is null.                                                             | Record/upload and verify.                            | Project owner       |
 
 ## Final focused verification
 
@@ -63,7 +63,8 @@ The overall status remains not ready until publication blockers are cleared.
 ## Integrity note
 
 The reviewed source was committed and pushed to the public repository, then
-verified through an anonymous GitHub API request. No successful new Sites
-deployment/access verification or video upload had been completed at the time
-of this intermediate report. Run IDs are ephemeral evidence from the tested
-browser session, not durable public records.
+verified through an anonymous GitHub API request. The exact source was rebuilt,
+its 12 focused tests passed, and a deployment archive was prepared. Sites list,
+get, access, and credential operations and the existing production route all
+returned HTTP 404, so no new deployment/access verification completed. No video
+was uploaded. Run IDs are ephemeral evidence, not durable public records.

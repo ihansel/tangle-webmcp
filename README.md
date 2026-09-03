@@ -14,8 +14,9 @@ undo history, and imported rows remain inside the page.
 
 ![Tangle WebMCP commerce demo](submission/assets/gallery/01-home.png)
 
-- Hosted build: <https://tangle-webmcp.ian347727.chatgpt.site> (currently
-  access-controlled; public judging access has not yet been enabled)
+- Hosted build: <https://tangle-webmcp.ian347727.chatgpt.site> (temporarily
+  unavailable: the Sites route and control plane returned HTTP 404 during the
+  public-release attempt on 4 September 2026)
 - Public source: <https://github.com/ihansel/tangle-webmcp>
 - Architecture: [docs/webmcp-architecture.md](docs/webmcp-architecture.md)
 - Upstream baseline and attribution: [UPSTREAM.md](UPSTREAM.md)

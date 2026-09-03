@@ -8,7 +8,9 @@
 - **Intended users:** analysts, ML practitioners, commerce teams, and people who
   want an agent to help assemble and interpret a pipeline without surrendering
   visibility or control.
-- **Status:** functional beta with a deployed, access-controlled demonstration.
+- **Status:** functional beta with a prepared public release; the previously
+  deployed demonstration became unavailable during the 4 September 2026 Sites
+  publication attempt.
 
 ## Provenance
 
@@ -111,8 +113,9 @@ external model were used. The generator, schema, and provenance are committed.
 
 ## Current limitations
 
-- The live Site is owner-only/custom and returns HTTP 401 without authentication.
-- No public repository containing the hackathon branch is configured.
+- The existing Site route and Sites control operations returned HTTP 404 during
+  the public-release attempt; a validated archive is prepared for redeployment.
+- The reviewed source is public at <https://github.com/ihansel/tangle-webmcp>.
 - No public demonstration video exists.
 - The public tool surface is intentionally not a general Python/container
   executor and supports only curated workflows.
