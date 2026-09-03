@@ -46,7 +46,7 @@
     },
     "public_repository": {
       "url": "https://github.com/ihansel/tangle-webmcp",
-      "verification": "created_source_push_pending"
+      "verification": "verified_public_main_apache_2_0"
     },
     "upstream_repository": {
       "url": "https://github.com/TangleML/tangle-ui",
@@ -69,8 +69,8 @@
   "provenance": {
     "upstream_commit": "d7768e85d515ac824adec6dabd1f3f7f88f1cf2e",
     "branch": "webmcp-hackathon",
-    "latest_committed_hackathon_revision": "c13d2cb4",
-    "hackathon_commit_count": 10,
+    "latest_committed_hackathon_revision": "690c3724",
+    "hackathon_commit_count": 11,
     "commit_date": "2026-09-03",
     "official_submission_period_confirmed": false,
     "license": "Apache-2.0"
@@ -172,7 +172,6 @@
   },
   "blockers": [
     "Live Site is not accessible anonymously to judges.",
-    "The public repository exists but the reviewed branch has not yet been pushed.",
     "No public demo video URL exists.",
     "Strict no-input runtime validation fix is not deployed."
   ],

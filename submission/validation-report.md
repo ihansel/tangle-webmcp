@@ -37,7 +37,7 @@ Overall: **NOT READY — ACTION REQUIRED**
 | Live application reachable anonymously | BLOCKED | `curl` returned HTTP 401.                                                | Change/approve access, redeploy if needed, test logged out. | Project owner       |
 | Live primary workflow                  | PASS    | Product2Vec, churn, clustering, permission, reports, 404 recovery.       | Retest strict-input fix after deployment.                   | Submission producer |
 | Deployed strict no-input handling      | FAIL    | Five handlers accepted unexpected fields; local regression fix only.     | Deploy and rerun.                                           | Project owner       |
-| Public repository resolves             | PENDING | Dedicated public repository exists; source has not yet been pushed.      | Push reviewed tree and test anonymously.                    | Project owner       |
+| Public repository resolves             | PASS    | Anonymous API HTTP 200; public `main`; Apache-2.0 detected.              | None for current release.                                   | Project owner       |
 | Public video resolves                  | BLOCKED | URL is null.                                                             | Record/upload and verify.                                   | Project owner       |
 
 ## Final focused verification
@@ -62,7 +62,8 @@ The overall status remains not ready until publication blockers are cleared.
 
 ## Integrity note
 
-A public repository was created for the reviewed source. No source push, new
-deployment, successful access-policy verification, or video upload had been
-completed at the time of this intermediate report. Run IDs are ephemeral
-evidence from the tested browser session, not durable public records.
+The reviewed source was committed and pushed to the public repository, then
+verified through an anonymous GitHub API request. No successful new Sites
+deployment/access verification or video upload had been completed at the time
+of this intermediate report. Run IDs are ephemeral evidence from the tested
+browser session, not durable public records.

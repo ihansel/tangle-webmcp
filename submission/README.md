@@ -8,12 +8,12 @@ publication items remain:
 
 1. make the live Site accessible to judges (an unauthenticated request currently
    receives HTTP 401);
-2. publish the reviewed source to the newly created public repository; and
-3. record and publicly upload the planned demo video.
+2. record and publicly upload the planned demo video; and
+3. deploy and verify the strict no-input guard on Sites.
 
-The public repository has been created at
-<https://github.com/ihansel/tangle-webmcp>; source publication and anonymous
-verification are part of the final release sequence.
+The reviewed source is public at <https://github.com/ihansel/tangle-webmcp>.
+Anonymous GitHub API access returned HTTP 200, the default branch is `main`, and
+GitHub detected the Apache-2.0 license.
 
 ## Recommended submission copy
 
@@ -47,11 +47,8 @@ The ready-to-paste fields are in [submission-form.md](submission-form.md) and
 
 1. Approve changing the Sites access mode from custom/owner-only to public, or
    provide an approved judge-access method.
-2. Push the reviewed tree to <https://github.com/ihansel/tangle-webmcp>,
-   preserving the Apache-2.0 license and upstream attribution, then verify it
-   anonymously.
-3. Confirm the official submission-period dates.
-4. Record the 2:38 script, edit to under 3:00, upload publicly to YouTube, and add
+2. Confirm the official submission-period dates.
+3. Record the 2:38 script, edit to under 3:00, upload publicly to YouTube, and add
    the URL to `links.md`, both submission forms, and `submission.json`.
-5. Publish the local strict no-input validation and compatibility-date fixes to
+4. Publish the local strict no-input validation and compatibility-date fixes to
    the Site, then rerun the five deployed no-input schema checks.

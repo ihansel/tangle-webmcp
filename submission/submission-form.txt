@@ -57,7 +57,7 @@ TypeScript; JavaScript; React 19; React Flow; MobX Keystone; Vite 8; Tailwind CS
 
 TRY IT OUT
 Live application: https://tangle-webmcp.ian347727.chatgpt.site — BLOCKED for unauthenticated judges (HTTP 401).
-Public repository: https://github.com/ihansel/tangle-webmcp — source push and anonymous verification pending.
+Public repository: https://github.com/ihansel/tangle-webmcp — verified public; default branch main; Apache-2.0 detected.
 Public video: [PUBLIC YOUTUBE URL REQUIRED]
 Upstream: https://github.com/TangleML/tangle-ui
 

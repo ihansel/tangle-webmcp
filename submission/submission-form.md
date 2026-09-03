@@ -169,8 +169,8 @@ the formal submission window requires owner confirmation.
 - Live application:
   <https://tangle-webmcp.ian347727.chatgpt.site> — **not yet publicly
   accessible**
-- Public repository: <https://github.com/ihansel/tangle-webmcp> — source push
-  and anonymous verification pending
+- Public repository: <https://github.com/ihansel/tangle-webmcp> — verified
+  public, default branch `main`, Apache-2.0 detected
 - Public video: **[PUBLIC YOUTUBE URL REQUIRED]**
 - Upstream project: <https://github.com/TangleML/tangle-ui>
 
@@ -193,8 +193,8 @@ period, pending confirmation of the official dates.**
 The visual Tangle editor is mature upstream functionality. The open WebMCP
 surface, curated browser runner, advanced demo recipes, reports, and hosted
 commerce experience are hackathon additions. The tested workflows function, but
-public judge access, public source publication, and the public video are not yet
-complete.
+public judge access, the deployed strict-input fix, and the public video are not
+yet complete.
 
 ## 10. Existing-project update explanation
 
@@ -227,10 +227,11 @@ creates a reset state.
 
 <https://github.com/ihansel/tangle-webmcp>
 
-The dedicated public repository has been created for the submission. The local
-tree has complete source, dependencies, setup/test instructions, Apache-2.0
-license, attribution, genuine WebMCP registration, datasets, and submission
-assets; the reviewed source still needs to be pushed and anonymously verified.
+The dedicated public repository contains the reviewed source, dependencies,
+setup/test instructions, Apache-2.0 license, attribution, genuine WebMCP
+registration, datasets, and submission assets. Anonymous GitHub API access
+returned HTTP 200, `main` resolved to the reviewed commit, and GitHub detected
+the Apache-2.0 license.
 
 ## 14. Tested agents or clients
 

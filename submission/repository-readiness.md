@@ -2,14 +2,14 @@
 
 ## Outcome
 
-**Local repository: ready to build and review. Public submission repository:
-created; source push pending.**
+**Local repository and public submission repository: ready to build and
+review.**
 
 The local branch contains the source, datasets, lockfile, license, attribution,
 tests, documentation, and generated submission assets. The current GitHub remote
 retains the public upstream project as `origin`; the dedicated public submission
-repository is <https://github.com/ihansel/tangle-webmcp> and is configured as
-the `public` remote.
+repository is <https://github.com/ihansel/tangle-webmcp>, configured as the
+`public` remote, and serves the reviewed release from `main`.
 
 ## Clone-first checklist
 
@@ -64,10 +64,11 @@ the `public` remote.
 3. Added a WebMCP-focused README section and updated a stale classification-only
    architecture statement.
 
-These changes are local only. They were not committed, pushed, or deployed.
+These changes are committed and pushed to the public submission repository.
+They are not yet deployed to the Site.
 
 ## Required repository action
 
-Push the exact reviewed source and submission package to the configured public
-repository, verify anonymous access, and confirm that GitHub detects the
-Apache-2.0 license.
+No further repository publication action is required for the current release.
+Anonymous GitHub API access returned HTTP 200, `main` resolves to the reviewed
+commit, and GitHub detects the Apache-2.0 license.
