@@ -7,7 +7,6 @@ import {
   redirect,
 } from "@tanstack/react-router";
 
-import { IndexRedirect } from "@/components/Onboarding/IndexRedirect";
 import { OnboardingWelcome } from "@/components/Onboarding/OnboardingWelcome";
 import { ErrorPage } from "@/components/shared/ErrorPage";
 import { AuthorizationResultScreen as GitHubAuthorizationResultScreen } from "@/components/shared/GitHubAuth/AuthorizationResultScreen";
@@ -82,7 +81,7 @@ const dashboardRoute = createRoute({
 const dashboardIndexRoute = createRoute({
   getParentRoute: () => dashboardRoute,
   path: "/",
-  component: IndexRedirect,
+  component: DashboardHomeView,
 });
 
 const dashboardHomeRoute = createRoute({
