@@ -7,7 +7,6 @@ import { getDefaultEditorPath } from "@/routes/editorRoutes";
 import { writeComponentToFileListFromText } from "@/utils/componentStore";
 import {
   defaultPipelineYamlWithName,
-  IS_GITHUB_PAGES,
   USER_PIPELINES_LIST_NAME,
 } from "@/utils/constants";
 
@@ -41,7 +40,6 @@ const NewPipelineButton = ({
 
     navigate({
       to: clickThroughUrl,
-      reloadDocument: !IS_GITHUB_PAGES,
     });
   };
 

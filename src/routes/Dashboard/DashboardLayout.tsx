@@ -31,7 +31,7 @@ interface SidebarItem {
 const BASE_SIDEBAR_ITEMS: SidebarItem[] = [
   {
     to: APP_ROUTES.DASHBOARD,
-    label: "My Dashboard",
+    label: "WebMCP Lab",
     icon: "LayoutDashboard",
     exact: true,
   },
@@ -87,11 +87,11 @@ export function DashboardLayout() {
       style={{ height: `calc(100vh - ${TOP_NAV_HEIGHT}px)` }}
     >
       {/* Sidebar — fixed height, independent scroll */}
-      <div className="w-56 shrink-0 border-r border-border flex flex-col overflow-y-auto">
+      <div className="hidden w-56 shrink-0 border-r border-border lg:flex lg:flex-col lg:overflow-y-auto">
         {/* Dashboard heading */}
         <div className="px-6 pt-6 pb-4 shrink-0">
           <Text size="lg" weight="semibold">
-            Dashboard
+            Tangle workspace
           </Text>
         </div>
 
@@ -194,7 +194,7 @@ export function DashboardLayout() {
       </div>
 
       {/* Main content — independent scroll */}
-      <div className="flex-1 min-w-0 overflow-y-auto px-8 pb-6 pt-4">
+      <div className="min-w-0 flex-1 overflow-y-auto px-4 pb-6 pt-4 sm:px-6 lg:px-8">
         <Outlet />
       </div>
     </div>

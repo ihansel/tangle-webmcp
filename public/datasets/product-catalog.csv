@@ -1,0 +1,21 @@
+sku,name,category,description
+SKU-101,Trail Runner Pro,footwear,lightweight trail running shoe with grippy sole and waterproof upper
+SKU-102,Trail Runner Lite,footwear,light trail running shoe with breathable upper and grippy sole
+SKU-103,Road Tempo,footwear,cushioned road running shoe for daily tempo training
+SKU-104,Hike Ridge Boot,footwear,waterproof hiking boot with ankle support and rugged sole
+SKU-201,Alpine Shell,jackets,waterproof breathable mountain shell jacket for wet weather
+SKU-202,Storm Shell,jackets,lightweight waterproof shell jacket with breathable membrane
+SKU-203,Down Summit,jackets,warm insulated down jacket for cold alpine conditions
+SKU-204,Fleece Grid,jackets,breathable grid fleece midlayer for hiking and climbing
+SKU-301,Camp Mug 450,camp,kitchen stainless insulated camping mug for hot drinks outdoors
+SKU-302,Camp Flask 500,camp,kitchen stainless insulated flask for hot and cold drinks
+SKU-303,Trail Bottle 750,hydration,light reusable water bottle for hiking and running
+SKU-304,Hydration Vest 8,hydration,running hydration vest with soft flasks and gear pockets
+SKU-401,Daypack 22,packs,light hiking daypack with breathable back panel and bottle pockets
+SKU-402,Fastpack 24,packs,light trail fastpack with running vest harness and gear storage
+SKU-403,Trek Pack 55,packs,large trekking backpack with adjustable harness and rain cover
+SKU-404,Commuter Roll 20,packs,waterproof urban rolltop backpack with laptop sleeve
+SKU-501,Merino Base 180,apparel,soft merino wool base layer for hiking in cool weather
+SKU-502,Merino Base 220,apparel,warm merino wool base layer for cold alpine weather
+SKU-503,Trail Tee,apparel,quick drying breathable running shirt for warm conditions
+SKU-504,Trek Pant,apparel,durable stretch hiking trousers with weather resistance

@@ -24,6 +24,10 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
 }: WebMcpStatusPanelProps) {
   const [expanded, setExpanded] = useState(true);
   const run = adapter.runStore;
+  const preferredModelTaskId =
+    run.result?.kind === "classification"
+      ? run.result.preferredModelTaskId
+      : null;
   const modelContextLabel = registration.registered
     ? `${registration.toolCount} tools shared`
     : registration.available
@@ -148,46 +152,116 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
 
           {run.result && (
             <div className="space-y-2" data-testid="browser-run-results">
-              <div className="grid grid-cols-2 gap-2">
-                {run.result.models.map((model) => (
-                  <div
-                    key={model.taskId}
-                    className={cn(
-                      "rounded-md border px-2.5 py-2",
-                      model.taskId === run.result?.preferredModelTaskId
-                        ? "border-emerald-300 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950"
-                        : "border-slate-200 dark:border-slate-800",
-                    )}
-                  >
+              {run.result.kind === "classification" && (
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    {run.result.models.map((model) => (
+                      <div
+                        key={model.taskId}
+                        className={cn(
+                          "rounded-md border px-2.5 py-2",
+                          model.taskId === preferredModelTaskId
+                            ? "border-emerald-300 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950"
+                            : "border-slate-200 dark:border-slate-800",
+                        )}
+                      >
+                        <Text
+                          size="xs"
+                          weight="semibold"
+                          className="block truncate"
+                        >
+                          {model.taskName}
+                        </Text>
+                        <Text size="xs" tone="subdued" className="block">
+                          Recall {percentage(model.metrics.recall)}
+                        </Text>
+                        <Text size="xs" tone="subdued" className="block">
+                          F1 {percentage(model.metrics.f1)}
+                        </Text>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-md bg-slate-100 px-2.5 py-2 dark:bg-slate-900">
+                    <Text size="xs" weight="semibold" className="block">
+                      Preferred: {run.result.preferredModelName}
+                    </Text>
                     <Text
                       size="xs"
-                      weight="semibold"
-                      className="block truncate"
-                      title={model.taskName}
+                      tone="subdued"
+                      className="mt-1 block leading-relaxed"
                     >
-                      {model.taskName}
-                    </Text>
-                    <Text size="xs" tone="subdued" className="block">
-                      Recall {percentage(model.metrics.recall)}
-                    </Text>
-                    <Text size="xs" tone="subdued" className="block">
-                      F1 {percentage(model.metrics.f1)}
+                      {run.result.selectionReason}
                     </Text>
                   </div>
-                ))}
-              </div>
-              <div className="rounded-md bg-slate-100 px-2.5 py-2 dark:bg-slate-900">
-                <Text size="xs" weight="semibold" className="block">
-                  Preferred: {run.result.preferredModelName}
-                </Text>
-                <Text
-                  size="xs"
-                  tone="subdued"
-                  className="mt-1 block leading-relaxed"
-                >
-                  {run.result.selectionReason}
-                </Text>
-              </div>
+                </>
+              )}
+
+              {run.result.kind === "clustering" && (
+                <>
+                  <div className="flex items-end justify-between rounded-md border border-amber-300 bg-amber-50 px-2.5 py-2 dark:border-amber-800 dark:bg-amber-950">
+                    <div>
+                      <Text size="xs" weight="semibold" className="block">
+                        {run.result.clusterCount} customer segments
+                      </Text>
+                      <Text size="xs" tone="subdued" className="block">
+                        Silhouette {run.result.silhouetteScore.toFixed(2)}
+                      </Text>
+                    </div>
+                    <Icon name="ChartScatter" className="text-amber-500" />
+                  </div>
+                  <div className="space-y-1.5">
+                    {run.result.clusters.map((cluster) => (
+                      <div
+                        key={cluster.cluster}
+                        className="rounded-md border border-slate-200 px-2.5 py-2 dark:border-slate-800"
+                      >
+                        <div className="flex justify-between gap-2">
+                          <Text size="xs" weight="semibold">
+                            {cluster.label}
+                          </Text>
+                          <Text size="xs" tone="subdued">
+                            {percentage(cluster.share)}
+                          </Text>
+                        </div>
+                        <Text size="xs" tone="subdued" className="mt-0.5 block">
+                          {cluster.summary}
+                        </Text>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {run.result.kind === "embedding" && (
+                <>
+                  <div className="flex items-center justify-between rounded-md border border-sky-300 bg-sky-50 px-2.5 py-2 dark:border-sky-800 dark:bg-sky-950">
+                    <div>
+                      <Text size="xs" weight="semibold" className="block">
+                        {run.result.dimensions}D product vectors
+                      </Text>
+                      <Text size="xs" tone="subdued" className="block">
+                        {run.result.vocabularySize} vocabulary terms
+                      </Text>
+                    </div>
+                    <Icon name="Boxes" className="text-sky-500" />
+                  </div>
+                  <div className="space-y-1.5">
+                    {run.result.neighbors.slice(0, 4).map((match) => (
+                      <div
+                        key={match.item}
+                        className="flex items-center justify-between gap-2 rounded-md border border-slate-200 px-2.5 py-2 dark:border-slate-800"
+                      >
+                        <Text size="xs" weight="semibold">
+                          {match.item} → {match.match}
+                        </Text>
+                        <Text size="xs" tone="subdued">
+                          {percentage(match.similarity)}
+                        </Text>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
 

@@ -56,6 +56,16 @@ export class BrowserRunStore {
     this.result = null;
     this.error = null;
 
+    const loadTask = pipeline.tasks.find(
+      (task) => task.componentId === "load-csv",
+    );
+    const configuredPath = String(
+      loadTask?.arguments.dataset_path ?? "/datasets/equipment-failure.csv",
+    );
+    const datasetPath = configuredPath.startsWith("/")
+      ? configuredPath.slice(1)
+      : configuredPath;
+
     return new Promise<BrowserRunResult>((resolve, reject) => {
       const worker = new Worker(
         new URL("./browserRunner.worker.ts", import.meta.url),
@@ -107,7 +117,7 @@ export class BrowserRunStore {
       worker.postMessage({
         type: "run",
         pipeline,
-        datasetUrl: `${import.meta.env.BASE_URL}datasets/equipment-failure.csv`,
+        datasetUrl: `${import.meta.env.BASE_URL}${datasetPath}`,
       });
     });
   }

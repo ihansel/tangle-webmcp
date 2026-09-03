@@ -10,7 +10,13 @@ export interface CuratedComponent {
   id: CuratedComponentId;
   name: string;
   description: string;
-  category: "data" | "preprocess" | "training" | "evaluation";
+  category:
+    | "data"
+    | "preprocess"
+    | "training"
+    | "evaluation"
+    | "segmentation"
+    | "embeddings";
   inputs: InputSpec[];
   outputs: OutputSpec[];
 }
@@ -138,6 +144,66 @@ const components: CuratedComponent[] = [
       { name: "priority", type: "String", default: "recall" },
     ],
     outputs: [{ name: "report", type: "Report" }],
+  },
+  {
+    id: "k-means",
+    name: "K-means segmentation",
+    description:
+      "Standardise numeric purchase features and find deterministic customer segments locally.",
+    category: "segmentation",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      {
+        name: "features",
+        type: "String",
+        default: "orders,spend,avg_basket,discount_share,days_since_order",
+      },
+      { name: "clusters", type: "Integer", default: "4" },
+      { name: "seed", type: "Integer", default: "42" },
+    ],
+    outputs: [{ name: "segments", type: "Clusters" }],
+  },
+  {
+    id: "profile-clusters",
+    name: "Profile customer segments",
+    description:
+      "Turn cluster centroids into concise, useful customer segment profiles.",
+    category: "segmentation",
+    inputs: [
+      { name: "segments", type: "Clusters" },
+      { name: "label_column", type: "String", default: "customer_id" },
+    ],
+    outputs: [{ name: "report", type: "Report" }],
+  },
+  {
+    id: "text-embedding",
+    name: "Embed product catalogue",
+    description:
+      "Create deterministic TF-IDF product vectors locally from SKU names, categories, and descriptions.",
+    category: "embeddings",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "id_column", type: "String", default: "sku" },
+      {
+        name: "text_columns",
+        type: "String",
+        default: "name,category,description",
+      },
+      { name: "dimensions", type: "Integer", default: "24" },
+    ],
+    outputs: [{ name: "vectors", type: "Embeddings" }],
+  },
+  {
+    id: "nearest-neighbors",
+    name: "Find similar products",
+    description:
+      "Use cosine similarity to surface nearest product neighbours from local embeddings.",
+    category: "embeddings",
+    inputs: [
+      { name: "vectors", type: "Embeddings" },
+      { name: "neighbors", type: "Integer", default: "1" },
+    ],
+    outputs: [{ name: "matches", type: "Report" }],
   },
 ];
 

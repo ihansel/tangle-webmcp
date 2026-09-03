@@ -35,6 +35,7 @@ import {
   useWindowPersistence,
 } from "@/routes/v2/shared/windows/windowPersistence";
 import type { PipelineRef } from "@/services/pipelineStorage/types";
+import { usePendingDemoRecipe } from "@/webmcp/pendingDemoRecipe";
 import { useWebMcp } from "@/webmcp/useWebMcp";
 import { WebMcpStatusPanel } from "@/webmcp/WebMcpStatusPanel";
 
@@ -113,6 +114,7 @@ const PipelineEditor = withSuspenseWrapper(
     useSeedInitialDockLayoutFromPreset(componentSearchV2Enabled);
 
     const activeSpec = navigation.activeSpec;
+    usePendingDemoRecipe(webMcp.adapter, pipelineRef.name, activeSpec !== null);
 
     if (!activeSpec) return null;
 

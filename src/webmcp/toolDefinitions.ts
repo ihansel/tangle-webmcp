@@ -60,7 +60,7 @@ export function createWebMcpToolDefinitions(
             maxLength: 120,
             description: "Capability or component name to find.",
           },
-          limit: { type: "integer", minimum: 1, maximum: 9, default: 9 },
+          limit: { type: "integer", minimum: 1, maximum: 16, default: 16 },
         },
         additionalProperties: false,
       },
@@ -98,6 +98,10 @@ export function createWebMcpToolDefinitions(
                     "decision-tree",
                     "evaluate",
                     "compare-metrics",
+                    "k-means",
+                    "profile-clusters",
+                    "text-embedding",
+                    "nearest-neighbors",
                   ],
                 },
                 name: { type: "string", minLength: 1, maxLength: 100 },
@@ -212,7 +216,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "get_run_summary",
       description:
-        "Read bounded status and preferred-model information for the current or latest local browser run without returning dataset rows.",
+        "Read bounded classification, clustering, or embedding insights for the current or latest local browser run without returning dataset rows.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
       execute: execute("get_run_summary", () => adapter.getRunSummary()),

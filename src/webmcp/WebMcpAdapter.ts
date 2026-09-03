@@ -29,6 +29,10 @@ const componentIds = [
   "decision-tree",
   "evaluate",
   "compare-metrics",
+  "k-means",
+  "profile-clusters",
+  "text-embedding",
+  "nearest-neighbors",
 ] as const;
 
 const literalValueSchema = z.union([
@@ -132,7 +136,7 @@ export class WebMcpAdapter {
     const { query, limit } = z
       .object({
         query: z.string().max(120).default(""),
-        limit: z.number().int().min(1).max(9).default(9),
+        limit: z.number().int().min(1).max(16).default(16),
       })
       .parse(input);
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -197,7 +201,9 @@ export class WebMcpAdapter {
           preprocessingColumn++;
         } else if (
           item.componentId === "logistic-regression" ||
-          item.componentId === "decision-tree"
+          item.componentId === "decision-tree" ||
+          item.componentId === "k-means" ||
+          item.componentId === "text-embedding"
         ) {
           position = {
             x: origin.x + preprocessingColumn * 220,
@@ -208,7 +214,11 @@ export class WebMcpAdapter {
             x: origin.x + (preprocessingColumn + 1) * 220,
             y: origin.y + (evaluationLane++ === 0 ? -120 : 120),
           };
-        } else if (item.componentId === "compare-metrics") {
+        } else if (
+          item.componentId === "compare-metrics" ||
+          item.componentId === "profile-clusters" ||
+          item.componentId === "nearest-neighbors"
+        ) {
           position = {
             x: origin.x + (preprocessingColumn + 2) * 220,
             y: origin.y,
@@ -349,9 +359,14 @@ export class WebMcpAdapter {
     const unsupported = spec.tasks
       .filter((task) => componentIdFromUrl(task.componentRef.url) === null)
       .map((task) => ({ taskId: task.$id, name: task.name }));
-    const classifiers = spec.tasks.filter((task) => {
+    const runnableTasks = spec.tasks.filter((task) => {
       const id = componentIdFromUrl(task.componentRef.url);
-      return id === "logistic-regression" || id === "decision-tree";
+      return (
+        id === "logistic-regression" ||
+        id === "decision-tree" ||
+        id === "k-means" ||
+        id === "text-embedding"
+      );
     });
     const browserIssues = [
       ...unsupported.map((task) => ({
@@ -359,11 +374,12 @@ export class WebMcpAdapter {
         message: `${task.name} is not executable by the curated browser runner.`,
         taskId: task.taskId,
       })),
-      ...(classifiers.length === 0
+      ...(runnableTasks.length === 0
         ? [
             {
-              code: "NO_BROWSER_CLASSIFIER",
-              message: "Add a supported classifier before a local run.",
+              code: "NO_BROWSER_WORKLOAD",
+              message:
+                "Add a supported classifier, clustering, or embedding task before a local run.",
             },
           ]
         : []),
@@ -414,19 +430,39 @@ export class WebMcpAdapter {
         error: this.runStore.error,
       };
     }
-    return {
+    const base = {
       status: this.runStore.status,
       runId: result.runId,
-      rows: {
-        total: result.rowCount,
-        train: result.trainRowCount,
-        test: result.testRowCount,
-      },
+      kind: result.kind,
+      rowCount: result.rowCount,
       seed: result.seed,
       durationMs: result.durationMs,
-      preferredModelTaskId: result.preferredModelTaskId,
-      preferredModelName: result.preferredModelName,
-      selectionReason: result.selectionReason,
+    };
+    if (result.kind === "classification") {
+      return {
+        ...base,
+        trainRowCount: result.trainRowCount,
+        testRowCount: result.testRowCount,
+        preferredModelTaskId: result.preferredModelTaskId,
+        preferredModelName: result.preferredModelName,
+        selectionReason: result.selectionReason,
+      };
+    }
+    if (result.kind === "clustering") {
+      return {
+        ...base,
+        clusterCount: result.clusterCount,
+        silhouetteScore: round(result.silhouetteScore),
+        clusters: result.clusters,
+        insight: result.insight,
+      };
+    }
+    return {
+      ...base,
+      dimensions: result.dimensions,
+      vocabularySize: result.vocabularySize,
+      neighbors: result.neighbors,
+      insight: result.insight,
     };
   }
 
@@ -436,6 +472,11 @@ export class WebMcpAdapter {
       .parse(input);
     const result = this.runStore.result;
     if (!result) throw new Error("No completed browser run is available.");
+    if (result.kind !== "classification") {
+      throw new Error(
+        "The latest run is not a classifier. Use get_run_summary for clustering or embedding insights.",
+      );
+    }
     const models = taskId
       ? result.models.filter((model) => model.taskId === taskId)
       : result.models;

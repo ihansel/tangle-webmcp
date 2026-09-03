@@ -1,210 +1,321 @@
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
-import { RunSection } from "@/components/Home/RunSection/RunSection";
-import { AnnouncementBanners } from "@/components/shared/AnnouncementBanners";
-import { BlockStack, InlineStack } from "@/components/ui/layout";
+import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
+import { getDefaultEditorPath } from "@/routes/editorRoutes";
+import { writeComponentToFileListFromText } from "@/utils/componentStore";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Heading, Paragraph, Text } from "@/components/ui/typography";
+  defaultPipelineYamlWithName,
+  USER_PIPELINES_LIST_NAME,
+} from "@/utils/constants";
 import {
-  type RecentItem,
-  useRecentlyUsed,
-  useRecentlyViewed,
-} from "@/hooks/useRecentlyViewed";
-import { useAnalytics } from "@/providers/AnalyticsProvider";
-import { APP_ROUTES } from "@/routes/router";
-import { formatRelativeTime } from "@/utils/date";
-import { tracking } from "@/utils/tracking";
+  DEMO_RECIPES,
+  type DemoRecipe,
+  type DemoRecipeId,
+} from "@/webmcp/demoRecipes";
+import { queueDemoRecipe } from "@/webmcp/pendingDemoRecipe";
 
-import { FavoritesPreview } from "./FavoritesPreview";
-import { getRecentlyViewedUrl, TypePill } from "./TypePill";
+const accentClasses = {
+  violet: "bg-violet-500/15 text-violet-300 border-violet-400/20",
+  mint: "bg-emerald-500/15 text-emerald-300 border-emerald-400/20",
+  amber: "bg-amber-500/15 text-amber-300 border-amber-400/20",
+  sky: "bg-sky-500/15 text-sky-300 border-sky-400/20",
+};
 
-const PREVIEW_COUNT = 5;
+function WorkflowPreview() {
+  const steps = [
+    { icon: "Database" as const, label: "Equipment data", detail: "60 rows" },
+    {
+      icon: "SlidersHorizontal" as const,
+      label: "Prepare features",
+      detail: "7 signals",
+    },
+    {
+      icon: "GitCompareArrows" as const,
+      label: "Train two models",
+      detail: "local worker",
+    },
+  ];
 
-interface SectionHeaderProps {
-  title: string;
-  viewAllTo: string;
-  viewAllLabel?: string;
+  return (
+    <div className="relative min-h-[400px] overflow-hidden border-l border-white/10 bg-[#111114] p-6 lg:p-8">
+      <div className="mb-7 flex items-center justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Agent-built pipeline
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-200">
+            Equipment failure lab
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-emerald-300">
+          <span className="size-1.5 rounded-full bg-emerald-400" />
+          Browser ready
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {steps.map((step, index) => (
+          <div key={step.label}>
+            <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.035] px-4 py-3.5">
+              <div className="grid size-8 place-items-center rounded-md border border-white/10 bg-white/[0.04] text-slate-300">
+                <Icon name={step.icon} size="sm" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-slate-100">
+                  {step.label}
+                </p>
+                <p className="mt-0.5 text-xs text-slate-500">{step.detail}</p>
+              </div>
+              <span className="font-mono text-[10px] text-slate-600">
+                0{index + 1}
+              </span>
+            </div>
+            {index < steps.length - 1 && (
+              <div className="ml-8 h-3 w-px bg-white/15" />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 rounded-lg border border-emerald-400/25 bg-emerald-400/[0.07] p-4">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs text-emerald-300">Recommended result</p>
+            <p className="mt-1 text-base font-semibold text-white">
+              Decision tree · 80% recall
+            </p>
+          </div>
+          <div className="grid size-10 place-items-center rounded-full bg-emerald-400/15 text-emerald-300">
+            <Icon name="Check" size="lg" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 flex items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-500">
+        <Icon name="ShieldCheck" size="sm" className="text-violet-300" />
+        Visible actions · one-run permission · normal Tangle undo
+      </div>
+    </div>
+  );
 }
 
-const SectionHeader = ({
-  title,
-  viewAllTo,
-  viewAllLabel = "View all",
-}: SectionHeaderProps) => (
-  <InlineStack gap="3" blockAlign="center" className="min-w-0">
-    <Heading level={2}>{title}</Heading>
-    <Link
-      to={viewAllTo}
-      className="text-xs text-muted-foreground hover:text-foreground"
-    >
-      {viewAllLabel} →
-    </Link>
-  </InlineStack>
-);
-
-const RecentlyViewedPreviewRow = ({ item }: { item: RecentItem }) => (
-  <InlineStack gap="2" className="min-w-0 overflow-hidden">
-    <Link
-      to={getRecentlyViewedUrl(item)}
-      {...tracking("homepage.recently_viewed_pipelines.item")}
-      className="flex w-full items-center gap-3 px-4 py-3 hover:bg-muted/50 no-underline"
-    >
-      <TypePill type={item.type} />
-      <Tooltip>
-        <TooltipTrigger className="flex-1 min-w-0 overflow-hidden text-left">
-          <Text size="sm" className="truncate block">
-            {item.name}
-          </Text>
-        </TooltipTrigger>
-        <TooltipContent>{item.name}</TooltipContent>
-      </Tooltip>
-      <Text size="xs" tone="subdued" className="shrink-0">
-        {formatRelativeTime(new Date(item.timestamp))}
-      </Text>
-    </Link>
-  </InlineStack>
-);
-
-const RecentlyViewedPreview = () => {
-  const { recentlyViewed } = useRecentlyViewed();
-  const preview = recentlyViewed.slice(0, PREVIEW_COUNT);
-
-  return (
-    <BlockStack gap="4" className="min-w-0">
-      <SectionHeader
-        title="Recently Viewed"
-        viewAllTo={APP_ROUTES.DASHBOARD_RECENTLY_VIEWED}
-      />
-      <div className="w-full border border-border rounded-lg overflow-hidden divide-y divide-border">
-        {preview.length === 0 ? (
-          <div className="px-4 py-3">
-            <Paragraph tone="subdued" size="sm">
-              Nothing viewed yet. Open a pipeline, run, component, or tour to
-              see it here.
-            </Paragraph>
-          </div>
-        ) : (
-          preview.map((item) =>
-            item.type === "component" ? (
-              <RecentComponentPreviewRow
-                key={`${item.type}-${item.id}`}
-                item={item}
-                actionType="homepage.recently_viewed_pipelines.item"
-                surface="homepage_recently_viewed"
-              />
-            ) : (
-              <RecentlyViewedPreviewRow
-                key={`${item.type}-${item.id}`}
-                item={item}
-              />
-            ),
-          )
-        )}
-      </div>
-    </BlockStack>
-  );
-};
-
-const RecentComponentPreviewRow = ({
-  item,
-  actionType = "homepage.recently_used_components.item",
-  surface = "homepage_recent",
+function RecipeRow({
+  recipe,
+  loading,
+  onLaunch,
 }: {
-  item: RecentItem;
-  actionType?: string;
-  surface?: string;
-}) => {
-  const { track } = useAnalytics();
+  recipe: DemoRecipe;
+  loading: boolean;
+  onLaunch: (recipe: DemoRecipe) => void;
+}) {
   return (
-    <InlineStack gap="2" className="min-w-0 overflow-hidden">
-      <Link
-        to={APP_ROUTES.DASHBOARD_COMPONENTS}
-        search={{ component: item.id }}
-        {...tracking(actionType)}
-        onClick={() => {
-          track("component_library.row.click", {
-            component_id: item.id,
-            component_name: item.name,
-            component_source: "unknown",
-            surface,
-          });
-        }}
-        className="flex w-full items-center gap-3 px-4 py-3 hover:bg-muted/50 no-underline"
-      >
-        <TypePill type="component" />
-        <Tooltip>
-          <TooltipTrigger className="flex-1 min-w-0 overflow-hidden text-left">
-            <Text size="sm" className="truncate block">
-              {item.name}
-            </Text>
-          </TooltipTrigger>
-          <TooltipContent>{item.name}</TooltipContent>
-        </Tooltip>
-        <Text size="xs" tone="subdued" className="shrink-0">
-          {formatRelativeTime(new Date(item.timestamp))}
-        </Text>
-      </Link>
-    </InlineStack>
-  );
-};
-
-const RecentComponentsPreview = () => {
-  const { recentlyUsed } = useRecentlyUsed();
-  const preview = recentlyUsed.slice(0, PREVIEW_COUNT);
-
-  return (
-    <BlockStack gap="4" className="min-w-0">
-      <SectionHeader
-        title="Recently Used Components"
-        viewAllTo={APP_ROUTES.DASHBOARD_COMPONENTS}
-        viewAllLabel="View all"
-      />
-      <div className="w-full border border-border rounded-lg overflow-hidden divide-y divide-border">
-        {preview.length === 0 ? (
-          <div className="px-4 py-3">
-            <Paragraph tone="subdued" size="sm">
-              No components used yet. Add a component to a pipeline to see it
-              here.
-            </Paragraph>
-          </div>
-        ) : (
-          preview.map((item) => (
-            <RecentComponentPreviewRow key={item.id} item={item} />
-          ))
-        )}
+    <article className="group grid gap-5 border-t border-slate-800 py-6 transition-colors hover:bg-white/[0.02] md:grid-cols-[210px_1fr_auto] md:items-center md:px-4">
+      <div className="flex items-center gap-3">
+        <div
+          className={`grid size-10 shrink-0 place-items-center rounded-lg border ${accentClasses[recipe.accent]}`}
+        >
+          <Icon name={recipe.icon} size="lg" />
+        </div>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+            {recipe.eyebrow}
+          </p>
+          <p className="mt-1 text-sm font-medium text-white">
+            {recipe.shortTitle}
+          </p>
+        </div>
       </div>
-    </BlockStack>
+
+      <div className="max-w-2xl">
+        <h3 className="text-base font-semibold text-slate-100">
+          {recipe.title}
+        </h3>
+        <p className="mt-1.5 text-sm leading-6 text-slate-400">
+          {recipe.description}
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+          {recipe.steps.map((step, index) => (
+            <span key={step} className="flex items-center gap-2">
+              {index > 0 && <Icon name="ArrowRight" size="xs" />}
+              {step}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 md:justify-end">
+        <p className="hidden max-w-40 text-right text-xs leading-5 text-slate-500 xl:block">
+          {recipe.outcome}
+        </p>
+        <Button
+          variant="outline"
+          className="border-slate-700 bg-transparent text-slate-100 hover:bg-slate-800 hover:text-white"
+          onClick={() => onLaunch(recipe)}
+          disabled={loading}
+        >
+          {loading ? "Building…" : "Open experiment"}
+          {!loading && <Icon name="ArrowUpRight" size="sm" />}
+        </Button>
+      </div>
+    </article>
   );
-};
+}
 
 export function DashboardHomeView() {
+  const navigate = useNavigate();
+  const [launching, setLaunching] = useState<DemoRecipeId | null>(null);
+
+  const launchRecipe = async (recipe: DemoRecipe) => {
+    if (launching) return;
+    setLaunching(recipe.id);
+    const suffix = Date.now().toString(36).slice(-5);
+    const pipelineName = `${recipe.pipelineName} ${suffix}`;
+    try {
+      await writeComponentToFileListFromText(
+        USER_PIPELINES_LIST_NAME,
+        pipelineName,
+        defaultPipelineYamlWithName(pipelineName),
+      );
+      queueDemoRecipe({ pipelineName, recipeId: recipe.id });
+      await navigate({ to: getDefaultEditorPath(pipelineName) });
+    } finally {
+      setLaunching(null);
+    }
+  };
+
+  const scrollToRecipes = () =>
+    document
+      .getElementById("demo-recipes")
+      ?.scrollIntoView({ behavior: "smooth" });
+
   return (
-    <BlockStack gap="6">
-      <AnnouncementBanners />
+    <main className="mx-auto w-full max-w-[1440px] pb-12">
+      <section className="overflow-hidden rounded-xl border border-slate-800 bg-[#0b0b0d] text-white shadow-2xl shadow-black/15">
+        <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
+          <div className="flex min-h-[400px] flex-col justify-between p-7 sm:p-10 lg:p-12">
+            <div>
+              <div className="mb-8 flex items-center gap-2 text-xs font-medium text-slate-400">
+                <span className="size-2 rounded-full bg-violet-400" />
+                WebMCP-enabled workspace
+              </div>
+              <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl">
+                Machine learning, directed by agents. Running in your browser.
+              </h1>
+              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400">
+                Tangle exposes a safe, undoable ML canvas through WebMCP—so
+                agents can assemble, validate, and run real pipelines without
+                your data leaving the page.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button
+                  size="lg"
+                  className="bg-violet-500 text-white shadow-none hover:bg-violet-400"
+                  onClick={() => launchRecipe(DEMO_RECIPES[0])}
+                  disabled={launching !== null}
+                >
+                  {launching === "failure"
+                    ? "Building pipeline…"
+                    : "Try equipment failure demo"}
+                  {launching !== "failure" && <Icon name="ArrowRight" />}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-slate-700 bg-transparent text-slate-100 hover:bg-slate-800 hover:text-white"
+                  onClick={scrollToRecipes}
+                >
+                  Browse experiments
+                </Button>
+              </div>
+            </div>
 
-      <div className="w-full grid grid-cols-3 gap-6 overflow-hidden">
-        <FavoritesPreview />
-        <RecentlyViewedPreview />
-        <RecentComponentsPreview />
-      </div>
+            <div className="mt-10 grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-5">
+              {[
+                ["10", "agent tools"],
+                ["100%", "local data"],
+                ["1 click", "to undo"],
+              ].map(([value, label]) => (
+                <div key={label} className="px-4 first:pl-0">
+                  <p className="text-lg font-semibold text-slate-100">
+                    {value}
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-500">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <WorkflowPreview />
+        </div>
+      </section>
 
-      <BlockStack gap="3">
-        <SectionHeader
-          title="My Runs"
-          viewAllTo={APP_ROUTES.DASHBOARD_RUNS}
-          viewAllLabel="View all runs"
-        />
-        {/*
-          Fetching 10 records because the API does not yet support a custom page_size.
-          Once TangleML/tangle#188 lands, reduce this to match the visible row count.
-          Tracked in TangleML/tangle-ui#2016.
-        */}
-        <RunSection hideFilters forcedFilter="created_by:me" maxItems={10} />
-      </BlockStack>
-    </BlockStack>
+      <section id="demo-recipes" className="scroll-mt-6 px-1 pt-12">
+        <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+              Choose an experiment
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+              Each recipe opens as a real Tangle graph. Edit the tasks, ask an
+              agent to inspect it, then run the workload locally.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Icon name="Laptop" size="sm" />
+            No backend or API key required
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950 px-5 sm:px-6">
+          {DEMO_RECIPES.map((recipe) => (
+            <RecipeRow
+              key={recipe.id}
+              recipe={recipe}
+              loading={launching === recipe.id}
+              onLaunch={launchRecipe}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10 grid gap-6 border-t border-border px-1 pt-8 md:grid-cols-[220px_1fr]">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-500">
+            Why WebMCP
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight">
+            Agentic work you can see and control
+          </h2>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-3">
+          {[
+            [
+              "MousePointerClick",
+              "Visible changes",
+              "Agents edit the same graph you do. Every task and connection appears on the canvas.",
+            ],
+            [
+              "ShieldCheck",
+              "Permission at the edge",
+              "Graph edits are undoable. Browser runs require explicit one-time permission.",
+            ],
+            [
+              "Cpu",
+              "Useful local compute",
+              "Models, clusters, and vectors run in a cancellable worker without sending rows away.",
+            ],
+          ].map(([icon, title, copy]) => (
+            <div key={title}>
+              <Icon name={icon as "Cpu"} className="text-violet-500" />
+              <h3 className="mt-3 text-sm font-semibold">{title}</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                {copy}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
