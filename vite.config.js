@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import viteReact from "@vitejs/plugin-react";
+import { sites } from "@openai/sites-vite-plugin";
 import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -24,7 +25,11 @@ const agentsCoreBrowserShim = path.resolve(
   "shims/shims-browser.mjs",
 );
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
+  const isVitest = process.env.VITEST === "true";
+  const cloudflare = isVitest
+    ? null
+    : (await import("@cloudflare/vite-plugin")).cloudflare;
   const env = loadEnv(mode, process.cwd(), "");
 
   const apiKey = env.VITE_BUGSNAG_API_KEY;
@@ -60,6 +65,22 @@ export default defineConfig(({ mode }) => {
         },
       }),
       tailwindcss(),
+      ...(!cloudflare
+        ? []
+        : [
+            sites(),
+            cloudflare({
+              viteEnvironment: { name: "server" },
+              config: {
+                main: "src/sites-worker.ts",
+                compatibility_date: "2026-06-01",
+                assets: {
+                  binding: "ASSETS",
+                  not_found_handling: "single-page-application",
+                },
+              },
+            }),
+          ]),
       ...(uploadSourcemaps
         ? [
             BugsnagSourceMapUploaderPlugin({
@@ -88,12 +109,6 @@ export default defineConfig(({ mode }) => {
     build: {
       manifest: "assets-registry.json",
       sourcemap: "hidden",
-      rollupOptions: {
-        input: {
-          index: path.resolve(__dirname, "index.html"),
-          main: path.resolve(__dirname, "src/index.tsx"),
-        },
-      },
     },
     resolve: {
       alias: {

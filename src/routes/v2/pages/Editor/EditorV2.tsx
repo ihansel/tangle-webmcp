@@ -35,6 +35,8 @@ import {
   useWindowPersistence,
 } from "@/routes/v2/shared/windows/windowPersistence";
 import type { PipelineRef } from "@/services/pipelineStorage/types";
+import { useWebMcp } from "@/webmcp/useWebMcp";
+import { WebMcpStatusPanel } from "@/webmcp/WebMcpStatusPanel";
 
 import { createEditorAgentWorker } from "./components/AiChat/editorAgentWorker";
 import { useDebugPanelWindow } from "./components/DebugPanel";
@@ -62,6 +64,7 @@ import { useTipOfTheDayWindow } from "./hooks/useTipOfTheDayWindow";
 import { useUndoRedoKeyboard } from "./hooks/useUndoRedoKeyboard";
 import { editorRegistry } from "./nodes";
 import { EditorSessionProvider } from "./store/EditorSessionContext";
+import { useEditorSession } from "./store/EditorSessionContext";
 
 interface PipelineEditorProps {
   pipelineRef: PipelineRef;
@@ -77,7 +80,9 @@ const PipelineEditor = withSuspenseWrapper(
       data: { spec: rootSpec, restoredUndoStore },
     } = useLoadSpec(pipelineRef);
     const { navigation } = useSharedStores();
+    const editorSession = useEditorSession();
     const tourMode = useTourMode();
+    const webMcp = useWebMcp(navigation, editorSession.undo);
 
     useWindowPersistence(tourMode ? TOUR_WINDOW_LAYOUT_ID : "editor");
     useDockAreaAccordion();
@@ -133,6 +138,10 @@ const PipelineEditor = withSuspenseWrapper(
               />
               <WindowContainer />
             </div>
+            <WebMcpStatusPanel
+              adapter={webMcp.adapter}
+              registration={webMcp.registration}
+            />
             <DockArea side="right" />
           </InlineStack>
         </SpecProvider>

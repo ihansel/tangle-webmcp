@@ -1,0 +1,181 @@
+import type { ComponentReference } from "@/models/componentSpec";
+import type { InputSpec, OutputSpec } from "@/utils/componentSpec";
+
+import type { CuratedComponentId } from "./types";
+
+export const BROWSER_EXECUTABLE_ANNOTATION = "browser.webmcp.dev/executable";
+export const COMPONENT_ID_ANNOTATION = "browser.webmcp.dev/component-id";
+
+export interface CuratedComponent {
+  id: CuratedComponentId;
+  name: string;
+  description: string;
+  category: "data" | "preprocess" | "training" | "evaluation";
+  inputs: InputSpec[];
+  outputs: OutputSpec[];
+}
+
+const components: CuratedComponent[] = [
+  {
+    id: "load-csv",
+    name: "Load equipment CSV",
+    description:
+      "Load the compact built-in equipment-failure CSV locally in the browser.",
+    category: "data",
+    inputs: [
+      {
+        name: "dataset_path",
+        type: "String",
+        default: "/datasets/equipment-failure.csv",
+      },
+    ],
+    outputs: [{ name: "dataset", type: "DataFrame" }],
+  },
+  {
+    id: "select-columns",
+    name: "Select columns",
+    description: "Keep the selected feature and target columns.",
+    category: "preprocess",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      {
+        name: "columns",
+        type: "String",
+        default:
+          "air_temperature,process_temperature,rotational_speed,torque,tool_wear,machine_type,failure",
+      },
+    ],
+    outputs: [{ name: "dataset", type: "DataFrame" }],
+  },
+  {
+    id: "fill-missing",
+    name: "Fill missing values",
+    description:
+      "Fill missing numeric values with the median and categorical values with the mode.",
+    category: "preprocess",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "strategy", type: "String", default: "median" },
+    ],
+    outputs: [{ name: "dataset", type: "DataFrame" }],
+  },
+  {
+    id: "encode-categories",
+    name: "Encode categories",
+    description: "One-hot encode the selected categorical columns.",
+    category: "preprocess",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "columns", type: "String", default: "machine_type" },
+    ],
+    outputs: [{ name: "dataset", type: "DataFrame" }],
+  },
+  {
+    id: "train-test-split",
+    name: "Train/test split",
+    description: "Create a deterministic stratified training and test split.",
+    category: "preprocess",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "target", type: "String", default: "failure" },
+      { name: "test_ratio", type: "Float", default: "0.25" },
+      { name: "seed", type: "Integer", default: "42" },
+    ],
+    outputs: [
+      { name: "train", type: "DataFrame" },
+      { name: "test", type: "DataFrame" },
+    ],
+  },
+  {
+    id: "logistic-regression",
+    name: "Logistic regression",
+    description: "Train a deterministic binary logistic regression classifier.",
+    category: "training",
+    inputs: [
+      { name: "train", type: "DataFrame" },
+      { name: "target", type: "String", default: "failure" },
+      { name: "iterations", type: "Integer", default: "800" },
+      { name: "learning_rate", type: "Float", default: "0.1" },
+    ],
+    outputs: [{ name: "model", type: "Model" }],
+  },
+  {
+    id: "decision-tree",
+    name: "Decision tree",
+    description:
+      "Train a small deterministic CART-style decision tree classifier.",
+    category: "training",
+    inputs: [
+      { name: "train", type: "DataFrame" },
+      { name: "target", type: "String", default: "failure" },
+      { name: "max_depth", type: "Integer", default: "4" },
+      { name: "min_samples", type: "Integer", default: "3" },
+    ],
+    outputs: [{ name: "model", type: "Model" }],
+  },
+  {
+    id: "evaluate",
+    name: "Evaluate classifier",
+    description:
+      "Calculate bounded binary-classification metrics with recall highlighted.",
+    category: "evaluation",
+    inputs: [
+      { name: "model", type: "Model" },
+      { name: "test", type: "DataFrame" },
+      { name: "target", type: "String", default: "failure" },
+    ],
+    outputs: [{ name: "metrics", type: "Metrics" }],
+  },
+  {
+    id: "compare-metrics",
+    name: "Compare & visualise",
+    description:
+      "Compare model metrics and recommend the model with the strongest recall.",
+    category: "evaluation",
+    inputs: [
+      { name: "logistic_metrics", type: "Metrics" },
+      { name: "tree_metrics", type: "Metrics" },
+      { name: "priority", type: "String", default: "recall" },
+    ],
+    outputs: [{ name: "report", type: "Report" }],
+  },
+];
+
+export const CURATED_COMPONENTS = components;
+
+export const CURATED_COMPONENT_BY_ID = new Map(
+  components.map((component) => [component.id, component]),
+);
+
+export function createCuratedComponentReference(
+  component: CuratedComponent,
+): ComponentReference {
+  return {
+    name: component.name,
+    url: `webmcp://components/${component.id}`,
+    spec: {
+      name: component.name,
+      description: component.description,
+      inputs: component.inputs,
+      outputs: component.outputs,
+      implementation: {
+        container: { image: `webmcp-browser/${component.id}:1` },
+      },
+      metadata: {
+        annotations: {
+          [BROWSER_EXECUTABLE_ANNOTATION]: true,
+          [COMPONENT_ID_ANNOTATION]: component.id,
+        },
+      },
+    },
+  };
+}
+
+export function componentIdFromUrl(
+  url: string | undefined,
+): CuratedComponentId | null {
+  const prefix = "webmcp://components/";
+  if (!url?.startsWith(prefix)) return null;
+  const candidate = url.slice(prefix.length) as CuratedComponentId;
+  return CURATED_COMPONENT_BY_ID.has(candidate) ? candidate : null;
+}
