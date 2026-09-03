@@ -108,7 +108,7 @@ export default defineConfig(async ({ mode }) => {
     },
     build: {
       manifest: "assets-registry.json",
-      sourcemap: "hidden",
+      sourcemap: uploadSourcemaps ? "hidden" : false,
     },
     resolve: {
       alias: {
