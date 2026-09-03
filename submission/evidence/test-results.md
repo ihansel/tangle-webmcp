@@ -49,8 +49,8 @@ Vite selected 3001. The local server was then stopped cleanly.
   and visible failure state rendered.
 - **VERIFIED:** churn, clustering, and Product2Vec reports contained charts,
   tables, and operational summaries.
-- **BLOCKED for judges:** the existing production route and Sites control plane
-  returned HTTP 404 during the public-release attempt.
+- **VERIFIED PUBLIC:** the deployed homepage and dashboard returned HTTP 200 to
+  anonymous requests on 4 September 2026.
 
 ## Hosted WebMCP interface
 
@@ -61,9 +61,9 @@ Vite selected 3001. The local server was then stopped cleanly.
   (undo empty state in unit test).
 - **VERIFIED:** typed invalid inputs rejected for search, add, configure,
   connect, and metrics inspection.
-- **PARTIALLY VERIFIED:** deployed empty-input handlers ignored unexpected
-  fields. A local guard now rejects them before side effects and has a regression
-  test; deployment/retest remains.
+- **PARTIALLY VERIFIED:** the prior deployment ignored unexpected fields. The
+  strict guard and regression test are now deployed; five live client checks
+  remain.
 - **VERIFIED:** agent run permission refusal, Worker 404 failure, visible error,
   undo recovery, and successful rerun.
 - **VERIFIED:** browser console had no error on the home page; run failures were
@@ -71,13 +71,11 @@ Vite selected 3001. The local server was then stopped cleanly.
 
 ## Failures and unresolved limitations
 
-1. The existing production route and Sites control operations return HTTP 404;
-   the rebuilt release archive is ready but could not be uploaded/deployed.
-2. No public video exists.
-3. The new strict no-input guard is not present in deployed version 10.
-4. Full run results can be large; concise agent use should prefer
+1. No public video exists.
+2. The deployed strict no-input guard still needs five live client retests.
+3. Full run results can be large; concise agent use should prefer
    `get_run_summary`.
-5. Chrome/WebMCP was not tested.
+4. Chrome/WebMCP was not tested.
 
 ## Post-fix verification
 
@@ -87,5 +85,5 @@ Vite selected 3001. The local server was then stopped cleanly.
 - Production build: **PASS** with the same documented bundle warnings.
 - Public repository: **PASS** — anonymous GitHub API HTTP 200; `main` resolves;
   Apache-2.0 detected.
-- Public release attempt: **BLOCKED** — Sites control plane and production route
-  returned HTTP 404 after repeated checks.
+- Public Sites release: **PASS** — deployment succeeded; anonymous homepage and
+  dashboard requests returned HTTP 200.

@@ -4,12 +4,11 @@ Overall status: **NOT READY — ACTION REQUIRED**
 
 The written submission, evidence, real screenshot gallery, original thumbnail,
 judge guide, and sub-three-minute video plan are complete. Three mandatory
-publication items remain:
+submission items remain:
 
-1. restore the existing Site, whose route and Sites control plane returned HTTP
-   404 during the public-release attempt;
-2. record and publicly upload the planned demo video; and
-3. deploy and verify the strict no-input guard on Sites.
+1. record and publicly upload the planned demo video;
+2. confirm the official submission-period dates; and
+3. rerun the five no-input checks against the newly deployed strict guard.
 
 The reviewed source is public at <https://github.com/ihansel/tangle-webmcp>.
 Anonymous GitHub API access returned HTTP 200, the default branch is `main`, and
@@ -45,10 +44,7 @@ The ready-to-paste fields are in [submission-form.md](submission-form.md) and
 
 ## Final owner actions
 
-1. Restore/reconnect the Sites control plane, then publish the prepared artifact
-   publicly and verify the production URL anonymously.
-2. Confirm the official submission-period dates.
-3. Record the 2:38 script, edit to under 3:00, upload publicly to YouTube, and add
+1. Confirm the official submission-period dates.
+2. Record the 2:38 script, edit to under 3:00, upload publicly to YouTube, and add
    the URL to `links.md`, both submission forms, and `submission.json`.
-4. Publish the local strict no-input validation and compatibility-date fixes to
-   the Site, then rerun the five deployed no-input schema checks.
+3. Rerun the five deployed no-input schema checks in a WebMCP-capable client.

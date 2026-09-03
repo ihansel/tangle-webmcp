@@ -61,10 +61,10 @@ the recipe for a fresh state. Pipeline state is stored in browser storage.
 
 ## Known limitations
 
-- The existing production route and Sites control plane returned HTTP 404 during
-  the 4 September public-release attempt; restore/redeploy before judge testing.
+- The public Sites deployment is reachable anonymously. The strict no-input
+  guard is deployed but its five live client checks should be rerun.
 - Only curated browser components execute locally.
-- The strict empty-input validation fix must be deployed before relying on
-  `additionalProperties: false` for the five no-input tools.
+- The strict empty-input validation fix is deployed; rerun its five live
+  WebMCP checks before making a fully verified claim.
 - Results are educational synthetic-data demonstrations, not production
   predictions.

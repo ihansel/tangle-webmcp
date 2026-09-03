@@ -95,7 +95,7 @@ operate on live UI state and enter normal undo groups. Agent runs require a
 one-time permission, execute in a cancellable Worker, and report bounded
 failures. During review we found that the deployed transport forwarded extra
 fields to empty-input handlers, so a strict application-level guard and
-regression test were added locally; that fix still needs an approved deployment.
+regression test were added and deployed; five live client checks remain.
 
 ### Challenges we ran into
 
@@ -167,8 +167,8 @@ the formal submission window requires owner confirmation.
 ## 6. Try it out
 
 - Live application:
-  <https://tangle-webmcp.ian347727.chatgpt.site> — **temporarily unavailable;
-  Sites route/control plane returned HTTP 404 during publication**
+  <https://tangle-webmcp.ian347727.chatgpt.site> — **verified public; anonymous
+  homepage and dashboard requests returned HTTP 200**
 - Public repository: <https://github.com/ihansel/tangle-webmcp> — verified
   public, default branch `main`, Apache-2.0 detected
 - Public video: **[PUBLIC YOUTUBE URL REQUIRED]**
@@ -193,8 +193,8 @@ period, pending confirmation of the official dates.**
 The visual Tangle editor is mature upstream functionality. The open WebMCP
 surface, curated browser runner, advanced demo recipes, reports, and hosted
 commerce experience are hackathon additions. The tested workflows function, but
-public judge access, the deployed strict-input fix, and the public video are not
-yet complete.
+the public video and official submission-period confirmation are not yet
+complete. The strict-input fix is deployed and awaits a live client retest.
 
 ## 10. Existing-project update explanation
 
@@ -211,11 +211,10 @@ editor features are not claimed as new.
 
 <https://tangle-webmcp.ian347727.chatgpt.site>
 
-**Status: BLOCKED for judging.** The authenticated owner flow previously loaded
-over HTTPS, registered all ten tools, and completed the primary flows. During
-the public-release attempt on 4 September 2026, both the production route and
-Sites control operations returned HTTP 404, so the prepared release could not
-be deployed or anonymously verified.
+**Status: VERIFIED PUBLIC.** The public Sites deployment succeeded. Anonymous
+requests to the homepage and dashboard returned HTTP 200 on 4 September 2026;
+the previously tested owner flow registered all ten tools and completed the
+primary workflows.
 
 ## 12. Testing instructions
 
@@ -236,9 +235,9 @@ the Apache-2.0 license.
 
 ## 14. Tested agents or clients
 
-| Client                 | Environment/version                                 | Date       | Workflow                                                                                                               | Result                                                                                                              | Evidence                                                        |
-| ---------------------- | --------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| ChatGPT in-app Browser | Codex desktop Browser runtime; version not surfaced | 4 Sep 2026 | Tool discovery; all ten tools; Product2Vec, churn, clustering; permission, invalid input, 404 recovery; UI/screenshots | Historical owner flow verified; current Sites route/control plane unavailable; strict-input fix awaiting deployment | `evidence/webmcp-tools.md`, `evidence/test-results.md`, gallery |
+| Client                 | Environment/version                                 | Date       | Workflow                                                                                                               | Result                                                                                          | Evidence                                                        |
+| ---------------------- | --------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| ChatGPT in-app Browser | Codex desktop Browser runtime; version not surfaced | 4 Sep 2026 | Tool discovery; all ten tools; Product2Vec, churn, clustering; permission, invalid input, 404 recovery; UI/screenshots | Functional flow verified; site now public; deployed strict-input guard awaits five live retests | `evidence/webmcp-tools.md`, `evidence/test-results.md`, gallery |
 
 No other client is claimed.
 

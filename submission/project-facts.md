@@ -8,9 +8,8 @@
 - **Intended users:** analysts, ML practitioners, commerce teams, and people who
   want an agent to help assemble and interpret a pipeline without surrendering
   visibility or control.
-- **Status:** functional beta with a prepared public release; the previously
-  deployed demonstration became unavailable during the 4 September 2026 Sites
-  publication attempt.
+- **Status:** functional beta with a public Sites deployment and public source
+  repository.
 
 ## Provenance
 
@@ -113,16 +112,16 @@ external model were used. The generator, schema, and provenance are committed.
 
 ## Current limitations
 
-- The existing Site route and Sites control operations returned HTTP 404 during
-  the public-release attempt; a validated archive is prepared for redeployment.
+- The public Site deployment succeeded; anonymous homepage and dashboard
+  requests returned HTTP 200 on 4 September 2026.
 - The reviewed source is public at <https://github.com/ihansel/tangle-webmcp>.
 - No public demonstration video exists.
 - The public tool surface is intentionally not a general Python/container
   executor and supports only curated workflows.
-- The deployed build accepts unexpected additional fields for five empty-input
-  tools because the transport does not enforce `additionalProperties: false`.
-  A strict application-level guard and regression test now exist locally but
-  have not been deployed.
+- The prior deployed build accepted unexpected additional fields for five
+  empty-input tools because the transport did not enforce
+  `additionalProperties: false`. A strict application-level guard and
+  regression test are now deployed; five live client retests remain.
 - `run_browser_pipeline` returns a detailed workload result; agents should
   prefer `get_run_summary` for concise output.
 - Only ChatGPT's in-app Browser was tested in this run; Chrome was not tested.

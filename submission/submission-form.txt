@@ -35,7 +35,7 @@ ABOUT — HOW WE BUILT IT
 We kept the existing React, TypeScript, MobX Keystone, and React Flow editor as the source of truth. A thin adapter reuses Tangle's task, connection, validation, serialization, and undo APIs. A deterministic TypeScript engine runs logistic regression, a small decision tree, K-means, TF-IDF, and Product2Vec inside an ES-module Web Worker. React components render result-specific reports. OpenAI Sites hosts the demo.
 
 ABOUT — WEBMCP IMPLEMENTATION
-The editor calls document.modelContext.registerTool for get_pipeline_summary, search_components, add_pipeline_tasks, configure_task, connect_tasks, validate_pipeline, run_browser_pipeline, get_run_summary, inspect_model_metrics, and undo_pipeline_change. Inputs and component IDs are bounded; typed inputs are validated again; mutations share live UI state and undo; runs consume one-time permission and stay in a Worker; summary tools do not return CSV rows. A strict empty-input guard was added locally after review and still needs deployment.
+The editor calls document.modelContext.registerTool for get_pipeline_summary, search_components, add_pipeline_tasks, configure_task, connect_tasks, validate_pipeline, run_browser_pipeline, get_run_summary, inspect_model_metrics, and undo_pipeline_change. Inputs and component IDs are bounded; typed inputs are validated again; mutations share live UI state and undo; runs consume one-time permission and stay in a Worker; summary tools do not return CSV rows. A strict empty-input guard and regression test are deployed; five live client checks remain.
 
 ABOUT — CHALLENGES
 We had to expose useful intent-level controls without turning Tangle into an arbitrary code executor; separate editor validity from browser capability; keep derived results useful without returning source rows; make agent-authored graphs readable; preserve static-host deep links; and fit meaningful model reports into the existing product language. Review also uncovered and fixed a local Worker-date mismatch and an empty-input runtime-validation gap.
@@ -56,7 +56,7 @@ BUILT WITH
 TypeScript; JavaScript; React 19; React Flow; MobX Keystone; Vite 8; Tailwind CSS 4; Zod; Comlink; document.modelContext.registerTool; Web Workers; Fetch; deterministic logistic regression, decision tree, K-means, TF-IDF, cosine similarity and Product2Vec; Vitest; Testing Library; ESLint; TypeScript; pnpm; Cloudflare Workers runtime; OpenAI Sites; OpenAI Codex desktop; OpenAI ImageGen.
 
 TRY IT OUT
-Live application: https://tangle-webmcp.ian347727.chatgpt.site — BLOCKED; route and Sites control operations returned HTTP 404 during the public-release attempt.
+Live application: https://tangle-webmcp.ian347727.chatgpt.site — verified public; anonymous homepage and dashboard requests returned HTTP 200.
 Public repository: https://github.com/ihansel/tangle-webmcp — verified public; default branch main; Apache-2.0 detected.
 Public video: [PUBLIC YOUTUBE URL REQUIRED]
 Upstream: https://github.com/TangleML/tangle-ui
@@ -65,7 +65,7 @@ APP STATUS
 Functional beta; existing project substantially updated during the submission period, pending confirmation of official dates.
 
 TESTED CLIENT
-ChatGPT in-app Browser, Codex desktop runtime (version not surfaced), tested 4 September 2026. Tool discovery, all ten tools, Product2Vec, churn, clustering, one-run permission, invalid inputs, visible error and undo recovery were tested. The historical owner flow worked; the current Sites route/control plane returns 404, and deployed strict no-input validation remains blocked.
+ChatGPT in-app Browser, Codex desktop runtime (version not surfaced), tested 4 September 2026. Tool discovery, all ten tools, Product2Vec, churn, clustering, one-run permission, invalid inputs, visible error and undo recovery were tested. The site is now public; the deployed strict no-input guard awaits five live client retests.
 
 AI TOOLS USED
 OpenAI Codex desktop: implementation, inspection, testing, screenshots, and submission preparation.

@@ -14,7 +14,7 @@
     "challenges": "Selecting a safe public surface, separating editor validity from browser capability, keeping results useful without returning rows, producing readable agent graph layouts, preserving deep links, and validating declared schemas at runtime.",
     "accomplishments": "Ten real deployed tools; visible undoable changes; working one-run permission; live churn, four-cluster, and Product2Vec runs; deterministic documented data; and 2,260 runnable tests passing.",
     "learnings": "Intention-level tools are more trustworthy than mirroring every UI command; agents should share real app state and undo; JSON Schema needs runtime enforcement; browser-local ML needs both agent-readable and human-explorable outputs.",
-    "next": "Push the reviewed release, restore and enable judge access, deploy strict no-input validation, return a concise run result, add visible cancellation and saved comparisons, and test more clients.",
+    "next": "Rerun deployed strict no-input checks, publish the demo video, return a concise run result, add visible cancellation and saved comparisons, and test more clients.",
     "submission_period_changes": "From upstream d7768e85, ten commits dated 3 September 2026 added the WebMCP adapter/tools, Worker runner, bounded models including Product2Vec, synthetic datasets, four recipes, commerce landing page, reports, readable layout, permission UI, Sites routing, tests, and documentation. Official event dates require owner confirmation."
   },
   "built_with": [
@@ -41,8 +41,8 @@
   "urls": {
     "live": {
       "url": "https://tangle-webmcp.ian347727.chatgpt.site",
-      "verification": "blocked_sites_route_and_control_plane_404",
-      "anonymous_http_status": 404
+      "verification": "verified_public_home_and_dashboard",
+      "anonymous_http_status": 200
     },
     "public_repository": {
       "url": "https://github.com/ihansel/tangle-webmcp",
@@ -90,7 +90,7 @@
       "inspect_model_metrics",
       "undo_pipeline_change"
     ],
-    "deployed_empty_input_strictness": "failed",
+    "deployed_empty_input_strictness": "deployed_live_retest_pending",
     "local_strictness_fix_added": true
   },
   "testing": {
@@ -120,10 +120,9 @@
       "environment": "Codex desktop Browser runtime",
       "version": null,
       "date": "2026-09-04",
-      "result": "partially_verified",
+      "result": "verified_primary_flows_public_access_live_strictness_retest_pending",
       "limitations": [
-        "historical owner flow verified; current Sites route/control plane returns 404",
-        "strict no-input fix not deployed"
+        "strict no-input guard deployed; five live client checks pending"
       ],
       "evidence": [
         "submission/evidence/webmcp-tools.md",
@@ -171,12 +170,10 @@
     "uploaded": false
   },
   "blockers": [
-    "Existing production route and Sites control operations return HTTP 404; the prepared release could not be deployed.",
     "No public demo video URL exists.",
-    "Strict no-input runtime validation fix is not deployed."
+    "Five live WebMCP checks for the deployed strict no-input guard remain."
   ],
   "user_input_requests": [
-    "Restore or reconnect the Sites project/control plane so the prepared release can be deployed publicly.",
     "Confirm the official submission-period dates.",
     "Record and upload the public demo video, then provide its URL.",
     "Confirm whether additional AI tools or personal attribution must be disclosed."
