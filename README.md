@@ -6,11 +6,11 @@ Tangle is a web app that allows the users to build and run Machine Learning pipe
 
 ## WebMCP hackathon demo
 
-This branch extends Tangle with an open browser-agent interface and a curated
-browser-native ML runner. A WebMCP-capable agent can inspect and edit the same
-visible graph as the person, validate it, request a one-time local run, and read
-bounded model, clustering, or embedding results. Agent edits use Tangle's normal
-undo history, and imported rows remain inside the page.
+This branch turns Tangle into a WebMCP workspace for practical machine learning.
+A person can ask an agent to help with work such as predictions, churn,
+forecasting, customer groups, or product relationships. The agent builds on the
+same visible canvas, the person approves each run, and imported rows stay inside
+the page.
 
 ![Tangle WebMCP commerce demo](submission/assets/gallery/01-home.png)
 
@@ -35,13 +35,11 @@ The registered tools are:
 `configure_task`, `connect_tasks`, `validate_pipeline`, `run_browser_pipeline`,
 `get_run_summary`, `inspect_model_metrics`, and `undo_pipeline_change`.
 
-### Demo workflows
+### Retail demo workflows
 
-- Compare logistic regression and a small decision tree for equipment failure or
-  customer churn, with recall-first model selection.
-- Cluster 1,800 synthetic commerce customers and inspect segment profiles.
-- Train a compact Product2Vec embedding from SKU co-purchase context and explore
-  learned neighbours.
+- Compare two prediction methods to spot customers who may leave.
+- Group 1,800 synthetic retail customers by shopping behaviour.
+- Learn which products are bought together and surface similar items.
 - Review charts and operational recommendations produced entirely in the browser.
 
 Example agent prompts:

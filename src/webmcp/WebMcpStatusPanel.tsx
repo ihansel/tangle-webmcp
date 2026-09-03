@@ -60,7 +60,7 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
           />
           <span className="min-w-0">
             <Text as="span" size="sm" weight="semibold" className="block">
-              WebMCP local runner
+              WebMCP ML runner
             </Text>
             <Text as="span" size="xs" tone="subdued" className="block truncate">
               {modelContextLabel}
@@ -83,7 +83,7 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                 tone="subdued"
                 className="block uppercase tracking-wide"
               >
-                Local data only
+                Runs in this browser
               </Text>
               <Text
                 as="span"
@@ -105,7 +105,7 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
               </Button>
             ) : (
               <Button className="w-full" size="xs" onClick={handleManualRun}>
-                Run locally
+                Run in browser
               </Button>
             )}
           </div>
@@ -240,9 +240,9 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                       <Text size="xs" weight="semibold" className="block">
                         {run.result.dimensions}D{" "}
                         {run.result.algorithm === "product2vec"
-                          ? "Product2Vec"
+                          ? "product"
                           : "text"}{" "}
-                        vectors
+                        relationships
                       </Text>
                       <Text size="xs" tone="subdued" className="block">
                         {run.result.training

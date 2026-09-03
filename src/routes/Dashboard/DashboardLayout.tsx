@@ -31,7 +31,7 @@ interface SidebarItem {
 const BASE_SIDEBAR_ITEMS: SidebarItem[] = [
   {
     to: APP_ROUTES.DASHBOARD,
-    label: "WebMCP Lab",
+    label: "WebMCP ML",
     icon: "LayoutDashboard",
     exact: true,
   },

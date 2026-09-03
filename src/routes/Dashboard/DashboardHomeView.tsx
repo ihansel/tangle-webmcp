@@ -10,9 +10,9 @@ import {
   USER_PIPELINES_LIST_NAME,
 } from "@/utils/constants";
 import {
-  DEMO_RECIPES,
   type DemoRecipe,
   type DemoRecipeId,
+  RETAIL_DEMO_RECIPES,
 } from "@/webmcp/demoRecipes";
 import { queueDemoRecipe } from "@/webmcp/pendingDemoRecipe";
 
@@ -27,18 +27,18 @@ function WorkflowPreview() {
   const steps = [
     {
       icon: "Database" as const,
-      label: "Northstar commerce",
-      detail: "1,800 customers",
+      label: "Ask a business question",
+      detail: "prediction · churn · forecasting",
     },
     {
       icon: "SlidersHorizontal" as const,
-      label: "Connect behaviour",
-      detail: "19,840 orders",
+      label: "Review the workflow",
+      detail: "clear steps on a visible canvas",
     },
     {
       icon: "GitCompareArrows" as const,
-      label: "Run three analyses",
-      detail: "segments · churn · products",
+      label: "Run and understand",
+      detail: "results, charts and next steps",
     },
   ];
 
@@ -47,10 +47,10 @@ function WorkflowPreview() {
       <div className="mb-7 flex items-center justify-between">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-            Agent-built commerce brief
+            A simple WebMCP flow
           </p>
           <p className="mt-1 text-sm font-medium text-slate-200">
-            Northstar customer intelligence
+            From question to useful result
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-emerald-300">
@@ -86,9 +86,11 @@ function WorkflowPreview() {
       <div className="mt-5 rounded-lg border border-emerald-400/25 bg-emerald-400/[0.07] p-4">
         <div className="flex items-center justify-between gap-4">
           <div>
-          <p className="text-xs text-emerald-300">Decision-ready outputs</p>
-          <p className="mt-1 text-base font-semibold text-white">
-              18 charts, tables and reports
+            <p className="text-xs text-emerald-300">
+              Clear results you can use
+            </p>
+            <p className="mt-1 text-base font-semibold text-white">
+              Charts, comparisons and next steps
             </p>
           </div>
           <div className="grid size-10 place-items-center rounded-full bg-emerald-400/15 text-emerald-300">
@@ -99,7 +101,7 @@ function WorkflowPreview() {
 
       <div className="mt-5 flex items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-500">
         <Icon name="ShieldCheck" size="sm" className="text-violet-300" />
-        Visible actions · one-run permission · normal Tangle undo
+        See every change · approve each run · undo anytime
       </div>
     </div>
   );
@@ -202,26 +204,26 @@ export function DashboardHomeView() {
             <div>
               <div className="mb-8 flex items-center gap-2 text-xs font-medium text-slate-400">
                 <span className="size-2 rounded-full bg-violet-400" />
-                WebMCP-enabled workspace
+                WebMCP for machine learning
               </div>
               <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl">
-                A commerce story agents can build, run and explain.
+                Build useful ML workflows with an agent.
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400">
-                Explore one synthetic retailer across customer segments, churn
-                risk and product relationships. Every graph is assembled
-                through WebMCP and runs without sending rows away.
+                Ask for a prediction, churn check, forecast or customer groups.
+                Your agent builds the steps on a canvas you can see, then runs
+                them in your browser without sending your data away.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button
                   size="lg"
                   className="bg-violet-500 text-white shadow-none hover:bg-violet-400"
-                  onClick={() => launchRecipe(DEMO_RECIPES[2])}
+                  onClick={() => launchRecipe(RETAIL_DEMO_RECIPES[1])}
                   disabled={launching !== null}
                 >
                   {launching === "segments"
                     ? "Building pipeline…"
-                    : "Explore customer segments"}
+                    : "Try customer grouping"}
                   {launching !== "segments" && <Icon name="ArrowRight" />}
                 </Button>
                 <Button
@@ -230,16 +232,16 @@ export function DashboardHomeView() {
                   className="border-slate-700 bg-transparent text-slate-100 hover:bg-slate-800 hover:text-white"
                   onClick={scrollToRecipes}
                 >
-                  Browse experiments
+                  See retail examples
                 </Button>
               </div>
             </div>
 
             <div className="mt-10 grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-5">
               {[
-                ["61k+", "commerce events"],
-                ["18", "visual outputs"],
-                ["100%", "local analysis"],
+                ["3", "retail examples"],
+                ["18", "charts and reports"],
+                ["100%", "in-browser runs"],
               ].map(([value, label]) => (
                 <div key={label} className="px-4 first:pl-0">
                   <p className="text-lg font-semibold text-slate-100">
@@ -257,15 +259,14 @@ export function DashboardHomeView() {
       <section className="mt-8 grid overflow-hidden rounded-xl border border-slate-800 bg-slate-950 text-white lg:grid-cols-[1.1fr_1.9fr]">
         <div className="border-b border-slate-800 p-6 lg:border-r lg:border-b-0 lg:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-300">
-            One connected dataset
+            Retail demo data
           </p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight">
-            Meet Northstar Outdoor Co.
+            Try it with Northstar Outdoor Co.
           </h2>
           <p className="mt-3 text-sm leading-6 text-slate-400">
-            A deterministic, privacy-safe retailer with two years of purchase
-            history, overlapping customer behaviours, probabilistic churn and
-            product co-purchase relationships.
+            A made-up retailer with two years of customer and purchase history.
+            It is large enough to tell a useful story and safe to explore.
           </p>
         </div>
         <div className="grid grid-cols-2 divide-x divide-y divide-slate-800 sm:grid-cols-4 sm:divide-y-0">
@@ -275,8 +276,13 @@ export function DashboardHomeView() {
             ["41,626", "line items"],
             ["160", "products"],
           ].map(([value, label]) => (
-            <div key={label} className="flex min-h-28 flex-col justify-end p-5 lg:p-6">
-              <p className="text-2xl font-semibold tracking-tight text-white">{value}</p>
+            <div
+              key={label}
+              className="flex min-h-28 flex-col justify-end p-5 lg:p-6"
+            >
+              <p className="text-2xl font-semibold tracking-tight text-white">
+                {value}
+              </p>
               <p className="mt-1 text-xs text-slate-500">{label}</p>
             </div>
           ))}
@@ -287,11 +293,11 @@ export function DashboardHomeView() {
         <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-              Choose an experiment
+              Choose a retail example
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-              Each recipe opens as a real Tangle graph. Edit the tasks, ask an
-              agent to inspect it, then run the workload locally.
+              Each example opens as a real Tangle workflow. Change the steps,
+              ask an agent to help, then run it in your browser.
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -301,7 +307,7 @@ export function DashboardHomeView() {
         </div>
 
         <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950 px-5 sm:px-6">
-          {DEMO_RECIPES.map((recipe) => (
+          {RETAIL_DEMO_RECIPES.map((recipe) => (
             <RecipeRow
               key={recipe.id}
               recipe={recipe}
@@ -318,25 +324,25 @@ export function DashboardHomeView() {
             Why WebMCP
           </p>
           <h2 className="mt-2 text-xl font-semibold tracking-tight">
-            Agentic work you can see and control
+            ML work you can see and control
           </h2>
         </div>
         <div className="grid gap-6 sm:grid-cols-3">
           {[
             [
               "MousePointerClick",
-              "Visible changes",
-              "Agents edit the same graph you do. Every task and connection appears on the canvas.",
+              "See every step",
+              "Your agent works on the same canvas you do. Every step and connection stays visible.",
             ],
             [
               "ShieldCheck",
-              "Permission at the edge",
-              "Graph edits are undoable. Browser runs require explicit one-time permission.",
+              "Stay in charge",
+              "Changes are undoable, and every browser run needs your one-time approval.",
             ],
             [
               "Cpu",
-              "Useful local compute",
-              "Models, clusters, and vectors run in a cancellable worker without sending rows away.",
+              "Keep data close",
+              "Predictions, customer groups and product matches run without sending rows away.",
             ],
           ].map(([icon, title, copy]) => (
             <div key={title}>

@@ -186,30 +186,30 @@ export const DEMO_RECIPES: DemoRecipe[] = [
   },
   {
     id: "churn",
-    title: "Find customers at risk of churn",
-    shortTitle: "Churn radar",
+    title: "Spot customers who may leave",
+    shortTitle: "Churn prediction",
     description:
-      "Score 1,800 shoppers using purchase behaviour, loyalty, service, and engagement signals.",
-    outcome: "Risk curves · drivers · intervention value",
-    eyebrow: "Customer intelligence",
+      "Compare two prediction methods using shopping, loyalty, service and engagement signals from 1,800 customers.",
+    outcome: "Risk groups · key reasons · who to contact",
+    eyebrow: "Prediction",
     icon: "UserRoundSearch",
     accent: "mint",
     pipelineName: "Customer churn radar",
-    steps: ["Load accounts", "Encode behaviour", "Rank by recall"],
+    steps: ["Load customers", "Compare predictions", "Review who needs help"],
     batch: classificationBatch("churn"),
   },
   {
     id: "segments",
-    title: "Segment customers by purchase behaviour",
-    shortTitle: "Purchase segments",
+    title: "Group customers by shopping behaviour",
+    shortTitle: "Customer groups",
     description:
-      "Discover useful cohorts across 1,800 customers from value, frequency, recency, returns, and engagement.",
-    outcome: "Customer map · heatmap · segment actions",
-    eyebrow: "Unsupervised learning",
+      "Find useful groups across 1,800 customers using spend, frequency, recent orders, returns and engagement.",
+    outcome: "Customer map · group profiles · next steps",
+    eyebrow: "Customer grouping",
     icon: "ChartScatter",
     accent: "amber",
     pipelineName: "Customer purchase segments",
-    steps: ["Load purchases", "Run K-means", "Profile cohorts"],
+    steps: ["Load purchases", "Find similar shoppers", "Name each group"],
     batch: {
       tasks: [
         {
@@ -237,7 +237,7 @@ export const DEMO_RECIPES: DemoRecipe[] = [
         {
           clientId: "cluster",
           componentId: "k-means",
-          name: "Find four customer segments",
+          name: "Group similar customers",
           configuration: {
             features:
               "orders,spend,avg_basket,discount_share,return_rate,days_since_order,email_engagement",
@@ -248,7 +248,7 @@ export const DEMO_RECIPES: DemoRecipe[] = [
         {
           clientId: "profile",
           componentId: "profile-clusters",
-          name: "Profile customer segments",
+          name: "Describe each customer group",
         },
       ],
       connections: [
@@ -281,16 +281,16 @@ export const DEMO_RECIPES: DemoRecipe[] = [
   },
   {
     id: "embeddings",
-    title: "Embed a product catalogue",
-    shortTitle: "SKU embeddings",
+    title: "Find products that belong together",
+    shortTitle: "Product relationships",
     description:
-      "Train a compact Product2Vec model from co-purchase context, then explore learned neighbours and bundle opportunities.",
-    outcome: "Training loss · product map · learned neighbours",
-    eyebrow: "Browser-trained embeddings",
+      "Learn which products are bought together, then find similar items and useful bundle ideas.",
+    outcome: "Product map · similar items · bundle ideas",
+    eyebrow: "Product matching",
     icon: "Boxes",
     accent: "sky",
     pipelineName: "Product SKU embeddings",
-    steps: ["Load catalogue", "Train Product2Vec", "Find neighbours"],
+    steps: ["Load products", "Learn purchase patterns", "Find similar items"],
     batch: {
       tasks: [
         {
@@ -304,7 +304,7 @@ export const DEMO_RECIPES: DemoRecipe[] = [
         {
           clientId: "embed",
           componentId: "product2vec",
-          name: "Train Product2Vec",
+          name: "Learn product relationships",
           configuration: {
             id_column: "sku",
             context_column: "copurchase_skus",
@@ -318,7 +318,7 @@ export const DEMO_RECIPES: DemoRecipe[] = [
         {
           clientId: "neighbors",
           componentId: "nearest-neighbors",
-          name: "Find learned neighbours",
+          name: "Find similar products",
           configuration: { neighbors: 3 },
         },
       ],
@@ -342,4 +342,8 @@ export const DEMO_RECIPES: DemoRecipe[] = [
 
 export const DEMO_RECIPE_BY_ID = new Map(
   DEMO_RECIPES.map((recipe) => [recipe.id, recipe]),
+);
+
+export const RETAIL_DEMO_RECIPES = DEMO_RECIPES.filter(
+  (recipe) => recipe.id !== "failure",
 );
