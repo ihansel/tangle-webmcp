@@ -1,0 +1,161 @@
+sku,name,category,family,description,price,margin,season,premium,copurchase_skus
+SKU-0001,Trail Runner Core,footwear,trail-runner,reliable balanced everyday trail running shoe grippy sole stable technical terrain,133,0.42,winter,no,SKU-0006|SKU-0003|SKU-0007
+SKU-0002,Trail Runner Pro,footwear,trail-runner,premium technical performance trail running shoe grippy sole stable technical terrain,183.1,0.37,shoulder,yes,SKU-0006|SKU-0020|SKU-0003
+SKU-0003,Trail Runner Lite,footwear,trail-runner,minimal lightweight packable trail running shoe grippy sole stable technical terrain,151.02,0.36,summer,no,SKU-0001|SKU-0002|SKU-0009
+SKU-0004,Trail Runner Eco,footwear,trail-runner,recycled durable lower impact trail running shoe grippy sole stable technical terrain,160.82,0.44,all-season,no,SKU-0008|SKU-0006|SKU-0005
+SKU-0005,Road Tempo Core,footwear,road-tempo,reliable balanced everyday road running shoe responsive foam daily speed training,115.13,0.33,summer,no,SKU-0006|SKU-0012|SKU-0004
+SKU-0006,Road Tempo Pro,footwear,road-tempo,premium technical performance road running shoe responsive foam daily speed training,165.92,0.44,summer,yes,SKU-0018|SKU-0002|SKU-0011
+SKU-0007,Road Tempo Lite,footwear,road-tempo,minimal lightweight packable road running shoe responsive foam daily speed training,139.39,0.3,winter,no,SKU-0014|SKU-0001|SKU-0012
+SKU-0008,Road Tempo Eco,footwear,road-tempo,recycled durable lower impact road running shoe responsive foam daily speed training,142.32,0.47,winter,no,SKU-0004|SKU-0019|SKU-0011
+SKU-0009,Hike Ridge Core,footwear,hike-ridge,reliable balanced everyday waterproof hiking boot ankle support rugged mountain trail,167.7,0.45,winter,no,SKU-0003|SKU-0016|SKU-0002
+SKU-0010,Hike Ridge Pro,footwear,hike-ridge,premium technical performance waterproof hiking boot ankle support rugged mountain trail,236.77,0.33,all-season,yes,SKU-0008|SKU-0006|SKU-0007
+SKU-0011,Hike Ridge Lite,footwear,hike-ridge,minimal lightweight packable waterproof hiking boot ankle support rugged mountain trail,200.83,0.5,shoulder,no,SKU-0016|SKU-0006|SKU-0008
+SKU-0012,Hike Ridge Eco,footwear,hike-ridge,recycled durable lower impact waterproof hiking boot ankle support rugged mountain trail,193.37,0.48,shoulder,no,SKU-0016|SKU-0005|SKU-0018
+SKU-0013,City Step Core,footwear,city-step,reliable balanced everyday comfortable everyday sneaker lightweight urban travel,101.38,0.43,summer,no,SKU-0003|SKU-0016|SKU-0020
+SKU-0014,City Step Pro,footwear,city-step,premium technical performance comfortable everyday sneaker lightweight urban travel,139.21,0.49,shoulder,yes,SKU-0007|SKU-0015|SKU-0016
+SKU-0015,City Step Lite,footwear,city-step,minimal lightweight packable comfortable everyday sneaker lightweight urban travel,116.99,0.32,summer,no,SKU-0014|SKU-0018|SKU-0011
+SKU-0016,City Step Eco,footwear,city-step,recycled durable lower impact comfortable everyday sneaker lightweight urban travel,133.34,0.54,all-season,no,SKU-0011|SKU-0012|SKU-0013
+SKU-0017,Recovery Slide Core,footwear,recovery-slide,reliable balanced everyday soft recovery sandal cushioned post workout comfort,61.75,0.4,summer,no,SKU-0020|SKU-0004|SKU-0016
+SKU-0018,Recovery Slide Pro,footwear,recovery-slide,premium technical performance soft recovery sandal cushioned post workout comfort,82.2,0.33,winter,yes,SKU-0006|SKU-0015|SKU-0011
+SKU-0019,Recovery Slide Lite,footwear,recovery-slide,minimal lightweight packable soft recovery sandal cushioned post workout comfort,74.54,0.42,shoulder,no,SKU-0008|SKU-0001|SKU-0006
+SKU-0020,Recovery Slide Eco,footwear,recovery-slide,recycled durable lower impact soft recovery sandal cushioned post workout comfort,74.78,0.43,all-season,no,SKU-0002|SKU-0018|SKU-0013
+SKU-0021,Alpine Shell Core,jackets,alpine-shell,reliable balanced everyday waterproof breathable mountain shell wet weather protection,250.77,0.47,shoulder,no,SKU-0023|SKU-0025|SKU-0036
+SKU-0022,Alpine Shell Pro,jackets,alpine-shell,premium technical performance waterproof breathable mountain shell wet weather protection,357.14,0.44,winter,yes,SKU-0040|SKU-0026|SKU-0036
+SKU-0023,Alpine Shell Lite,jackets,alpine-shell,minimal lightweight packable waterproof breathable mountain shell wet weather protection,305.88,0.31,winter,no,SKU-0036|SKU-0040|SKU-0021
+SKU-0024,Alpine Shell Eco,jackets,alpine-shell,recycled durable lower impact waterproof breathable mountain shell wet weather protection,325.44,0.39,winter,no,SKU-0031|SKU-0035|SKU-0032
+SKU-0025,Down Summit Core,jackets,down-summit,reliable balanced everyday warm insulated down jacket cold alpine conditions,285.92,0.4,summer,no,SKU-0029|SKU-0021|SKU-0038
+SKU-0026,Down Summit Pro,jackets,down-summit,premium technical performance warm insulated down jacket cold alpine conditions,406.7,0.46,winter,yes,SKU-0022|SKU-0036|SKU-0030
+SKU-0027,Down Summit Lite,jackets,down-summit,minimal lightweight packable warm insulated down jacket cold alpine conditions,337.46,0.49,shoulder,no,SKU-0040|SKU-0033|SKU-0023
+SKU-0028,Down Summit Eco,jackets,down-summit,recycled durable lower impact warm insulated down jacket cold alpine conditions,361.84,0.55,shoulder,no,SKU-0036|SKU-0025|SKU-0027
+SKU-0029,Fleece Grid Core,jackets,fleece-grid,reliable balanced everyday breathable grid fleece midlayer hiking climbing,133.16,0.4,all-season,no,SKU-0031|SKU-0025|SKU-0037
+SKU-0030,Fleece Grid Pro,jackets,fleece-grid,premium technical performance breathable grid fleece midlayer hiking climbing,187.1,0.36,winter,yes,SKU-0035|SKU-0026|SKU-0024
+SKU-0031,Fleece Grid Lite,jackets,fleece-grid,minimal lightweight packable breathable grid fleece midlayer hiking climbing,157.58,0.48,summer,no,SKU-0036|SKU-0029|SKU-0024
+SKU-0032,Fleece Grid Eco,jackets,fleece-grid,recycled durable lower impact breathable grid fleece midlayer hiking climbing,156.7,0.38,winter,no,SKU-0035|SKU-0024|SKU-0023
+SKU-0033,Wind Sprint Core,jackets,wind-sprint,reliable balanced everyday light packable wind jacket running exposed ridges,97.31,0.44,winter,no,SKU-0022|SKU-0027|SKU-0040
+SKU-0034,Wind Sprint Pro,jackets,wind-sprint,premium technical performance light packable wind jacket running exposed ridges,148.77,0.42,summer,yes,SKU-0024|SKU-0021|SKU-0023
+SKU-0035,Wind Sprint Lite,jackets,wind-sprint,minimal lightweight packable light packable wind jacket running exposed ridges,124.89,0.48,winter,no,SKU-0037|SKU-0030|SKU-0032
+SKU-0036,Wind Sprint Eco,jackets,wind-sprint,recycled durable lower impact light packable wind jacket running exposed ridges,133.09,0.51,shoulder,no,SKU-0023|SKU-0028|SKU-0031
+SKU-0037,Rain City Core,jackets,rain-city,reliable balanced everyday waterproof commuter rain jacket clean urban styling,190.71,0.38,winter,no,SKU-0035|SKU-0029|SKU-0040
+SKU-0038,Rain City Pro,jackets,rain-city,premium technical performance waterproof commuter rain jacket clean urban styling,260.09,0.56,shoulder,yes,SKU-0029|SKU-0025|SKU-0022
+SKU-0039,Rain City Lite,jackets,rain-city,minimal lightweight packable waterproof commuter rain jacket clean urban styling,220.04,0.31,all-season,no,SKU-0024|SKU-0027|SKU-0026
+SKU-0040,Rain City Eco,jackets,rain-city,recycled durable lower impact waterproof commuter rain jacket clean urban styling,243.53,0.31,shoulder,no,SKU-0023|SKU-0022|SKU-0037
+SKU-0041,Merino Base Core,apparel,merino-base,reliable balanced everyday soft merino wool base layer cool weather hiking,96.96,0.46,all-season,no,SKU-0043|SKU-0047|SKU-0059
+SKU-0042,Merino Base Pro,apparel,merino-base,premium technical performance soft merino wool base layer cool weather hiking,136.27,0.45,all-season,yes,SKU-0055|SKU-0053|SKU-0050
+SKU-0043,Merino Base Lite,apparel,merino-base,minimal lightweight packable soft merino wool base layer cool weather hiking,107.85,0.53,summer,no,SKU-0041|SKU-0059|SKU-0055
+SKU-0044,Merino Base Eco,apparel,merino-base,recycled durable lower impact soft merino wool base layer cool weather hiking,126.32,0.37,winter,no,SKU-0051|SKU-0047|SKU-0058
+SKU-0045,Trail Tee Core,apparel,trail-tee,reliable balanced everyday quick drying breathable running shirt warm conditions,52,0.36,shoulder,no,SKU-0055|SKU-0051|SKU-0053
+SKU-0046,Trail Tee Pro,apparel,trail-tee,premium technical performance quick drying breathable running shirt warm conditions,81.54,0.42,winter,yes,SKU-0051|SKU-0052|SKU-0058
+SKU-0047,Trail Tee Lite,apparel,trail-tee,minimal lightweight packable quick drying breathable running shirt warm conditions,67.05,0.38,shoulder,no,SKU-0052|SKU-0041|SKU-0056
+SKU-0048,Trail Tee Eco,apparel,trail-tee,recycled durable lower impact quick drying breathable running shirt warm conditions,66.49,0.29,summer,no,SKU-0053|SKU-0060|SKU-0052
+SKU-0049,Trek Pant Core,apparel,trek-pant,reliable balanced everyday durable stretch hiking trousers weather resistance,112.82,0.48,summer,no,SKU-0052|SKU-0051|SKU-0047
+SKU-0050,Trek Pant Pro,apparel,trek-pant,premium technical performance durable stretch hiking trousers weather resistance,159.52,0.53,shoulder,yes,SKU-0042|SKU-0045|SKU-0054
+SKU-0051,Trek Pant Lite,apparel,trek-pant,minimal lightweight packable durable stretch hiking trousers weather resistance,140.01,0.31,shoulder,no,SKU-0046|SKU-0056|SKU-0045
+SKU-0052,Trek Pant Eco,apparel,trek-pant,recycled durable lower impact durable stretch hiking trousers weather resistance,144.79,0.34,all-season,no,SKU-0047|SKU-0059|SKU-0046
+SKU-0053,Summit Short Core,apparel,summit-short,reliable balanced everyday lightweight climbing short reinforced pocket,66.11,0.4,all-season,no,SKU-0054|SKU-0042|SKU-0045
+SKU-0054,Summit Short Pro,apparel,summit-short,premium technical performance lightweight climbing short reinforced pocket,102.6,0.43,summer,yes,SKU-0053|SKU-0058|SKU-0050
+SKU-0055,Summit Short Lite,apparel,summit-short,minimal lightweight packable lightweight climbing short reinforced pocket,83.58,0.33,shoulder,no,SKU-0045|SKU-0042|SKU-0056
+SKU-0056,Summit Short Eco,apparel,summit-short,recycled durable lower impact lightweight climbing short reinforced pocket,97.63,0.4,all-season,no,SKU-0051|SKU-0055|SKU-0047
+SKU-0057,Thermal Tight Core,apparel,thermal-tight,reliable balanced everyday warm stretch running tight reflective winter training,83.89,0.52,summer,no,SKU-0047|SKU-0052|SKU-0059
+SKU-0058,Thermal Tight Pro,apparel,thermal-tight,premium technical performance warm stretch running tight reflective winter training,116.87,0.54,all-season,yes,SKU-0046|SKU-0047|SKU-0054
+SKU-0059,Thermal Tight Lite,apparel,thermal-tight,minimal lightweight packable warm stretch running tight reflective winter training,99.25,0.42,winter,no,SKU-0043|SKU-0052|SKU-0041
+SKU-0060,Thermal Tight Eco,apparel,thermal-tight,recycled durable lower impact warm stretch running tight reflective winter training,117.19,0.39,winter,no,SKU-0043|SKU-0051|SKU-0047
+SKU-0061,Daypack Core,packs,daypack,reliable balanced everyday light hiking daypack breathable back panel bottle pockets,118.63,0.42,winter,no,SKU-0065|SKU-0064|SKU-0079
+SKU-0062,Daypack Pro,packs,daypack,premium technical performance light hiking daypack breathable back panel bottle pockets,156.68,0.41,summer,yes,SKU-0074|SKU-0069|SKU-0075
+SKU-0063,Daypack Lite,packs,daypack,minimal lightweight packable light hiking daypack breathable back panel bottle pockets,141.27,0.32,summer,no,SKU-0080|SKU-0061|SKU-0064
+SKU-0064,Daypack Eco,packs,daypack,recycled durable lower impact light hiking daypack breathable back panel bottle pockets,148.12,0.44,summer,no,SKU-0075|SKU-0061|SKU-0065
+SKU-0065,Fastpack Core,packs,fastpack,reliable balanced everyday trail fastpack running vest harness gear storage,163.21,0.25,summer,no,SKU-0061|SKU-0064|SKU-0073
+SKU-0066,Fastpack Pro,packs,fastpack,premium technical performance trail fastpack running vest harness gear storage,218.84,0.41,all-season,yes,SKU-0069|SKU-0061|SKU-0070
+SKU-0067,Fastpack Lite,packs,fastpack,minimal lightweight packable trail fastpack running vest harness gear storage,190.35,0.4,all-season,no,SKU-0069|SKU-0077|SKU-0065
+SKU-0068,Fastpack Eco,packs,fastpack,recycled durable lower impact trail fastpack running vest harness gear storage,197.37,0.4,all-season,no,SKU-0075|SKU-0070|SKU-0076
+SKU-0069,Trek Pack Core,packs,trek-pack,reliable balanced everyday large trekking backpack adjustable harness rain cover,238.27,0.53,shoulder,no,SKU-0075|SKU-0070|SKU-0080
+SKU-0070,Trek Pack Pro,packs,trek-pack,premium technical performance large trekking backpack adjustable harness rain cover,334.25,0.43,winter,yes,SKU-0069|SKU-0072|SKU-0074
+SKU-0071,Trek Pack Lite,packs,trek-pack,minimal lightweight packable large trekking backpack adjustable harness rain cover,277.47,0.48,summer,no,SKU-0069|SKU-0070|SKU-0074
+SKU-0072,Trek Pack Eco,packs,trek-pack,recycled durable lower impact large trekking backpack adjustable harness rain cover,304.22,0.4,summer,no,SKU-0070|SKU-0073|SKU-0069
+SKU-0073,Commuter Roll Core,packs,commuter-roll,reliable balanced everyday waterproof urban rolltop backpack laptop sleeve,143.22,0.53,shoulder,no,SKU-0072|SKU-0065|SKU-0078
+SKU-0074,Commuter Roll Pro,packs,commuter-roll,premium technical performance waterproof urban rolltop backpack laptop sleeve,191.19,0.3,shoulder,yes,SKU-0062|SKU-0080|SKU-0070
+SKU-0075,Commuter Roll Lite,packs,commuter-roll,minimal lightweight packable waterproof urban rolltop backpack laptop sleeve,167.58,0.43,all-season,no,SKU-0069|SKU-0079|SKU-0064
+SKU-0076,Commuter Roll Eco,packs,commuter-roll,recycled durable lower impact waterproof urban rolltop backpack laptop sleeve,177.9,0.35,winter,no,SKU-0075|SKU-0072|SKU-0068
+SKU-0077,Travel Duffel Core,packs,travel-duffel,reliable balanced everyday durable carry duffel organised adventure travel,169.36,0.43,all-season,no,SKU-0070|SKU-0073|SKU-0063
+SKU-0078,Travel Duffel Pro,packs,travel-duffel,premium technical performance durable carry duffel organised adventure travel,241.82,0.57,shoulder,yes,SKU-0079|SKU-0064|SKU-0073
+SKU-0079,Travel Duffel Lite,packs,travel-duffel,minimal lightweight packable durable carry duffel organised adventure travel,193.53,0.34,shoulder,no,SKU-0075|SKU-0078|SKU-0061
+SKU-0080,Travel Duffel Eco,packs,travel-duffel,recycled durable lower impact durable carry duffel organised adventure travel,207.88,0.42,shoulder,no,SKU-0069|SKU-0063|SKU-0074
+SKU-0081,Camp Mug Core,camp,camp-mug,reliable balanced everyday stainless insulated camping mug hot drinks outdoors,25.9,0.25,summer,no,SKU-0088|SKU-0092|SKU-0098
+SKU-0082,Camp Mug Pro,camp,camp-mug,premium technical performance stainless insulated camping mug hot drinks outdoors,44.27,0.45,winter,yes,SKU-0088|SKU-0094|SKU-0084
+SKU-0083,Camp Mug Lite,camp,camp-mug,minimal lightweight packable stainless insulated camping mug hot drinks outdoors,36.72,0.25,winter,no,SKU-0100|SKU-0092|SKU-0082
+SKU-0084,Camp Mug Eco,camp,camp-mug,recycled durable lower impact stainless insulated camping mug hot drinks outdoors,45.25,0.48,shoulder,no,SKU-0097|SKU-0094|SKU-0088
+SKU-0085,Camp Flask Core,camp,camp-flask,reliable balanced everyday stainless insulated flask hot cold drinks,41.26,0.49,summer,no,SKU-0094|SKU-0092|SKU-0091
+SKU-0086,Camp Flask Pro,camp,camp-flask,premium technical performance stainless insulated flask hot cold drinks,65.05,0.36,shoulder,yes,SKU-0091|SKU-0090|SKU-0087
+SKU-0087,Camp Flask Lite,camp,camp-flask,minimal lightweight packable stainless insulated flask hot cold drinks,50.18,0.39,all-season,no,SKU-0089|SKU-0094|SKU-0086
+SKU-0088,Camp Flask Eco,camp,camp-flask,recycled durable lower impact stainless insulated flask hot cold drinks,53.27,0.27,summer,no,SKU-0094|SKU-0100|SKU-0081
+SKU-0089,Cook Set Core,camp,cook-set,reliable balanced everyday compact nesting camp cookware lightweight stove meals,83.59,0.62,all-season,no,SKU-0087|SKU-0090|SKU-0081
+SKU-0090,Cook Set Pro,camp,cook-set,premium technical performance compact nesting camp cookware lightweight stove meals,113.94,0.5,summer,yes,SKU-0084|SKU-0091|SKU-0086
+SKU-0091,Cook Set Lite,camp,cook-set,minimal lightweight packable compact nesting camp cookware lightweight stove meals,100.53,0.54,summer,no,SKU-0088|SKU-0090|SKU-0086
+SKU-0092,Cook Set Eco,camp,cook-set,recycled durable lower impact compact nesting camp cookware lightweight stove meals,104.19,0.37,shoulder,no,SKU-0096|SKU-0081|SKU-0084
+SKU-0093,Base Lantern Core,camp,base-lantern,reliable balanced everyday rechargeable camp lantern warm dimmable light,71.41,0.5,all-season,no,SKU-0094|SKU-0084|SKU-0081
+SKU-0094,Base Lantern Pro,camp,base-lantern,premium technical performance rechargeable camp lantern warm dimmable light,90.37,0.41,winter,yes,SKU-0088|SKU-0084|SKU-0082
+SKU-0095,Base Lantern Lite,camp,base-lantern,minimal lightweight packable rechargeable camp lantern warm dimmable light,83.24,0.52,winter,no,SKU-0099|SKU-0094|SKU-0096
+SKU-0096,Base Lantern Eco,camp,base-lantern,recycled durable lower impact rechargeable camp lantern warm dimmable light,81.9,0.44,winter,no,SKU-0092|SKU-0088|SKU-0098
+SKU-0097,Trail Chair Core,camp,trail-chair,reliable balanced everyday packable lightweight camp chair strong aluminium frame,100.31,0.54,all-season,no,SKU-0084|SKU-0094|SKU-0100
+SKU-0098,Trail Chair Pro,camp,trail-chair,premium technical performance packable lightweight camp chair strong aluminium frame,135.02,0.46,winter,yes,SKU-0081|SKU-0096|SKU-0085
+SKU-0099,Trail Chair Lite,camp,trail-chair,minimal lightweight packable packable lightweight camp chair strong aluminium frame,109.43,0.43,winter,no,SKU-0095|SKU-0094|SKU-0081
+SKU-0100,Trail Chair Eco,camp,trail-chair,recycled durable lower impact packable lightweight camp chair strong aluminium frame,116.72,0.44,all-season,no,SKU-0088|SKU-0083|SKU-0091
+SKU-0101,Trail Bottle Core,hydration,trail-bottle,reliable balanced everyday light reusable water bottle hiking running,26.95,0.42,shoulder,no,SKU-0116|SKU-0118|SKU-0105
+SKU-0102,Trail Bottle Pro,hydration,trail-bottle,premium technical performance light reusable water bottle hiking running,41.9,0.42,all-season,yes,SKU-0112|SKU-0108|SKU-0103
+SKU-0103,Trail Bottle Lite,hydration,trail-bottle,minimal lightweight packable light reusable water bottle hiking running,29.84,0.41,summer,no,SKU-0118|SKU-0102|SKU-0108
+SKU-0104,Trail Bottle Eco,hydration,trail-bottle,recycled durable lower impact light reusable water bottle hiking running,36.85,0.3,shoulder,no,SKU-0111|SKU-0105|SKU-0112
+SKU-0105,Hydration Vest Core,hydration,hydration-vest,reliable balanced everyday running hydration vest soft flasks gear pockets,135.54,0.45,winter,no,SKU-0114|SKU-0118|SKU-0104
+SKU-0106,Hydration Vest Pro,hydration,hydration-vest,premium technical performance running hydration vest soft flasks gear pockets,197.44,0.41,all-season,yes,SKU-0114|SKU-0109|SKU-0111
+SKU-0107,Hydration Vest Lite,hydration,hydration-vest,minimal lightweight packable running hydration vest soft flasks gear pockets,159.29,0.49,summer,no,SKU-0112|SKU-0110|SKU-0106
+SKU-0108,Hydration Vest Eco,hydration,hydration-vest,recycled durable lower impact running hydration vest soft flasks gear pockets,170.82,0.45,summer,no,SKU-0110|SKU-0112|SKU-0114
+SKU-0109,Filter Flow Core,hydration,filter-flow,reliable balanced everyday compact water filter safe backcountry hydration,62.62,0.41,all-season,no,SKU-0112|SKU-0114|SKU-0106
+SKU-0110,Filter Flow Pro,hydration,filter-flow,premium technical performance compact water filter safe backcountry hydration,88.16,0.43,all-season,yes,SKU-0108|SKU-0107|SKU-0112
+SKU-0111,Filter Flow Lite,hydration,filter-flow,minimal lightweight packable compact water filter safe backcountry hydration,78.52,0.29,all-season,no,SKU-0114|SKU-0104|SKU-0116
+SKU-0112,Filter Flow Eco,hydration,filter-flow,recycled durable lower impact compact water filter safe backcountry hydration,83.22,0.39,all-season,no,SKU-0109|SKU-0115|SKU-0102
+SKU-0113,Reservoir Core,hydration,reservoir,reliable balanced everyday leakproof hydration bladder backpack compatible,57.68,0.47,winter,no,SKU-0112|SKU-0106|SKU-0111
+SKU-0114,Reservoir Pro,hydration,reservoir,premium technical performance leakproof hydration bladder backpack compatible,67.53,0.49,all-season,yes,SKU-0111|SKU-0112|SKU-0105
+SKU-0115,Reservoir Lite,hydration,reservoir,minimal lightweight packable leakproof hydration bladder backpack compatible,57.25,0.24,all-season,no,SKU-0112|SKU-0102|SKU-0119
+SKU-0116,Reservoir Eco,hydration,reservoir,recycled durable lower impact leakproof hydration bladder backpack compatible,63.27,0.48,shoulder,no,SKU-0114|SKU-0111|SKU-0101
+SKU-0117,Thermal Tumbler Core,hydration,thermal-tumbler,reliable balanced everyday insulated travel tumbler durable all day drinks,35.61,0.53,shoulder,no,SKU-0109|SKU-0106|SKU-0105
+SKU-0118,Thermal Tumbler Pro,hydration,thermal-tumbler,premium technical performance insulated travel tumbler durable all day drinks,55.64,0.3,shoulder,yes,SKU-0103|SKU-0105|SKU-0108
+SKU-0119,Thermal Tumbler Lite,hydration,thermal-tumbler,minimal lightweight packable insulated travel tumbler durable all day drinks,42.21,0.32,all-season,no,SKU-0118|SKU-0112|SKU-0115
+SKU-0120,Thermal Tumbler Eco,hydration,thermal-tumbler,recycled durable lower impact insulated travel tumbler durable all day drinks,49.71,0.42,all-season,no,SKU-0112|SKU-0114|SKU-0109
+SKU-0121,Summit Cap Core,accessories,summit-cap,reliable balanced everyday light sun cap breathable trail protection,27.99,0.54,summer,no,SKU-0135|SKU-0123|SKU-0133
+SKU-0122,Summit Cap Pro,accessories,summit-cap,premium technical performance light sun cap breathable trail protection,53.06,0.5,all-season,yes,SKU-0138|SKU-0126|SKU-0129
+SKU-0123,Summit Cap Lite,accessories,summit-cap,minimal lightweight packable light sun cap breathable trail protection,39.22,0.56,shoulder,no,SKU-0134|SKU-0130|SKU-0137
+SKU-0124,Summit Cap Eco,accessories,summit-cap,recycled durable lower impact light sun cap breathable trail protection,44.38,0.35,all-season,no,SKU-0138|SKU-0135|SKU-0132
+SKU-0125,Merino Sock Core,accessories,merino-sock,reliable balanced everyday cushioned merino hiking sock moisture control,19.75,0.43,winter,no,SKU-0126|SKU-0133|SKU-0129
+SKU-0126,Merino Sock Pro,accessories,merino-sock,premium technical performance cushioned merino hiking sock moisture control,29.24,0.51,shoulder,yes,SKU-0125|SKU-0122|SKU-0123
+SKU-0127,Merino Sock Lite,accessories,merino-sock,minimal lightweight packable cushioned merino hiking sock moisture control,25.99,0.37,all-season,no,SKU-0139|SKU-0137|SKU-0134
+SKU-0128,Merino Sock Eco,accessories,merino-sock,recycled durable lower impact cushioned merino hiking sock moisture control,30,0.48,shoulder,no,SKU-0131|SKU-0139|SKU-0126
+SKU-0129,Trail Pole Core,accessories,trail-pole,reliable balanced everyday adjustable carbon trekking pole stable steep terrain,121.95,0.34,summer,no,SKU-0137|SKU-0130|SKU-0131
+SKU-0130,Trail Pole Pro,accessories,trail-pole,premium technical performance adjustable carbon trekking pole stable steep terrain,149.02,0.46,winter,yes,SKU-0123|SKU-0129|SKU-0140
+SKU-0131,Trail Pole Lite,accessories,trail-pole,minimal lightweight packable adjustable carbon trekking pole stable steep terrain,131.35,0.51,all-season,no,SKU-0128|SKU-0129|SKU-0122
+SKU-0132,Trail Pole Eco,accessories,trail-pole,recycled durable lower impact adjustable carbon trekking pole stable steep terrain,135.33,0.46,winter,no,SKU-0138|SKU-0123|SKU-0140
+SKU-0133,Head Torch Core,accessories,head-torch,reliable balanced everyday rechargeable headlamp bright trail night camp,61.49,0.54,winter,no,SKU-0125|SKU-0140|SKU-0122
+SKU-0134,Head Torch Pro,accessories,head-torch,premium technical performance rechargeable headlamp bright trail night camp,82.17,0.47,all-season,yes,SKU-0123|SKU-0122|SKU-0127
+SKU-0135,Head Torch Lite,accessories,head-torch,minimal lightweight packable rechargeable headlamp bright trail night camp,73.75,0.49,shoulder,no,SKU-0124|SKU-0139|SKU-0137
+SKU-0136,Head Torch Eco,accessories,head-torch,recycled durable lower impact rechargeable headlamp bright trail night camp,76.52,0.37,winter,no,SKU-0138|SKU-0134|SKU-0122
+SKU-0137,Dry Bag Core,accessories,dry-bag,reliable balanced everyday waterproof rolltop dry bag protect adventure gear,42.18,0.33,summer,no,SKU-0129|SKU-0123|SKU-0130
+SKU-0138,Dry Bag Pro,accessories,dry-bag,premium technical performance waterproof rolltop dry bag protect adventure gear,58.52,0.35,winter,yes,SKU-0132|SKU-0124|SKU-0122
+SKU-0139,Dry Bag Lite,accessories,dry-bag,minimal lightweight packable waterproof rolltop dry bag protect adventure gear,47.5,0.49,winter,no,SKU-0127|SKU-0135|SKU-0138
+SKU-0140,Dry Bag Eco,accessories,dry-bag,recycled durable lower impact waterproof rolltop dry bag protect adventure gear,48.64,0.45,summer,no,SKU-0130|SKU-0132|SKU-0133
+SKU-0141,Massage Roll Core,recovery,massage-roll,reliable balanced everyday firm recovery roller mobility tired muscles,35.98,0.46,all-season,no,SKU-0156|SKU-0151|SKU-0150
+SKU-0142,Massage Roll Pro,recovery,massage-roll,premium technical performance firm recovery roller mobility tired muscles,61.27,0.38,winter,yes,SKU-0143|SKU-0151|SKU-0157
+SKU-0143,Massage Roll Lite,recovery,massage-roll,minimal lightweight packable firm recovery roller mobility tired muscles,40.35,0.48,summer,no,SKU-0147|SKU-0142|SKU-0145
+SKU-0144,Massage Roll Eco,recovery,massage-roll,recycled durable lower impact firm recovery roller mobility tired muscles,50.15,0.35,shoulder,no,SKU-0156|SKU-0151|SKU-0148
+SKU-0145,Recovery Ball Core,recovery,recovery-ball,reliable balanced everyday targeted massage ball portable muscle release,14.16,0.48,summer,no,SKU-0143|SKU-0157|SKU-0147
+SKU-0146,Recovery Ball Pro,recovery,recovery-ball,premium technical performance targeted massage ball portable muscle release,30.92,0.32,shoulder,yes,SKU-0154|SKU-0150|SKU-0159
+SKU-0147,Recovery Ball Lite,recovery,recovery-ball,minimal lightweight packable targeted massage ball portable muscle release,20,0.38,winter,no,SKU-0143|SKU-0154|SKU-0156
+SKU-0148,Recovery Ball Eco,recovery,recovery-ball,recycled durable lower impact targeted massage ball portable muscle release,23.72,0.47,all-season,no,SKU-0152|SKU-0144|SKU-0153
+SKU-0149,Stretch Band Core,recovery,stretch-band,reliable balanced everyday resistance stretch band warmup recovery mobility,27.47,0.43,winter,no,SKU-0158|SKU-0141|SKU-0157
+SKU-0150,Stretch Band Pro,recovery,stretch-band,premium technical performance resistance stretch band warmup recovery mobility,41.03,0.45,shoulder,yes,SKU-0151|SKU-0141|SKU-0159
+SKU-0151,Stretch Band Lite,recovery,stretch-band,minimal lightweight packable resistance stretch band warmup recovery mobility,34.26,0.43,all-season,no,SKU-0155|SKU-0150|SKU-0141
+SKU-0152,Stretch Band Eco,recovery,stretch-band,recycled durable lower impact resistance stretch band warmup recovery mobility,38.01,0.35,all-season,no,SKU-0148|SKU-0151|SKU-0143
+SKU-0153,Sleep Mask Core,recovery,sleep-mask,reliable balanced everyday soft blackout travel sleep mask recovery,23.03,0.5,winter,no,SKU-0148|SKU-0144|SKU-0147
+SKU-0154,Sleep Mask Pro,recovery,sleep-mask,premium technical performance soft blackout travel sleep mask recovery,32.51,0.41,winter,yes,SKU-0147|SKU-0146|SKU-0148
+SKU-0155,Sleep Mask Lite,recovery,sleep-mask,minimal lightweight packable soft blackout travel sleep mask recovery,32.13,0.41,winter,no,SKU-0151|SKU-0156|SKU-0157
+SKU-0156,Sleep Mask Eco,recovery,sleep-mask,recycled durable lower impact soft blackout travel sleep mask recovery,32.32,0.49,winter,no,SKU-0141|SKU-0144|SKU-0155
+SKU-0157,Heat Wrap Core,recovery,heat-wrap,reliable balanced everyday reusable warm muscle wrap post adventure recovery,51.65,0.5,winter,no,SKU-0145|SKU-0141|SKU-0142
+SKU-0158,Heat Wrap Pro,recovery,heat-wrap,premium technical performance reusable warm muscle wrap post adventure recovery,75.47,0.42,shoulder,yes,SKU-0147|SKU-0157|SKU-0159
+SKU-0159,Heat Wrap Lite,recovery,heat-wrap,minimal lightweight packable reusable warm muscle wrap post adventure recovery,63.41,0.43,winter,no,SKU-0150|SKU-0144|SKU-0146
+SKU-0160,Heat Wrap Eco,recovery,heat-wrap,recycled durable lower impact reusable warm muscle wrap post adventure recovery,65.65,0.41,all-season,no,SKU-0154|SKU-0151|SKU-0144

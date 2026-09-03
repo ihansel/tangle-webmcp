@@ -24,9 +24,9 @@ export interface CuratedComponent {
 const components: CuratedComponent[] = [
   {
     id: "load-csv",
-    name: "Load equipment CSV",
+    name: "Load local CSV",
     description:
-      "Load the compact built-in equipment-failure CSV locally in the browser.",
+      "Load one of the bundled privacy-safe datasets locally in the browser.",
     category: "data",
     inputs: [
       {
@@ -156,7 +156,8 @@ const components: CuratedComponent[] = [
       {
         name: "features",
         type: "String",
-        default: "orders,spend,avg_basket,discount_share,days_since_order",
+        default:
+          "orders,spend,avg_basket,discount_share,return_rate,days_since_order,email_engagement",
       },
       { name: "clusters", type: "Integer", default: "4" },
       { name: "seed", type: "Integer", default: "42" },
@@ -189,7 +190,7 @@ const components: CuratedComponent[] = [
         type: "String",
         default: "name,category,description",
       },
-      { name: "dimensions", type: "Integer", default: "24" },
+      { name: "dimensions", type: "Integer", default: "32" },
     ],
     outputs: [{ name: "vectors", type: "Embeddings" }],
   },
@@ -201,7 +202,7 @@ const components: CuratedComponent[] = [
     category: "embeddings",
     inputs: [
       { name: "vectors", type: "Embeddings" },
-      { name: "neighbors", type: "Integer", default: "1" },
+      { name: "neighbors", type: "Integer", default: "3" },
     ],
     outputs: [{ name: "matches", type: "Report" }],
   },

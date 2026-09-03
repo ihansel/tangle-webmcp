@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "seed": 347727,
+  "anchorDate": "2026-06-30T12:00:00.000Z",
+  "tables": {
+    "customers.csv": {
+      "rowCount": 1800,
+      "columns": [
+        "customer_id",
+        "region",
+        "acquisition_channel",
+        "membership_tier",
+        "preferred_category",
+        "tenure_months",
+        "orders",
+        "spend",
+        "avg_basket",
+        "discount_share",
+        "return_rate",
+        "support_tickets",
+        "days_since_order",
+        "email_engagement",
+        "satisfaction_score",
+        "lifetime_value",
+        "churned",
+        "latent_segment",
+        "recommended_action"
+      ]
+    },
+    "orders.csv": {
+      "rowCount": 19840,
+      "columns": [
+        "order_id",
+        "customer_id",
+        "order_date",
+        "sales_channel",
+        "campaign",
+        "discount_rate",
+        "order_total",
+        "items",
+        "returned"
+      ]
+    },
+    "order-items.csv": {
+      "rowCount": 41626,
+      "columns": [
+        "line_item_id",
+        "order_id",
+        "customer_id",
+        "sku",
+        "quantity",
+        "item_revenue",
+        "category"
+      ]
+    },
+    "products.csv": {
+      "rowCount": 160,
+      "columns": [
+        "sku",
+        "name",
+        "category",
+        "family",
+        "description",
+        "price",
+        "margin",
+        "season",
+        "premium",
+        "copurchase_skus"
+      ]
+    }
+  }
+}

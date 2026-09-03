@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
+import { WebMcpReportDialog } from "./reporting/WebMcpReportDialog";
 import type { WebMcpRegistrationState } from "./useWebMcp";
 import type { WebMcpAdapter } from "./WebMcpAdapter";
 
@@ -262,6 +263,7 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                   </div>
                 </>
               )}
+              <WebMcpReportDialog result={run.result} />
             </div>
           )}
 

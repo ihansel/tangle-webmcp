@@ -95,18 +95,16 @@ const classificationConnections: AddPipelineTasksInput["connections"] = [
 
 function classificationBatch(kind: "failure" | "churn"): AddPipelineTasksInput {
   const churn = kind === "churn";
-  const target = churn ? "churn" : "failure";
+  const target = churn ? "churned" : "failure";
   return {
     tasks: [
       {
         clientId: "load",
         componentId: "load-csv",
-        name: churn
-          ? "Load customer subscriptions"
-          : "Load equipment telemetry",
+        name: churn ? "Load Northstar customers" : "Load equipment telemetry",
         configuration: {
           dataset_path: churn
-            ? "/datasets/customer-churn.csv"
+            ? "/datasets/northstar-commerce/customers.csv"
             : "/datasets/equipment-failure.csv",
         },
       },
@@ -116,7 +114,7 @@ function classificationBatch(kind: "failure" | "churn"): AddPipelineTasksInput {
         name: churn ? "Select retention signals" : "Select sensor columns",
         configuration: {
           columns: churn
-            ? "tenure_months,monthly_spend,support_tickets,logins_30d,nps,contract_type,plan,region,churn"
+            ? "customer_id,region,acquisition_channel,membership_tier,preferred_category,tenure_months,orders,spend,avg_basket,discount_share,return_rate,support_tickets,days_since_order,email_engagement,satisfaction_score,lifetime_value,churned,latent_segment,recommended_action"
             : "air_temperature,process_temperature,rotational_speed,torque,tool_wear,machine_type,failure",
         },
       },
@@ -130,7 +128,9 @@ function classificationBatch(kind: "failure" | "churn"): AddPipelineTasksInput {
         componentId: "encode-categories",
         name: churn ? "Encode customer attributes" : "Encode machine type",
         configuration: {
-          columns: churn ? "contract_type,plan,region" : "machine_type",
+          columns: churn
+            ? "region,acquisition_channel,membership_tier,preferred_category"
+            : "machine_type",
         },
       },
       {
@@ -189,8 +189,8 @@ export const DEMO_RECIPES: DemoRecipe[] = [
     title: "Find customers at risk of churn",
     shortTitle: "Churn radar",
     description:
-      "Combine subscription behaviour and support signals to identify accounts that need attention early.",
-    outcome: "Two models · retention-ready metrics",
+      "Score 1,800 shoppers using purchase behaviour, loyalty, service, and engagement signals.",
+    outcome: "Risk curves · drivers · intervention value",
     eyebrow: "Customer intelligence",
     icon: "UserRoundSearch",
     accent: "mint",
@@ -203,8 +203,8 @@ export const DEMO_RECIPES: DemoRecipe[] = [
     title: "Segment customers by purchase behaviour",
     shortTitle: "Purchase segments",
     description:
-      "Discover useful cohorts from order frequency, spend, basket size, discount use, and recency.",
-    outcome: "4 segments · silhouette quality score",
+      "Discover useful cohorts across 1,800 customers from value, frequency, recency, returns, and engagement.",
+    outcome: "Customer map · heatmap · segment actions",
     eyebrow: "Unsupervised learning",
     icon: "ChartScatter",
     accent: "amber",
@@ -216,7 +216,9 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           clientId: "load",
           componentId: "load-csv",
           name: "Load customer purchases",
-          configuration: { dataset_path: "/datasets/customer-purchases.csv" },
+          configuration: {
+            dataset_path: "/datasets/northstar-commerce/customers.csv",
+          },
         },
         {
           clientId: "select",
@@ -224,7 +226,7 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           name: "Select purchase signals",
           configuration: {
             columns:
-              "customer_id,orders,spend,avg_basket,discount_share,days_since_order",
+              "customer_id,orders,spend,avg_basket,discount_share,return_rate,days_since_order,email_engagement,lifetime_value,latent_segment,recommended_action",
           },
         },
         {
@@ -237,7 +239,8 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           componentId: "k-means",
           name: "Find four customer segments",
           configuration: {
-            features: "orders,spend,avg_basket,discount_share,days_since_order",
+            features:
+              "orders,spend,avg_basket,discount_share,return_rate,days_since_order,email_engagement",
             clusters: 4,
             seed: 42,
           },
@@ -281,8 +284,8 @@ export const DEMO_RECIPES: DemoRecipe[] = [
     title: "Embed a product catalogue",
     shortTitle: "SKU embeddings",
     description:
-      "Turn catalogue text into local vectors and surface semantic product neighbours without an external API.",
-    outcome: "24 dimensions · cosine neighbours",
+      "Map 160 products into local vectors, explore neighbours, category cohesion, and co-purchase links.",
+    outcome: "Product map · similarity · co-purchase network",
     eyebrow: "Vector similarity",
     icon: "Boxes",
     accent: "sky",
@@ -294,7 +297,9 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           clientId: "load",
           componentId: "load-csv",
           name: "Load product catalogue",
-          configuration: { dataset_path: "/datasets/product-catalog.csv" },
+          configuration: {
+            dataset_path: "/datasets/northstar-commerce/products.csv",
+          },
         },
         {
           clientId: "embed",
@@ -303,13 +308,14 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           configuration: {
             id_column: "sku",
             text_columns: "name,category,description",
-            dimensions: 24,
+            dimensions: 32,
           },
         },
         {
           clientId: "neighbors",
           componentId: "nearest-neighbors",
           name: "Find semantic neighbours",
+          configuration: { neighbors: 3 },
         },
       ],
       connections: [

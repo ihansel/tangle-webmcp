@@ -25,16 +25,20 @@ const accentClasses = {
 
 function WorkflowPreview() {
   const steps = [
-    { icon: "Database" as const, label: "Equipment data", detail: "60 rows" },
+    {
+      icon: "Database" as const,
+      label: "Northstar commerce",
+      detail: "1,800 customers",
+    },
     {
       icon: "SlidersHorizontal" as const,
-      label: "Prepare features",
-      detail: "7 signals",
+      label: "Connect behaviour",
+      detail: "19,840 orders",
     },
     {
       icon: "GitCompareArrows" as const,
-      label: "Train two models",
-      detail: "local worker",
+      label: "Run three analyses",
+      detail: "segments · churn · products",
     },
   ];
 
@@ -43,10 +47,10 @@ function WorkflowPreview() {
       <div className="mb-7 flex items-center justify-between">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-            Agent-built pipeline
+            Agent-built commerce brief
           </p>
           <p className="mt-1 text-sm font-medium text-slate-200">
-            Equipment failure lab
+            Northstar customer intelligence
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-emerald-300">
@@ -82,9 +86,9 @@ function WorkflowPreview() {
       <div className="mt-5 rounded-lg border border-emerald-400/25 bg-emerald-400/[0.07] p-4">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs text-emerald-300">Recommended result</p>
-            <p className="mt-1 text-base font-semibold text-white">
-              Decision tree · 80% recall
+          <p className="text-xs text-emerald-300">Decision-ready outputs</p>
+          <p className="mt-1 text-base font-semibold text-white">
+              18 charts, tables and reports
             </p>
           </div>
           <div className="grid size-10 place-items-center rounded-full bg-emerald-400/15 text-emerald-300">
@@ -201,24 +205,24 @@ export function DashboardHomeView() {
                 WebMCP-enabled workspace
               </div>
               <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl">
-                Machine learning, directed by agents. Running in your browser.
+                A commerce story agents can build, run and explain.
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400">
-                Tangle exposes a safe, undoable ML canvas through WebMCP—so
-                agents can assemble, validate, and run real pipelines without
-                your data leaving the page.
+                Explore one synthetic retailer across customer segments, churn
+                risk and product relationships. Every graph is assembled
+                through WebMCP and runs without sending rows away.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button
                   size="lg"
                   className="bg-violet-500 text-white shadow-none hover:bg-violet-400"
-                  onClick={() => launchRecipe(DEMO_RECIPES[0])}
+                  onClick={() => launchRecipe(DEMO_RECIPES[2])}
                   disabled={launching !== null}
                 >
-                  {launching === "failure"
+                  {launching === "segments"
                     ? "Building pipeline…"
-                    : "Try equipment failure demo"}
-                  {launching !== "failure" && <Icon name="ArrowRight" />}
+                    : "Explore customer segments"}
+                  {launching !== "segments" && <Icon name="ArrowRight" />}
                 </Button>
                 <Button
                   size="lg"
@@ -233,9 +237,9 @@ export function DashboardHomeView() {
 
             <div className="mt-10 grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-5">
               {[
-                ["10", "agent tools"],
-                ["100%", "local data"],
-                ["1 click", "to undo"],
+                ["61k+", "commerce events"],
+                ["18", "visual outputs"],
+                ["100%", "local analysis"],
               ].map(([value, label]) => (
                 <div key={label} className="px-4 first:pl-0">
                   <p className="text-lg font-semibold text-slate-100">
@@ -247,6 +251,35 @@ export function DashboardHomeView() {
             </div>
           </div>
           <WorkflowPreview />
+        </div>
+      </section>
+
+      <section className="mt-8 grid overflow-hidden rounded-xl border border-slate-800 bg-slate-950 text-white lg:grid-cols-[1.1fr_1.9fr]">
+        <div className="border-b border-slate-800 p-6 lg:border-r lg:border-b-0 lg:p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-300">
+            One connected dataset
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+            Meet Northstar Outdoor Co.
+          </h2>
+          <p className="mt-3 text-sm leading-6 text-slate-400">
+            A deterministic, privacy-safe retailer with two years of purchase
+            history, overlapping customer behaviours, probabilistic churn and
+            product co-purchase relationships.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 divide-x divide-y divide-slate-800 sm:grid-cols-4 sm:divide-y-0">
+          {[
+            ["1,800", "customers"],
+            ["19,840", "orders"],
+            ["41,626", "line items"],
+            ["160", "products"],
+          ].map(([value, label]) => (
+            <div key={label} className="flex min-h-28 flex-col justify-end p-5 lg:p-6">
+              <p className="text-2xl font-semibold tracking-tight text-white">{value}</p>
+              <p className="mt-1 text-xs text-slate-500">{label}</p>
+            </div>
+          ))}
         </div>
       </section>
 

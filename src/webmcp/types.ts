@@ -48,6 +48,35 @@ export interface ClassificationRunResult extends BrowserRunBase {
   preferredModelTaskId: string;
   preferredModelName: string;
   selectionReason: string;
+  thresholdCurve: Array<{
+    threshold: number;
+    precision: number;
+    recall: number;
+    f1: number;
+  }>;
+  riskDistribution: Array<{
+    label: string;
+    count: number;
+    churnRate: number;
+  }>;
+  featureDrivers: Array<{
+    feature: string;
+    importance: number;
+    direction: "increases" | "decreases";
+  }>;
+  highRiskCustomers: Array<{
+    customerId: string;
+    risk: number;
+    lifetimeValue: number;
+    segment: string;
+    action: string;
+  }>;
+  interventionCurve: Array<{
+    customers: number;
+    revenueSaved: number;
+    cost: number;
+    netValue: number;
+  }>;
 }
 
 export interface ClusterProfile {
@@ -56,6 +85,21 @@ export interface ClusterProfile {
   share: number;
   label: string;
   summary: string;
+  revenueShare: number;
+  action: string;
+  examples: Array<{
+    customerId: string;
+    lifetimeValue: number;
+    orders: number;
+    daysSinceOrder: number;
+  }>;
+}
+
+export interface ClusterPoint {
+  customerId: string;
+  cluster: number;
+  x: number;
+  y: number;
 }
 
 export interface ClusteringRunResult extends BrowserRunBase {
@@ -63,6 +107,9 @@ export interface ClusteringRunResult extends BrowserRunBase {
   clusterCount: number;
   silhouetteScore: number;
   clusters: ClusterProfile[];
+  featureNames: string[];
+  centroids: Array<{ cluster: number; values: number[] }>;
+  points: ClusterPoint[];
   insight: string;
 }
 
@@ -72,11 +119,49 @@ export interface NeighborMatch {
   similarity: number;
 }
 
+export interface ProductNeighborGroup {
+  sku: string;
+  name: string;
+  category: string;
+  neighbors: Array<{ sku: string; name: string; similarity: number }>;
+}
+
+export interface EmbeddingPoint {
+  sku: string;
+  name: string;
+  category: string;
+  x: number;
+  y: number;
+}
+
 export interface EmbeddingRunResult extends BrowserRunBase {
   kind: "embedding";
   dimensions: number;
   vocabularySize: number;
   neighbors: NeighborMatch[];
+  products: ProductNeighborGroup[];
+  points: EmbeddingPoint[];
+  similarityMatrix: {
+    labels: string[];
+    values: number[][];
+  };
+  categoryCohesion: Array<{
+    category: string;
+    score: number;
+    productCount: number;
+  }>;
+  coPurchaseLinks: Array<{
+    source: string;
+    target: string;
+    strength: number;
+  }>;
+  unexpectedPairs: Array<{
+    source: string;
+    sourceName: string;
+    target: string;
+    targetName: string;
+    similarity: number;
+  }>;
   insight: string;
 }
 

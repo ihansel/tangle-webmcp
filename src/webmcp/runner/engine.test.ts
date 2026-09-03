@@ -11,11 +11,11 @@ const csv = readFileSync(
   "utf8",
 );
 const purchaseCsv = readFileSync(
-  resolve(process.cwd(), "public/datasets/customer-purchases.csv"),
+  resolve(process.cwd(), "public/datasets/northstar-commerce/customers.csv"),
   "utf8",
 );
 const productCsv = readFileSync(
-  resolve(process.cwd(), "public/datasets/product-catalog.csv"),
+  resolve(process.cwd(), "public/datasets/northstar-commerce/products.csv"),
   "utf8",
 );
 
@@ -66,6 +66,9 @@ describe("browser runner engine", () => {
       ).toBeGreaterThanOrEqual(0);
     }
     expect(first.selectionReason).toContain("missed equipment failures");
+    expect(first.thresholdCurve).toHaveLength(9);
+    expect(first.riskDistribution).toHaveLength(5);
+    expect(first.featureDrivers.length).toBeGreaterThan(0);
   });
 
   it("rejects a pipeline without a supported classifier", async () => {
@@ -89,7 +92,7 @@ describe("browser runner engine", () => {
             componentId: "k-means",
             arguments: {
               features:
-                "orders,spend,avg_basket,discount_share,days_since_order",
+                "orders,spend,avg_basket,discount_share,return_rate,days_since_order,email_engagement",
               clusters: "4",
               seed: "42",
             },
@@ -104,8 +107,13 @@ describe("browser runner engine", () => {
     expect(result.clusters).toHaveLength(4);
     expect(
       result.clusters.reduce((sum, cluster) => sum + cluster.size, 0),
-    ).toBe(40);
+    ).toBe(1_800);
     expect(result.silhouetteScore).toBeGreaterThan(0);
+    expect(result.points.length).toBeGreaterThan(100);
+    expect(result.centroids).toHaveLength(4);
+    expect(
+      result.clusters.every((cluster) => cluster.examples.length > 0),
+    ).toBe(true);
   });
 
   it("embeds SKUs and returns real cosine neighbours", async () => {
@@ -121,7 +129,7 @@ describe("browser runner engine", () => {
             arguments: {
               id_column: "sku",
               text_columns: "name,category,description",
-              dimensions: "24",
+              dimensions: "32",
             },
           },
         ],
@@ -131,9 +139,14 @@ describe("browser runner engine", () => {
 
     expect(result.kind).toBe("embedding");
     if (result.kind !== "embedding") throw new Error("Expected embeddings");
-    expect(result.dimensions).toBe(24);
+    expect(result.dimensions).toBe(32);
     expect(result.neighbors).toHaveLength(6);
     expect(result.neighbors[0].similarity).toBeGreaterThan(0.4);
     expect(result.neighbors[0].item).not.toBe(result.neighbors[0].match);
+    expect(result.points).toHaveLength(160);
+    expect(result.products).toHaveLength(160);
+    expect(result.categoryCohesion).toHaveLength(8);
+    expect(result.coPurchaseLinks.length).toBeGreaterThan(0);
+    expect(result.unexpectedPairs).toHaveLength(6);
   });
 });
