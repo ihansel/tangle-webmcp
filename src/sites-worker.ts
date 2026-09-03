@@ -20,8 +20,19 @@ export default {
     const looksLikeAsset = /\.[a-z0-9]{2,8}$/i.test(url.pathname);
     if (looksLikeAsset || url.pathname.startsWith("/api/")) return response;
 
-    return environment.ASSETS.fetch(
-      new Request(new URL("/index.html", url), request),
+    const documentResponse = await environment.ASSETS.fetch(
+      new Request(new URL("/", url), request),
+    );
+    if (!documentResponse.ok) return response;
+
+    const headers = new Headers(documentResponse.headers);
+    headers.delete("location");
+    return new Response(
+      request.method === "HEAD" ? null : documentResponse.body,
+      {
+        status: 200,
+        headers,
+      },
     );
   },
 };
