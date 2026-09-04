@@ -206,6 +206,10 @@ const DefaultAppMenu = () => {
 const AppMenu = () => {
   const { pathname } = useLocation();
 
+  if (pathname === APP_ROUTES.HOME) {
+    return null;
+  }
+
   if (pathname.startsWith(APP_ROUTES.EDITOR_V2)) {
     return null;
   }

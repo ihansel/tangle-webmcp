@@ -34,6 +34,7 @@ import { LearnToursView } from "./Dashboard/Learn/LearnToursView";
 import { TourPage } from "./Dashboard/Learn/Tour";
 import Editor from "./Editor";
 import { ImportPage } from "./Import";
+import { AdaptiveHomeView } from "./Landing/PublicLandingView";
 import NotFoundPage from "./NotFoundPage";
 import PipelineRun from "./PipelineRun";
 import ArtifactPreviewPage from "./PipelineRun/ArtifactPreview";
@@ -78,10 +79,10 @@ const dashboardRoute = createRoute({
   component: DashboardLayout,
 });
 
-const dashboardIndexRoute = createRoute({
-  getParentRoute: () => dashboardRoute,
+const landingRoute = createRoute({
+  getParentRoute: () => mainLayout,
   path: "/",
-  component: DashboardHomeView,
+  component: AdaptiveHomeView,
 });
 
 const dashboardHomeRoute = createRoute({
@@ -387,7 +388,6 @@ const artifactPreviewRoute = createRoute({
 });
 
 const dashboardRouteTree = dashboardRoute.addChildren([
-  dashboardIndexRoute,
   dashboardHomeRoute,
   welcomeRoute,
   dashboardRunsRoute,
@@ -403,6 +403,7 @@ const dashboardRouteTree = dashboardRoute.addChildren([
 ]);
 
 const appRouteTree = mainLayout.addChildren([
+  landingRoute,
   dashboardRouteTree,
   quickStartRoute,
   settingsRouteTree,
