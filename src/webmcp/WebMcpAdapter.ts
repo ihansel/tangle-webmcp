@@ -350,6 +350,8 @@ export class WebMcpAdapter {
         value: literalValueSchema,
       })
       .parse(input);
+    const spec = requireSpec(this.deps);
+    assertPort(spec, taskId, inputName, "input");
     return this.bridge.setTaskArgument(
       taskId,
       inputName,

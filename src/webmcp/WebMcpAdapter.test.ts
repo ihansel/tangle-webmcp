@@ -81,6 +81,59 @@ describe("WebMcpAdapter", () => {
     ).toThrow();
   });
 
+  it("rejects configure_task input names that the task does not declare", async () => {
+    const { adapter, spec, undo } = createHarness();
+    const result = adapter.addPipelineTasks({
+      tasks: [{ clientId: "selector", componentId: "select-columns" }],
+    });
+    const configureTool = createWebMcpToolDefinitions(adapter).find(
+      (tool) => tool.name === "configure_task",
+    );
+    const taskId = result.created[0].taskId;
+    const task = spec.tasks.find((candidate) => candidate.$id === taskId);
+    const originalArguments = task?.arguments.map((argument) => ({
+      ...argument,
+    }));
+    const originalUndoLevels = undo.undoLevels;
+
+    await expect(
+      configureTool?.execute({
+        taskId,
+        inputName: "not_a_real_input",
+        value: "should not be stored",
+      }),
+    ).rejects.toThrow(
+      `Task ${taskId} has no input port named not_a_real_input.`,
+    );
+
+    expect(task?.arguments).toEqual(originalArguments);
+    expect(undo.undoLevels).toBe(originalUndoLevels);
+  });
+
+  it("still configures a declared task input as an undoable change", async () => {
+    const { adapter, spec, undo } = createHarness();
+    const result = adapter.addPipelineTasks({
+      tasks: [{ clientId: "selector", componentId: "select-columns" }],
+    });
+    const taskId = result.created[0].taskId;
+    const originalUndoLevels = undo.undoLevels;
+
+    await expect(
+      adapter.configureTask({
+        taskId,
+        inputName: "columns",
+        value: "customer_id,total_spend",
+      }),
+    ).resolves.toEqual({ success: true });
+
+    expect(
+      spec.tasks
+        .find((candidate) => candidate.$id === taskId)
+        ?.arguments.find((argument) => argument.name === "columns")?.value,
+    ).toBe("customer_id,total_spend");
+    expect(undo.undoLevels).toBe(originalUndoLevels + 1);
+  });
+
   it("builds the two-model retail forecasting graph with valid ports", async () => {
     const { adapter, spec } = createHarness();
     const recipe = DEMO_RECIPE_BY_ID.get("forecast");
