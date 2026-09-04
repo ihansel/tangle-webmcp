@@ -1,6 +1,5 @@
 import { Link, Outlet } from "@tanstack/react-router";
 
-import { StrandLogo } from "@/components/brand/StrandLogo";
 import { TipOfTheDay } from "@/components/Learn/TipOfTheDay";
 import { isAuthorizationRequired } from "@/components/shared/Authentication/helpers";
 import { TopBarAuthentication } from "@/components/shared/Authentication/TopBarAuthentication";
@@ -90,9 +89,14 @@ export function DashboardLayout() {
     >
       {/* Sidebar — fixed height, independent scroll */}
       <div className="hidden w-56 shrink-0 border-r border-border lg:flex lg:flex-col lg:overflow-y-auto">
-        {/* Product identity */}
+        {/* Workspace identity */}
         <div className="px-6 pt-6 pb-4 shrink-0">
-          <StrandLogo showByline />
+          <Text size="lg" weight="semibold">
+            ML workspace
+          </Text>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Strand · built on Tangle
+          </p>
         </div>
 
         <BlockStack gap="1" className="px-3">

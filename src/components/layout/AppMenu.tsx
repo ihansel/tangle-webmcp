@@ -73,7 +73,11 @@ const DefaultAppMenu = () => {
             className="shrink-0"
             {...tracking("header.logo")}
           >
-            <StrandLogo tone="light" className="cursor-pointer" />
+            <StrandLogo
+              tone="light"
+              className="cursor-pointer"
+              wordmarkClassName="hidden sm:flex"
+            />
           </Link>
 
           {title && (

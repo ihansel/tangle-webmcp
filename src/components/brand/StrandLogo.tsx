@@ -12,19 +12,14 @@ export function StrandMark({ className, ...props }: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path
-        d="M8 10h15.5C29 10 32 12.9 32 17s-3 7-8.5 7H16.5C11 24 8 26.9 8 31"
-        stroke="#7759ff"
-        strokeWidth="7"
+        d="M30.5 8.5h-15C11.4 8.5 8 11.2 8 14.7s3.4 6.3 7.5 6.3h9c4.1 0 7.5 2.8 7.5 6.3s-3.4 6.2-7.5 6.2h-15"
+        stroke="#8064ff"
+        strokeWidth="6"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M32 30H16.5C11 30 8 27.1 8 23s3-7 8.5-7h7C29 16 32 13.1 32 9"
-        stroke="#35c9e8"
-        strokeWidth="7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <circle cx="30.5" cy="8.5" r="2.4" fill="#36c8e8" />
+      <circle cx="9.5" cy="33.5" r="2.4" fill="#36c8e8" />
     </svg>
   );
 }
@@ -32,11 +27,13 @@ export function StrandMark({ className, ...props }: SVGProps<SVGSVGElement>) {
 export function StrandLogo({
   className,
   markClassName,
+  wordmarkClassName,
   tone = "dark",
   showByline = false,
 }: {
   className?: string;
   markClassName?: string;
+  wordmarkClassName?: string;
   tone?: "dark" | "light";
   showByline?: boolean;
 }) {
@@ -49,10 +46,12 @@ export function StrandLogo({
       className={cn("inline-flex items-center gap-2.5", className)}
     >
       <StrandMark className={cn("size-8", markClassName)} />
-      <span className="flex min-w-0 flex-col leading-none">
+      <span
+        className={cn("flex min-w-0 flex-col leading-none", wordmarkClassName)}
+      >
         <span
           className={cn(
-            "text-[1.4rem] font-semibold tracking-[-0.045em]",
+            "text-[1.35rem] font-semibold tracking-[-0.035em]",
             isLight ? "text-white" : "text-foreground",
           )}
         >
@@ -61,11 +60,11 @@ export function StrandLogo({
         {showByline && (
           <span
             className={cn(
-              "mt-1 text-[0.625rem] font-medium uppercase tracking-[0.14em]",
+              "mt-1 text-[0.6875rem] font-medium tracking-normal",
               isLight ? "text-slate-400" : "text-muted-foreground",
             )}
           >
-            built on Tangle
+            Built on Tangle
           </span>
         )}
       </span>
