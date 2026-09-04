@@ -95,6 +95,21 @@ describe("WebMcpAdapter", () => {
     );
   });
 
+  it("builds the hosted buyer-profile graph as one valid WebMCP change", async () => {
+    const { adapter, spec, undo } = createHarness();
+    const recipe = DEMO_RECIPE_BY_ID.get("profiles");
+    if (!recipe) throw new Error("Buyer profile recipe is missing");
+
+    const result = adapter.addPipelineTasks(recipe.batch);
+
+    expect(result.created).toHaveLength(5);
+    expect(spec.bindings).toHaveLength(5);
+    expect(undo.undoLevels).toBe(1);
+    await expect(adapter.validatePipeline()).resolves.toEqual(
+      expect.objectContaining({ browserExecutable: true }),
+    );
+  });
+
   it("returns summaries without raw component specs or data", async () => {
     const { adapter } = createHarness();
     adapter.addPipelineTasks({ tasks: FAILURE_DEMO_BATCH.tasks.slice(0, 1) });

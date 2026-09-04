@@ -10,6 +10,7 @@ import {
 import { Icon } from "@/components/ui/icon";
 
 import type { BrowserRunResult } from "../types";
+import { BuyerProfileReport } from "./BuyerProfileReport";
 import { ClassificationReport } from "./ClassificationReport";
 import { ClusteringReport } from "./ClusteringReport";
 import { EmbeddingReport } from "./EmbeddingReport";
@@ -20,6 +21,7 @@ const titles = {
   clustering: "Customer segmentation report",
   embedding: "Product intelligence report",
   forecasting: "Retail demand forecast",
+  "buyer-profiles": "Buyer profile fine-tuning report",
 };
 
 const descriptions = {
@@ -31,6 +33,8 @@ const descriptions = {
     "Embedding training, learned neighbours, category cohesion, co-purchase structure, and bundle opportunities.",
   forecasting:
     "A 28-day demand outlook, accuracy comparison, retail drivers, and day-by-day forecast detail.",
+  "buyer-profiles":
+    "Teacher data, the observed fine-tuning curve, held-out model quality, difficult customer slices, and grounded profile outputs.",
 };
 
 export function WebMcpReportDialog({ result }: { result: BrowserRunResult }) {
@@ -78,7 +82,9 @@ export function WebMcpReportDialog({ result }: { result: BrowserRunResult }) {
           </div>
         </DialogHeader>
         <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">
-          {result.kind === "classification" ? (
+          {result.kind === "buyer-profiles" ? (
+            <BuyerProfileReport result={result} />
+          ) : result.kind === "classification" ? (
             <ClassificationReport result={result} />
           ) : result.kind === "clustering" ? (
             <ClusteringReport result={result} />

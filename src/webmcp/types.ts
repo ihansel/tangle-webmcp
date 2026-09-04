@@ -15,7 +15,11 @@ export type CuratedComponentId =
   | "nearest-neighbors"
   | "univariate-forecast"
   | "multivariate-forecast"
-  | "compare-forecasts";
+  | "compare-forecasts"
+  | "build-profile-timeline"
+  | "generate-buyer-profiles"
+  | "validate-buyer-profiles"
+  | "evaluate-buyer-profiles";
 
 export interface BrowserMetricSet {
   accuracy: number;
@@ -216,11 +220,62 @@ export interface ForecastingRunResult extends BrowserRunBase {
   insight: string;
 }
 
+export interface BuyerProfilePrediction {
+  customerId: string;
+  valid: boolean;
+  summary: string;
+  lifecycleStage: string;
+  categoryAffinities: string[];
+  priceSensitivity: string;
+  purchaseCadence: string;
+  churnRisk: string;
+  nextBestAction: string;
+  evidence: string[];
+  latencyMs: number;
+}
+
+export interface BuyerProfileScore {
+  name: string;
+  schemaValidity: number;
+  labelAccuracy: number;
+  evidenceGrounding: number;
+  judgeScore: number;
+}
+
+export interface BuyerProfileRunResult extends BrowserRunBase {
+  kind: "buyer-profiles";
+  model: string;
+  teacherModel: string;
+  adapterVersion: string;
+  trainingExamples: number;
+  evaluationExamples: number;
+  generationMinutes: number;
+  trainingMinutes: number;
+  maxSteps: number;
+  profilesPerSecond: number;
+  profiles: BuyerProfilePrediction[];
+  scorecard: {
+    teacher: BuyerProfileScore;
+    base: BuyerProfileScore;
+    student: BuyerProfileScore;
+  };
+  lossCurve: Array<{ step: number; loss: number }>;
+  slices: Array<{
+    label: string;
+    count: number;
+    baseScore: number;
+    studentScore: number;
+  }>;
+  cacheHits: number;
+  insight: string;
+}
+
 export type BrowserRunResult =
   | ClassificationRunResult
   | ClusteringRunResult
   | EmbeddingRunResult
-  | ForecastingRunResult;
+  | ForecastingRunResult
+  | BuyerProfileRunResult;
 
 export interface RunnerProgress {
   phase:
@@ -230,7 +285,8 @@ export interface RunnerProgress {
     | "evaluating"
     | "clustering"
     | "embedding"
-    | "forecasting";
+    | "forecasting"
+    | "profiling";
   percent: number;
   message: string;
 }

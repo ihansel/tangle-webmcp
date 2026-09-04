@@ -5,6 +5,7 @@ interface RunMessage {
   type: "run";
   pipeline: PipelineSnapshot;
   datasetUrl: string;
+  hostedProfileBaseUrl: string;
 }
 
 self.onmessage = async (event: MessageEvent<RunMessage>) => {
@@ -15,6 +16,7 @@ self.onmessage = async (event: MessageEvent<RunMessage>) => {
       throw new Error(`Could not load local dataset (${response.status}).`);
     const csvText = await response.text();
     const result = await executeBrowserPipeline(event.data.pipeline, csvText, {
+      hostedProfileBaseUrl: event.data.hostedProfileBaseUrl,
       onProgress: (value: RunnerProgress) =>
         self.postMessage({ type: "progress", value }),
     });

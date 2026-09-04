@@ -31,6 +31,9 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
       : null;
   const preferredForecastTaskId =
     run.result?.kind === "forecasting" ? run.result.preferredModelTaskId : null;
+  const hostedProfilePipeline = adapter
+    .createPipelineSnapshot()
+    .tasks.some((task) => task.componentId === "generate-buyer-profiles");
   const modelContextLabel = registration.registered
     ? `${registration.toolCount} tools shared`
     : registration.available
@@ -85,7 +88,9 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                 tone="subdued"
                 className="block uppercase tracking-wide"
               >
-                Runs in this browser
+                {hostedProfilePipeline
+                  ? "Hosted model run"
+                  : "Runs in this browser"}
               </Text>
               <Text
                 as="span"
@@ -107,10 +112,20 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
               </Button>
             ) : (
               <Button className="w-full" size="xs" onClick={handleManualRun}>
-                Run in browser
+                {hostedProfilePipeline
+                  ? "Run hosted profiles"
+                  : "Run in browser"}
               </Button>
             )}
           </div>
+
+          {hostedProfilePipeline && run.status !== "running" && (
+            <div className="mb-3 flex gap-2 rounded-md border border-violet-200 bg-violet-50 px-2.5 py-2 text-xs leading-5 text-violet-900 dark:border-violet-900 dark:bg-violet-950 dark:text-violet-100">
+              <Icon name="CloudCog" className="mt-0.5 size-4 shrink-0" />
+              Sends only eight fixed synthetic customers to the protected Modal
+              endpoint.
+            </div>
+          )}
 
           {run.progress && (
             <div className="mb-3" aria-live="polite">
@@ -137,7 +152,10 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
               className="mb-3 flex w-full items-center justify-between rounded-md border border-blue-200 bg-blue-50 px-2.5 py-2 text-left text-xs text-blue-900 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100"
               onClick={run.authorizeAgentRun}
             >
-              <span>Allow the next agent-triggered run</span>
+              <span>
+                Allow the next agent-triggered{" "}
+                {hostedProfilePipeline ? "hosted " : ""}run
+              </span>
               <Icon name="ShieldCheck" className="size-4" />
             </button>
           )}
@@ -313,6 +331,56 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                   <div className="rounded-md bg-slate-100 px-2.5 py-2 dark:bg-slate-900">
                     <Text size="xs" weight="semibold" className="block">
                       Preferred: {run.result.preferredModelName}
+                    </Text>
+                    <Text
+                      size="xs"
+                      tone="subdued"
+                      className="mt-1 block leading-relaxed"
+                    >
+                      {run.result.insight}
+                    </Text>
+                  </div>
+                </>
+              )}
+              {run.result.kind === "buyer-profiles" && (
+                <>
+                  <div className="rounded-md border border-emerald-300 bg-emerald-50 px-2.5 py-2 dark:border-emerald-800 dark:bg-emerald-950">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <Text size="xs" weight="semibold" className="block">
+                          Fine-tuned buyer profiles
+                        </Text>
+                        <Text size="xs" tone="subdued" className="block">
+                          {run.result.profiles.length} live examples ·{" "}
+                          {run.result.trainingExamples.toLocaleString()} teacher
+                          records
+                        </Text>
+                      </div>
+                      <Icon name="BrainCircuit" className="text-emerald-500" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-md border border-slate-200 px-2.5 py-2 dark:border-slate-800">
+                      <Text size="xs" weight="semibold" className="block">
+                        Base model
+                      </Text>
+                      <Text size="xs" tone="subdued" className="block">
+                        Score {run.result.scorecard.base.judgeScore.toFixed(1)}
+                      </Text>
+                    </div>
+                    <div className="rounded-md border border-emerald-300 bg-emerald-50 px-2.5 py-2 dark:border-emerald-800 dark:bg-emerald-950">
+                      <Text size="xs" weight="semibold" className="block">
+                        Fine-tuned
+                      </Text>
+                      <Text size="xs" tone="subdued" className="block">
+                        Score{" "}
+                        {run.result.scorecard.student.judgeScore.toFixed(1)}
+                      </Text>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-slate-100 px-2.5 py-2 dark:bg-slate-900">
+                    <Text size="xs" weight="semibold" className="block">
+                      {run.result.trainingMinutes.toFixed(1)} minute fine-tune
                     </Text>
                     <Text
                       size="xs"

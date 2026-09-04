@@ -37,6 +37,10 @@ const componentIds = [
   "univariate-forecast",
   "multivariate-forecast",
   "compare-forecasts",
+  "build-profile-timeline",
+  "generate-buyer-profiles",
+  "validate-buyer-profiles",
+  "evaluate-buyer-profiles",
 ] as const;
 
 const literalValueSchema = z.union([
@@ -403,7 +407,8 @@ export class WebMcpAdapter {
         id === "text-embedding" ||
         id === "product2vec" ||
         id === "univariate-forecast" ||
-        id === "multivariate-forecast"
+        id === "multivariate-forecast" ||
+        id === "generate-buyer-profiles"
       );
     });
     const browserIssues = [
@@ -417,7 +422,7 @@ export class WebMcpAdapter {
             {
               code: "NO_BROWSER_WORKLOAD",
               message:
-                "Add a supported prediction, clustering, embedding, or forecasting task before a local run.",
+                "Add a supported prediction, clustering, embedding, forecasting, or buyer-profile task before a run.",
             },
           ]
         : []),
@@ -517,6 +522,23 @@ export class WebMcpAdapter {
         insight: result.insight,
       };
     }
+    if (result.kind === "buyer-profiles") {
+      return {
+        ...base,
+        model: result.model,
+        teacherModel: result.teacherModel,
+        adapterVersion: result.adapterVersion,
+        trainingExamples: result.trainingExamples,
+        evaluationExamples: result.evaluationExamples,
+        generationMinutes: result.generationMinutes,
+        trainingMinutes: result.trainingMinutes,
+        profilesPerSecond: result.profilesPerSecond,
+        scorecard: result.scorecard,
+        slices: result.slices,
+        profiles: result.profiles,
+        insight: result.insight,
+      };
+    }
     return {
       ...base,
       algorithm: result.algorithm,
@@ -536,7 +558,7 @@ export class WebMcpAdapter {
     if (!result) throw new Error("No completed browser run is available.");
     if (result.kind !== "classification") {
       throw new Error(
-        "The latest run is not a classifier. Use get_run_summary for clustering, embedding, or forecasting insights.",
+        "The latest run is not a classifier. Use get_run_summary for clustering, embedding, forecasting, or buyer-profile insights.",
       );
     }
     const models = taskId

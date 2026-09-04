@@ -26,6 +26,7 @@ describe("Northstar Commerce synthetic dataset", () => {
   const lineItems = readCsv("order-items.csv");
   const products = readCsv("products.csv");
   const dailySales = readCsv("daily-sales.csv");
+  const buyerProfiles = readCsv("buyer-profiles.csv");
 
   it("contains the documented deterministic commerce world", () => {
     expect(customers).toHaveLength(1_800);
@@ -33,10 +34,31 @@ describe("Northstar Commerce synthetic dataset", () => {
     expect(lineItems).toHaveLength(41_626);
     expect(products).toHaveLength(160);
     expect(dailySales).toHaveLength(730);
+    expect(buyerProfiles).toHaveLength(1_800);
     expect(
       customers.reduce((sum, customer) => sum + Number(customer.churned), 0) /
         customers.length,
     ).toBeCloseTo(0.283, 3);
+  });
+
+  it("provides deterministic train, validation, and held-out buyer profiles", () => {
+    expect(buyerProfiles.filter((row) => row.split === "train")).toHaveLength(
+      1_440,
+    );
+    expect(
+      buyerProfiles.filter((row) => row.split === "validation"),
+    ).toHaveLength(180);
+    expect(buyerProfiles.filter((row) => row.split === "test")).toHaveLength(
+      180,
+    );
+    expect(
+      buyerProfiles.every(
+        (row) =>
+          row.recent_timeline.length > 20 &&
+          row.evidence.includes("days_since_order:") &&
+          ["new", "active", "loyal", "at-risk"].includes(row.lifecycle_stage),
+      ),
+    ).toBe(true);
   });
 
   it("provides a complete chronological daily demand series", () => {

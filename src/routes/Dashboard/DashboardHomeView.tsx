@@ -212,19 +212,20 @@ export function DashboardHomeView() {
               <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400">
                 Ask for a prediction, churn check, forecast or customer groups.
                 Your agent builds the steps on a canvas you can see, then runs
-                them in your browser without sending your data away.
+                most of them in your browser. The advanced profile lab uses only
+                a fixed synthetic sample with a protected hosted model.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button
                   size="lg"
                   className="bg-violet-500 text-white shadow-none hover:bg-violet-400"
-                  onClick={() => launchRecipe(RETAIL_DEMO_RECIPES[1])}
+                  onClick={() => launchRecipe(RETAIL_DEMO_RECIPES[0])}
                   disabled={launching !== null}
                 >
-                  {launching === "segments"
+                  {launching === "profiles"
                     ? "Building pipeline…"
-                    : "Try customer grouping"}
-                  {launching !== "segments" && <Icon name="ArrowRight" />}
+                    : "Try the buyer profile lab"}
+                  {launching !== "profiles" && <Icon name="ArrowRight" />}
                 </Button>
                 <Button
                   size="lg"
@@ -239,9 +240,9 @@ export function DashboardHomeView() {
 
             <div className="mt-10 grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-5">
               {[
-                ["4", "retail examples"],
-                ["20+", "charts and reports"],
-                ["100%", "in-browser runs"],
+                ["5", "retail examples"],
+                ["25+", "charts and reports"],
+                ["4 + 1", "local · hosted"],
               ].map(([value, label]) => (
                 <div key={label} className="px-4 first:pl-0">
                   <p className="text-lg font-semibold text-slate-100">
@@ -269,13 +270,14 @@ export function DashboardHomeView() {
             It is large enough to tell a useful story and safe to explore.
           </p>
         </div>
-        <div className="grid grid-cols-2 divide-x divide-y divide-slate-800 sm:grid-cols-5 sm:divide-y-0">
+        <div className="grid grid-cols-2 divide-x divide-y divide-slate-800 sm:grid-cols-3 xl:grid-cols-6 xl:divide-y-0">
           {[
             ["1,800", "customers"],
             ["19,840", "orders"],
             ["41,626", "line items"],
             ["160", "products"],
             ["730", "daily sales records"],
+            ["1,800", "buyer profile timelines"],
           ].map(([value, label]) => (
             <div
               key={label}
@@ -303,7 +305,7 @@ export function DashboardHomeView() {
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Icon name="Laptop" size="sm" />
-            No backend or API key required
+            Four local examples · one protected hosted model
           </div>
         </div>
 
@@ -343,7 +345,7 @@ export function DashboardHomeView() {
             [
               "Cpu",
               "Keep data close",
-              "Predictions, customer groups and product matches run without sending rows away.",
+              "Local models keep rows in the browser. The hosted profile demo is clearly marked and uses synthetic records only.",
             ],
           ].map(([icon, title, copy]) => (
             <div key={title}>

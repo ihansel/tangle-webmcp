@@ -8,9 +8,10 @@ Tangle is a web app that allows the users to build and run Machine Learning pipe
 
 This branch turns Tangle into a WebMCP workspace for practical machine learning.
 A person can ask an agent to help with work such as predictions, churn,
-forecasting, customer groups, or product relationships. The agent builds on the
-same visible canvas, the person approves each run, and imported rows stay inside
-the page.
+forecasting, customer groups, product relationships, or structured buyer
+profiles. The agent builds on the same visible canvas and the person approves
+each run. Four workflows keep rows in the page; the buyer-profile lab sends only
+a fixed synthetic sample to a protected Modal endpoint.
 
 ![Tangle WebMCP commerce demo](submission/assets/gallery/01-home.png)
 
@@ -42,7 +43,10 @@ The registered tools are:
   holidays, weather, and day of week.
 - Group 1,800 synthetic retail customers by shopping behaviour.
 - Learn which products are bought together and surface similar items.
-- Review charts and operational recommendations produced entirely in the browser.
+- Turn purchase timelines into evidence-linked profiles with a fine-tuned
+  Qwen3.5-0.8B adapter, then compare it with the base model by customer slice.
+- Review charts and operational recommendations produced by the local and
+  clearly marked hosted runtimes.
 
 Example agent prompts:
 
@@ -60,9 +64,11 @@ pnpm install --frozen-lockfile
 pnpm start
 ```
 
-No backend or API key is required for the curated local demos. With a supporting
-client, open an experiment in the v2 editor to discover the WebMCP tools. To run
-the verification suite:
+No backend or API key is required for the four curated local demos. The hosted
+buyer-profile example uses the private service described in
+[services/README.md](services/README.md). With a supporting client, open an
+experiment in the v2 editor to discover the WebMCP tools. To run the verification
+suite:
 
 ```sh
 NODE_OPTIONS=--no-webstorage pnpm test

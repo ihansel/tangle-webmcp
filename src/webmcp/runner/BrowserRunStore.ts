@@ -118,6 +118,7 @@ export class BrowserRunStore {
         type: "run",
         pipeline,
         datasetUrl: `${import.meta.env.BASE_URL}${datasetPath}`,
+        hostedProfileBaseUrl: `${import.meta.env.BASE_URL}api/buyer-profile`,
       });
     });
   }

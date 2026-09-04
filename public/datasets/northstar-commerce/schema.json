@@ -81,6 +81,36 @@
         "temperature",
         "day_of_week"
       ]
+    },
+    "buyer-profiles.csv": {
+      "rowCount": 1800,
+      "columns": [
+        "customer_id",
+        "split",
+        "region",
+        "acquisition_channel",
+        "membership_tier",
+        "tenure_months",
+        "orders",
+        "spend",
+        "avg_basket",
+        "discount_share",
+        "return_rate",
+        "support_tickets",
+        "days_since_order",
+        "email_engagement",
+        "satisfaction_score",
+        "lifetime_value",
+        "category_affinities",
+        "recent_timeline",
+        "profile_summary",
+        "lifecycle_stage",
+        "price_sensitivity",
+        "purchase_cadence",
+        "churn_risk",
+        "next_best_action",
+        "evidence"
+      ]
     }
   }
 }

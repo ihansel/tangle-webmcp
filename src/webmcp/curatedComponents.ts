@@ -17,7 +17,8 @@ export interface CuratedComponent {
     | "evaluation"
     | "segmentation"
     | "embeddings"
-    | "forecasting";
+    | "forecasting"
+    | "profiles";
   inputs: InputSpec[];
   outputs: OutputSpec[];
 }
@@ -274,6 +275,53 @@ const components: CuratedComponent[] = [
       { name: "univariate", type: "Forecast" },
       { name: "multivariate", type: "Forecast" },
       { name: "priority", type: "String", default: "mae" },
+    ],
+    outputs: [{ name: "report", type: "Report" }],
+  },
+  {
+    id: "build-profile-timeline",
+    name: "Build customer timelines",
+    description:
+      "Turn purchase and engagement signals into compact evidence-linked customer timelines.",
+    category: "profiles",
+    inputs: [{ name: "dataset", type: "DataFrame" }],
+    outputs: [{ name: "timelines", type: "ProfileBatch" }],
+  },
+  {
+    id: "generate-buyer-profiles",
+    name: "Generate buyer profiles",
+    description:
+      "Run the fine-tuned Qwen3.5-0.8B buyer-profile model on an approved synthetic demo sample.",
+    category: "profiles",
+    inputs: [
+      { name: "timelines", type: "ProfileBatch" },
+      { name: "sample_size", type: "Integer", default: "8" },
+      {
+        name: "runtime",
+        type: "String",
+        default: "Modal L4 · hosted",
+      },
+    ],
+    outputs: [{ name: "profiles", type: "Profiles" }],
+  },
+  {
+    id: "validate-buyer-profiles",
+    name: "Validate profile evidence",
+    description:
+      "Check the structured schema and confirm that every cited signal exists in the input timeline.",
+    category: "profiles",
+    inputs: [{ name: "profiles", type: "Profiles" }],
+    outputs: [{ name: "profiles", type: "ValidatedProfiles" }],
+  },
+  {
+    id: "evaluate-buyer-profiles",
+    name: "Evaluate profiles by slice",
+    description:
+      "Compare the base and fine-tuned model on held-out labels, evidence grounding, and difficult customer groups.",
+    category: "evaluation",
+    inputs: [
+      { name: "profiles", type: "ValidatedProfiles" },
+      { name: "dataset", type: "DataFrame" },
     ],
     outputs: [{ name: "report", type: "Report" }],
   },

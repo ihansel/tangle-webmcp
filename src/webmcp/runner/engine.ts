@@ -1,7 +1,10 @@
+import { BUYER_PROFILE_DEMO_CUSTOMER_IDS } from "../buyerProfileDemo";
 import type {
   BrowserMetricSet,
   BrowserModelResult,
   BrowserRunResult,
+  BuyerProfileRunResult,
+  BuyerProfileScore,
   EmbeddingRunResult,
   ForecastingRunResult,
   PipelineSnapshot,
@@ -25,6 +28,8 @@ interface TreeNode {
 export interface EngineOptions {
   signal?: AbortSignal;
   onProgress?: (progress: RunnerProgress) => void;
+  hostedProfileBaseUrl?: string;
+  fetcher?: typeof fetch;
 }
 
 const MAX_ROWS = 5_000;
@@ -1296,6 +1301,136 @@ function clustering(
   };
 }
 
+function asScore(value: unknown, fallbackName: string): BuyerProfileScore {
+  const candidate = (value ?? {}) as Record<string, unknown>;
+  return {
+    name: typeof candidate.name === "string" ? candidate.name : fallbackName,
+    schemaValidity: Number(candidate.schemaValidity) || 0,
+    labelAccuracy: Number(candidate.labelAccuracy) || 0,
+    evidenceGrounding: Number(candidate.evidenceGrounding) || 0,
+    judgeScore: Number(candidate.judgeScore) || 0,
+  };
+}
+
+async function buyerProfiles(
+  pipeline: PipelineSnapshot,
+  rows: Row[],
+  started: number,
+  options: EngineOptions,
+): Promise<BuyerProfileRunResult> {
+  const task = pipeline.tasks.find(
+    (candidate) => candidate.componentId === "generate-buyer-profiles",
+  );
+  if (!task)
+    throw new Error(
+      "Add the hosted buyer-profile model before running this pipeline.",
+    );
+  if (!options.hostedProfileBaseUrl)
+    throw new Error("The hosted buyer-profile endpoint is not configured.");
+  const fetcher = options.fetcher ?? fetch;
+  const sampleSize = Math.min(
+    BUYER_PROFILE_DEMO_CUSTOMER_IDS.length,
+    Math.max(1, Math.round(numberArg(task, "sample_size", 8))),
+  );
+  const rowById = new Map(rows.map((row) => [row.customer_id, row]));
+  const customerIds = BUYER_PROFILE_DEMO_CUSTOMER_IDS.slice(
+    0,
+    sampleSize,
+  ).filter((customerId) => rowById.has(customerId));
+  if (!customerIds.length)
+    throw new Error(
+      "The public buyer-profile sample was not found in the dataset.",
+    );
+
+  report(options, "profiling", 10, "Preparing approved synthetic timelines");
+  const responses: Array<{
+    profile: BuyerProfileRunResult["profiles"][number];
+    latencyMs: number;
+    experiment: Record<string, unknown>;
+    cached: boolean;
+  }> = [];
+  for (const [index, customerId] of customerIds.entries()) {
+    guard(options.signal);
+    report(
+      options,
+      "profiling",
+      15 + Math.round((index / customerIds.length) * 70),
+      `Generating profile ${index + 1} of ${customerIds.length}`,
+    );
+    const response = await fetcher(
+      `${options.hostedProfileBaseUrl}/${encodeURIComponent(customerId)}`,
+      { method: "POST", signal: options.signal },
+    );
+    const payload = (await response.json()) as Record<string, unknown>;
+    if (!response.ok) {
+      const message =
+        typeof payload.error === "string"
+          ? payload.error
+          : "The hosted buyer-profile model could not complete the run.";
+      throw new Error(message);
+    }
+    const profile =
+      payload.profile as BuyerProfileRunResult["profiles"][number];
+    responses.push({
+      profile: {
+        ...profile,
+        latencyMs: Number(payload.latencyMs) || 0,
+      },
+      latencyMs: Number(payload.latencyMs) || 0,
+      experiment: (payload.experiment ?? {}) as Record<string, unknown>,
+      cached: response.headers.get("x-tangle-model-cache") === "hit",
+    });
+  }
+  const experiment = responses[0].experiment;
+  const scorecard = (experiment.scorecard ?? {}) as Record<string, unknown>;
+  const lossCurve = Array.isArray(experiment.lossCurve)
+    ? experiment.lossCurve.map((point) => {
+        const value = point as Record<string, unknown>;
+        return { step: Number(value.step) || 0, loss: Number(value.loss) || 0 };
+      })
+    : [];
+  const slices = Array.isArray(experiment.slices)
+    ? experiment.slices.map((slice) => {
+        const value = slice as Record<string, unknown>;
+        return {
+          label: String(value.label ?? "Customer slice"),
+          count: Number(value.count) || 0,
+          baseScore: Number(value.baseScore) || 0,
+          studentScore: Number(value.studentScore) || 0,
+        };
+      })
+    : [];
+  const base = asScore(scorecard.base, "Qwen3.5-0.8B base");
+  const student = asScore(scorecard.student, "Buyer profile student");
+  report(options, "evaluating", 100, "Profile evidence and scorecard ready");
+  return {
+    kind: "buyer-profiles",
+    runId: String(experiment.runId ?? `modal-${Date.now().toString(36)}`),
+    seed: 42,
+    rowCount: rows.length,
+    durationMs: Math.round(performance.now() - started),
+    model: String(experiment.studentModel ?? "Qwen/Qwen3.5-0.8B"),
+    teacherModel: String(experiment.teacherModel ?? "Qwen/Qwen3.5-4B"),
+    adapterVersion: String(experiment.adapterVersion ?? "current"),
+    trainingExamples: Number(experiment.trainingExamples) || 0,
+    evaluationExamples: Number(experiment.evaluationExamples) || 0,
+    generationMinutes: Number(experiment.generationMinutes) || 0,
+    trainingMinutes: Number(experiment.trainingMinutes) || 0,
+    maxSteps: Number(experiment.maxSteps) || 0,
+    profilesPerSecond: Number(experiment.profilesPerSecond) || 0,
+    profiles: responses.map((response) => response.profile),
+    scorecard: {
+      teacher: asScore(scorecard.teacher, "Curated teacher"),
+      base,
+      student,
+    },
+    lossCurve,
+    slices,
+    cacheHits: responses.filter((response) => response.cached).length,
+    insight: `Fine-tuning changed the held-out profile score from ${base.judgeScore.toFixed(1)} to ${student.judgeScore.toFixed(1)} while keeping every claim tied to a supplied signal.`,
+  };
+}
+
 function embeddings(
   pipeline: PipelineSnapshot,
   rows: Row[],
@@ -1531,6 +1666,12 @@ export async function executeBrowserPipeline(
   report(options, "loading", 5, "Reading the local CSV");
   guard(options.signal);
   const rows = parseCsv(csvText);
+  if (
+    pipeline.tasks.some(
+      (task) => task.componentId === "generate-buyer-profiles",
+    )
+  )
+    return buyerProfiles(pipeline, rows, started, options);
   if (
     pipeline.tasks.some(
       (task) =>

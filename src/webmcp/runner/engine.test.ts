@@ -22,6 +22,13 @@ const dailySalesCsv = readFileSync(
   resolve(process.cwd(), "public/datasets/northstar-commerce/daily-sales.csv"),
   "utf8",
 );
+const buyerProfileCsv = readFileSync(
+  resolve(
+    process.cwd(),
+    "public/datasets/northstar-commerce/buyer-profiles.csv",
+  ),
+  "utf8",
+);
 
 const pipeline: PipelineSnapshot = {
   name: "Equipment failure comparison",
@@ -206,6 +213,106 @@ describe("browser runner engine", () => {
     expect(first.training?.lossCurve).toEqual(second.training?.lossCurve);
     expect(first.products).toHaveLength(160);
     expect(first.points).toHaveLength(160);
+  });
+
+  it("runs the protected buyer-profile sample and returns real experiment metadata", async () => {
+    const experiment = {
+      runId: "modal-test",
+      teacherModel: "Qwen/Qwen3.5-4B",
+      studentModel: "Qwen/Qwen3.5-0.8B",
+      adapterVersion: "test",
+      trainingExamples: 1_440,
+      evaluationExamples: 80,
+      generationMinutes: 8.2,
+      trainingMinutes: 18.4,
+      maxSteps: 420,
+      profilesPerSecond: 11.2,
+      lossCurve: [
+        { step: 10, loss: 1.8 },
+        { step: 420, loss: 0.3 },
+      ],
+      scorecard: {
+        teacher: {
+          name: "Curated teacher",
+          schemaValidity: 1,
+          labelAccuracy: 1,
+          evidenceGrounding: 1,
+          judgeScore: 100,
+        },
+        base: {
+          name: "Base",
+          schemaValidity: 0.7,
+          labelAccuracy: 0.5,
+          evidenceGrounding: 0.6,
+          judgeScore: 57.5,
+        },
+        student: {
+          name: "Student",
+          schemaValidity: 1,
+          labelAccuracy: 0.9,
+          evidenceGrounding: 0.95,
+          judgeScore: 93.8,
+        },
+      },
+      slices: [
+        {
+          label: "At-risk shoppers",
+          count: 20,
+          baseScore: 52,
+          studentScore: 91,
+        },
+      ],
+    };
+    const fetcher = (async (input: RequestInfo | URL) => {
+      const customerId = decodeURIComponent(
+        String(input).split("/").at(-1) ?? "",
+      );
+      return new Response(
+        JSON.stringify({
+          profile: {
+            customerId,
+            valid: true,
+            summary: "A grounded synthetic buyer profile.",
+            lifecycleStage: "active",
+            categoryAffinities: ["packs"],
+            priceSensitivity: "medium",
+            purchaseCadence: "regular",
+            churnRisk: "low",
+            nextBestAction: "Offer a relevant bundle",
+            evidence: ["orders:10"],
+          },
+          latencyMs: 120,
+          experiment,
+        }),
+        { headers: { "x-tangle-model-cache": "hit" } },
+      );
+    }) as typeof fetch;
+    const result = await executeBrowserPipeline(
+      {
+        name: "Buyer profiles",
+        bindingCount: 4,
+        tasks: [
+          {
+            id: "profiles",
+            name: "Hosted profiles",
+            componentId: "generate-buyer-profiles",
+            arguments: { sample_size: "8" },
+          },
+        ],
+      },
+      buyerProfileCsv,
+      { hostedProfileBaseUrl: "/api/buyer-profile", fetcher },
+    );
+
+    expect(result.kind).toBe("buyer-profiles");
+    if (result.kind !== "buyer-profiles")
+      throw new Error("Expected buyer-profile results");
+    expect(result.profiles).toHaveLength(8);
+    expect(result.cacheHits).toBe(8);
+    expect(result.trainingExamples).toBe(1_440);
+    expect(result.scorecard.student.judgeScore).toBeGreaterThan(
+      result.scorecard.base.judgeScore,
+    );
   });
 
   it("compares deterministic univariate and multivariate demand forecasts", async () => {

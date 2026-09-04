@@ -63,7 +63,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "search_components",
       description:
-        "Search only the curated components that can execute safely in this browser runner. Returns stable component IDs and port names.",
+        "Search the curated browser-native and clearly marked hosted components. Returns stable component IDs and port names.",
       inputSchema: {
         type: "object",
         properties: {
@@ -118,6 +118,10 @@ export function createWebMcpToolDefinitions(
                     "univariate-forecast",
                     "multivariate-forecast",
                     "compare-forecasts",
+                    "build-profile-timeline",
+                    "generate-buyer-profiles",
+                    "validate-buyer-profiles",
+                    "evaluate-buyer-profiles",
                   ],
                 },
                 name: { type: "string", minLength: 1, maxLength: 100 },
@@ -214,7 +218,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "validate_pipeline",
       description:
-        "Validate the live Tangle graph and separately report whether every task is supported by the curated browser runner.",
+        "Validate the live Tangle graph and report whether every task is supported by the curated local or hosted runner.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
       execute: execute("validate_pipeline", (input) => {
@@ -225,7 +229,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "run_browser_pipeline",
       description:
-        "Run the validated curated pipeline locally in a cancellable worker. The person must first allow the next agent run in the visible panel.",
+        "Run a validated curated pipeline in a cancellable worker. Most models stay local; the buyer-profile component sends only approved synthetic demo IDs to the protected hosted endpoint. The person must first allow the next agent run in the visible panel.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(false),
       execute: execute("run_browser_pipeline", (input) => {
@@ -236,7 +240,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "get_run_summary",
       description:
-        "Read bounded classification, clustering, embedding, or forecasting insights for the current or latest local browser run without returning dataset rows.",
+        "Read bounded classification, clustering, embedding, forecasting, or buyer-profile insights for the current or latest run without returning dataset rows.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
       execute: execute("get_run_summary", (input) => {

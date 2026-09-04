@@ -3,7 +3,7 @@ import type { IconName } from "@/components/ui/icon";
 import type { AddPipelineTasksInput } from "./WebMcpAdapter";
 
 export type DemoRecipeId =
-  "failure" | "churn" | "forecast" | "segments" | "embeddings";
+  "failure" | "churn" | "forecast" | "segments" | "embeddings" | "profiles";
 
 export interface DemoRecipe {
   id: DemoRecipeId;
@@ -184,6 +184,87 @@ export const DEMO_RECIPES: DemoRecipe[] = [
     pipelineName: "Equipment failure lab",
     steps: ["Load telemetry", "Train two models", "Compare recall"],
     batch: classificationBatch("failure"),
+  },
+  {
+    id: "profiles",
+    title: "Turn purchase history into buyer profiles",
+    shortTitle: "Buyer profile model",
+    description:
+      "Use a fine-tuned small language model to turn shopping timelines into grounded customer summaries and next actions.",
+    outcome: "Profile cards · model scorecard · difficult slices",
+    eyebrow: "Small-model fine-tuning",
+    icon: "BrainCircuit",
+    accent: "mint",
+    pipelineName: "Buyer profile fine-tuning lab",
+    steps: ["Build timelines", "Run the 0.8B model", "Audit the evidence"],
+    batch: {
+      tasks: [
+        {
+          clientId: "load",
+          componentId: "load-csv",
+          name: "Load synthetic customer histories",
+          configuration: {
+            dataset_path: "/datasets/northstar-commerce/buyer-profiles.csv",
+          },
+        },
+        {
+          clientId: "timeline",
+          componentId: "build-profile-timeline",
+          name: "Build compact purchase timelines",
+        },
+        {
+          clientId: "profile",
+          componentId: "generate-buyer-profiles",
+          name: "Run fine-tuned Qwen3.5-0.8B",
+          configuration: {
+            sample_size: 8,
+            runtime: "Modal L4 · hosted",
+          },
+        },
+        {
+          clientId: "validate",
+          componentId: "validate-buyer-profiles",
+          name: "Check schema and cited evidence",
+        },
+        {
+          clientId: "evaluate",
+          componentId: "evaluate-buyer-profiles",
+          name: "Compare base and fine-tuned model",
+        },
+      ],
+      connections: [
+        {
+          sourceClientId: "load",
+          sourcePort: "dataset",
+          targetClientId: "timeline",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "timeline",
+          sourcePort: "timelines",
+          targetClientId: "profile",
+          targetPort: "timelines",
+        },
+        {
+          sourceClientId: "profile",
+          sourcePort: "profiles",
+          targetClientId: "validate",
+          targetPort: "profiles",
+        },
+        {
+          sourceClientId: "validate",
+          sourcePort: "profiles",
+          targetClientId: "evaluate",
+          targetPort: "profiles",
+        },
+        {
+          sourceClientId: "load",
+          sourcePort: "dataset",
+          targetClientId: "evaluate",
+          targetPort: "dataset",
+        },
+      ],
+    },
   },
   {
     id: "churn",

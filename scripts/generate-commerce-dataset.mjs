@@ -477,12 +477,147 @@ for (let dayIndex = 0; dayIndex < 730; dayIndex++) {
   });
 }
 
+const ordersByCustomer = new Map();
+for (const order of orders) {
+  const customerOrders = ordersByCustomer.get(order.customer_id) ?? [];
+  customerOrders.push(order);
+  ordersByCustomer.set(order.customer_id, customerOrders);
+}
+
+const lineItemsByOrder = new Map();
+for (const item of lineItems) {
+  const orderLines = lineItemsByOrder.get(item.order_id) ?? [];
+  orderLines.push(item);
+  lineItemsByOrder.set(item.order_id, orderLines);
+}
+
+const lifecycleStageFor = (customer) => {
+  if (customer.days_since_order >= 95 || customer.churned === 1)
+    return "at-risk";
+  if (customer.orders <= 3 || customer.tenure_months <= 5) return "new";
+  if (customer.orders >= 18 && customer.lifetime_value >= 3_500) return "loyal";
+  return "active";
+};
+
+const riskFor = (customer) => {
+  const score =
+    customer.days_since_order / 90 +
+    customer.support_tickets * 0.09 +
+    customer.return_rate * 1.8 +
+    customer.discount_share * 0.35 -
+    customer.email_engagement * 0.6 -
+    (customer.satisfaction_score - 7) * 0.08;
+  return score >= 1.35 ? "high" : score >= 0.72 ? "medium" : "low";
+};
+
+const cadenceFor = (customer) => {
+  const ordersPerMonth = customer.orders / Math.max(1, customer.tenure_months);
+  return ordersPerMonth >= 0.72
+    ? "frequent"
+    : ordersPerMonth >= 0.32
+      ? "regular"
+      : "occasional";
+};
+
+const priceSensitivityFor = (customer) =>
+  customer.discount_share >= 0.27
+    ? "high"
+    : customer.discount_share >= 0.13
+      ? "medium"
+      : "low";
+
+const buyerProfiles = customers.map((customer, customerIndex) => {
+  const customerOrders = [
+    ...(ordersByCustomer.get(customer.customer_id) ?? []),
+  ].sort((a, b) => b.order_date.localeCompare(a.order_date));
+  const categoryRevenue = new Map();
+  for (const order of customerOrders) {
+    for (const item of lineItemsByOrder.get(order.order_id) ?? []) {
+      categoryRevenue.set(
+        item.category,
+        (categoryRevenue.get(item.category) ?? 0) + item.item_revenue,
+      );
+    }
+  }
+  const categoryAffinities = [...categoryRevenue.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([category]) => category);
+  const recentTimeline = customerOrders
+    .slice(0, 6)
+    .map((order) => {
+      const orderCategories = [
+        ...new Set(
+          (lineItemsByOrder.get(order.order_id) ?? []).map(
+            (item) => item.category,
+          ),
+        ),
+      ];
+      return [
+        order.order_date,
+        `$${Math.round(order.order_total)}`,
+        orderCategories.join("+"),
+        `discount:${order.discount_rate}`,
+        `returned:${order.returned}`,
+      ].join("~");
+    })
+    .join("|");
+  const lifecycleStage = lifecycleStageFor(customer);
+  const churnRisk = riskFor(customer);
+  const cadence = cadenceFor(customer);
+  const priceSensitivity = priceSensitivityFor(customer);
+  const topCategory = categoryAffinities[0] ?? customer.preferred_category;
+  const evidence = [
+    `days_since_order:${customer.days_since_order}`,
+    `orders:${customer.orders}`,
+    `discount_share:${customer.discount_share}`,
+    `return_rate:${customer.return_rate}`,
+    `top_category:${topCategory}`,
+  ].join("|");
+  const summary = [
+    `${lifecycleStage} ${cadence} shopper`,
+    `strongest interest in ${topCategory}`,
+    `${priceSensitivity} price sensitivity`,
+    `${churnRisk} churn risk`,
+  ].join("; ");
+  const splitBucket = customerIndex % 10;
+  return {
+    customer_id: customer.customer_id,
+    split:
+      splitBucket < 8 ? "train" : splitBucket === 8 ? "validation" : "test",
+    region: customer.region,
+    acquisition_channel: customer.acquisition_channel,
+    membership_tier: customer.membership_tier,
+    tenure_months: customer.tenure_months,
+    orders: customer.orders,
+    spend: customer.spend,
+    avg_basket: customer.avg_basket,
+    discount_share: customer.discount_share,
+    return_rate: customer.return_rate,
+    support_tickets: customer.support_tickets,
+    days_since_order: customer.days_since_order,
+    email_engagement: customer.email_engagement,
+    satisfaction_score: customer.satisfaction_score,
+    lifetime_value: customer.lifetime_value,
+    category_affinities: categoryAffinities.join("|"),
+    recent_timeline: recentTimeline,
+    profile_summary: summary,
+    lifecycle_stage: lifecycleStage,
+    price_sensitivity: priceSensitivity,
+    purchase_cadence: cadence,
+    churn_risk: churnRisk,
+    next_best_action: customer.recommended_action,
+    evidence,
+  };
+});
+
 const files = {
   "customers.csv": [customers, Object.keys(customers[0])],
   "orders.csv": [orders, Object.keys(orders[0])],
   "order-items.csv": [lineItems, Object.keys(lineItems[0])],
   "products.csv": [products, Object.keys(products[0])],
   "daily-sales.csv": [dailySales, Object.keys(dailySales[0])],
+  "buyer-profiles.csv": [buyerProfiles, Object.keys(buyerProfiles[0])],
 };
 
 await mkdir(OUTPUT_DIR, { recursive: true });
@@ -511,7 +646,7 @@ await writeFile(
 );
 await writeFile(
   resolve(OUTPUT_DIR, "provenance.md"),
-  `# Northstar Commerce synthetic dataset\n\n- Generated locally with deterministic JavaScript; no external model or private source records were used.\n- Seed: ${SEED}\n- Anchor date: ${ANCHOR_DATE.toISOString().slice(0, 10)}\n- Customers: ${customers.length}\n- Orders: ${orders.length}\n- Line items: ${lineItems.length}\n- Products: ${products.length}\n- Daily sales records: ${dailySales.length}\n- Scenario: fictional Australian outdoor retailer with intentionally overlapping customer behaviours, probabilistic churn, and two years of daily demand.\n- Validation: row counts, primary keys, foreign keys, numeric ranges, chronological dates, deterministic regeneration, and product co-purchase references.\n\nThe latent_segment field is retained for demo evaluation but is not used as a clustering feature. Daily sales include known retail demand drivers for comparing univariate and multivariate forecasts. All names and identifiers are synthetic.\n`,
+  `# Northstar Commerce synthetic dataset\n\n- Generated locally with deterministic JavaScript; no external model or private source records were used.\n- Seed: ${SEED}\n- Anchor date: ${ANCHOR_DATE.toISOString().slice(0, 10)}\n- Customers: ${customers.length}\n- Orders: ${orders.length}\n- Line items: ${lineItems.length}\n- Products: ${products.length}\n- Daily sales records: ${dailySales.length}\n- Buyer profile examples: ${buyerProfiles.length} (1,440 train / 180 validation / 180 test)\n- Scenario: fictional Australian outdoor retailer with intentionally overlapping customer behaviours, probabilistic churn, and two years of daily demand.\n- Validation: row counts, primary keys, foreign keys, numeric ranges, chronological dates, deterministic regeneration, and product co-purchase references.\n\nThe latent_segment field is retained for demo evaluation but is not used as a clustering feature. Daily sales include known retail demand drivers for comparing univariate and multivariate forecasts. Buyer profiles add compact purchase timelines and evidence-grounded structured targets for teacher generation, fine-tuning, and held-out evaluation. All names and identifiers are synthetic.\n`,
 );
 
 console.log(
@@ -521,6 +656,7 @@ console.log(
     lineItems: lineItems.length,
     products: products.length,
     dailySales: dailySales.length,
+    buyerProfiles: buyerProfiles.length,
     churnRate: round(
       customers.reduce((sum, customer) => sum + customer.churned, 0) /
         customers.length,

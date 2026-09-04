@@ -62,17 +62,36 @@ Curated component references carry a `webmcp://components/<id>` URL and an
 explicit `browser.webmcp.dev/executable` annotation. The runner rejects every
 other component before execution.
 
-The MVP worker executes three curated workload families:
+The worker executes four browser-native workload families:
 
 - classification: `Load CSV -> Select columns -> Fill missing values -> Encode
 categories -> Train/test split -> Logistic regression + Decision tree ->
 Evaluate -> Compare`;
 - clustering: customer features -> K-means -> bounded segment profile; and
 - embeddings: product catalogue -> deterministic TF-IDF or browser-trained
-  Product2Vec -> nearest-neighbour report.
+  Product2Vec -> nearest-neighbour report; and
+- forecasting: daily sales -> history-only and driver-aware forecasts ->
+  held-out error comparison.
 
 Training and analysis are deterministic, bounded, cancellable by terminating the
 worker, and keep the CSV and derived arrays in the browser. An agent-triggered
 run is blocked until the person authorises the next local run in the visible
 panel. The tool-facing summaries return metrics and concise insights rather than
 dataset rows.
+
+## Bounded hosted buyer profiles
+
+The buyer-profile recipe is intentionally marked as hosted. Tangle still builds
+the visible graph and a Web Worker still owns progress, cancellation, and result
+shaping, but the `generate-buyer-profiles` node calls a same-origin Sites Worker
+route. That route accepts only eight fixed synthetic customer IDs, reconstructs
+their inputs from the bundled dataset, authenticates to Modal with server-side
+proxy credentials, and caches each result. Public clients cannot start training
+or submit arbitrary customer data.
+
+The offline Modal job uses a Qwen3.5-4B teacher to rewrite grounded synthetic
+targets, fine-tunes a Qwen3.5-0.8B LoRA adapter with a 30-minute H100 timeout,
+and evaluates held-out JSON validity, exact structured labels, evidence
+grounding, and difficult customer slices. The public inference class scales to
+zero and permits at most one container. An agent-triggered hosted run uses the
+same one-time visible approval control as a local run.
