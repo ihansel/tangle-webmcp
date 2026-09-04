@@ -5,11 +5,13 @@ import type { CuratedComponentId } from "./types";
 
 export const BROWSER_EXECUTABLE_ANNOTATION = "browser.webmcp.dev/executable";
 export const COMPONENT_ID_ANNOTATION = "browser.webmcp.dev/component-id";
+export const EXECUTION_MODE_ANNOTATION = "browser.webmcp.dev/execution-mode";
 
 export interface CuratedComponent {
   id: CuratedComponentId;
   name: string;
   description: string;
+  executionMode?: "browser" | "hosted" | "reference";
   category:
     | "data"
     | "preprocess"
@@ -288,13 +290,74 @@ const components: CuratedComponent[] = [
     outputs: [{ name: "timelines", type: "ProfileBatch" }],
   },
   {
+    id: "generate-profile-training-data",
+    name: "Generate teacher profiles",
+    description:
+      "Replay the completed Modal teacher-data stage: Qwen3.5-4B produced 960 structured synthetic profiles.",
+    executionMode: "reference",
+    category: "profiles",
+    inputs: [
+      { name: "timelines", type: "ProfileBatch" },
+      { name: "sample_count", type: "Integer", default: "960" },
+      { name: "teacher_model", type: "String", default: "Qwen3.5-4B" },
+    ],
+    outputs: [{ name: "training_set", type: "TrainingSet" }],
+  },
+  {
+    id: "fine-tune-profile-model",
+    name: "Fine-tune buyer profile model",
+    description:
+      "Replay the completed 300-step LoRA fine-tune of Qwen3.5-0.8B on one Modal H100.",
+    executionMode: "reference",
+    category: "training",
+    inputs: [
+      { name: "training_set", type: "TrainingSet" },
+      { name: "base_model", type: "String", default: "Qwen3.5-0.8B" },
+      { name: "max_steps", type: "Integer", default: "300" },
+      { name: "gpu", type: "String", default: "H100" },
+    ],
+    outputs: [{ name: "model", type: "Model" }],
+  },
+  {
+    id: "evaluate-profile-model",
+    name: "Evaluate held-out profiles",
+    description:
+      "Replay schema, label, grounding, and difficult-slice checks from 80 unseen synthetic customers.",
+    executionMode: "reference",
+    category: "evaluation",
+    inputs: [
+      { name: "model", type: "Model" },
+      { name: "dataset", type: "DataFrame" },
+    ],
+    outputs: [{ name: "evaluation", type: "Report" }],
+  },
+  {
+    id: "publish-profile-endpoint",
+    name: "Publish protected endpoint",
+    description:
+      "Represent the deployed, proxy-authenticated Modal endpoint used by this public demo.",
+    executionMode: "reference",
+    category: "profiles",
+    inputs: [
+      { name: "model", type: "Model" },
+      { name: "evaluation", type: "Report" },
+    ],
+    outputs: [{ name: "endpoint", type: "HostedEndpoint" }],
+  },
+  {
     id: "generate-buyer-profiles",
     name: "Generate buyer profiles",
     description:
       "Run the fine-tuned Qwen3.5-0.8B buyer-profile model on an approved synthetic demo sample.",
+    executionMode: "hosted",
     category: "profiles",
     inputs: [
       { name: "timelines", type: "ProfileBatch" },
+      {
+        name: "endpoint",
+        type: "HostedEndpoint",
+        default: "Tangle protected endpoint",
+      },
       { name: "sample_size", type: "Integer", default: "8" },
       {
         name: "runtime",
@@ -349,8 +412,10 @@ export function createCuratedComponentReference(
       },
       metadata: {
         annotations: {
-          [BROWSER_EXECUTABLE_ANNOTATION]: true,
+          [BROWSER_EXECUTABLE_ANNOTATION]:
+            (component.executionMode ?? "browser") === "browser",
           [COMPONENT_ID_ANNOTATION]: component.id,
+          [EXECUTION_MODE_ANNOTATION]: component.executionMode ?? "browser",
         },
       },
     },

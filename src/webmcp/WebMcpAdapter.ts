@@ -38,6 +38,10 @@ const componentIds = [
   "multivariate-forecast",
   "compare-forecasts",
   "build-profile-timeline",
+  "generate-profile-training-data",
+  "fine-tune-profile-model",
+  "evaluate-profile-model",
+  "publish-profile-endpoint",
   "generate-buyer-profiles",
   "validate-buyer-profiles",
   "evaluate-buyer-profiles",
@@ -193,15 +197,23 @@ export class WebMcpAdapter {
       description: pipeline.description,
       taskCount: pipeline.tasks.length,
       bindingCount: pipeline.bindings.length,
-      tasks: pipeline.tasks.slice(0, 40).map((task) => ({
-        taskId: task.$id,
-        name: task.name,
-        componentId: componentIdFromUrl(task.componentRef.url),
-        browserExecutable: componentIdFromUrl(task.componentRef.url) !== null,
-        configuredArguments: task.arguments
-          .filter((argument) => argument.value !== undefined)
-          .map((argument) => argument.name),
-      })),
+      tasks: pipeline.tasks.slice(0, 40).map((task) => {
+        const componentId = componentIdFromUrl(task.componentRef.url);
+        const component = componentId
+          ? CURATED_COMPONENT_BY_ID.get(componentId)
+          : null;
+        const executionMode = component?.executionMode ?? "browser";
+        return {
+          taskId: task.$id,
+          name: task.name,
+          componentId,
+          executionMode,
+          browserExecutable: Boolean(component && executionMode === "browser"),
+          configuredArguments: task.arguments
+            .filter((argument) => argument.value !== undefined)
+            .map((argument) => argument.name),
+        };
+      }),
       truncatedTaskCount: Math.max(0, pipeline.tasks.length - 40),
       activeSubgraphPath: pipeline.activeSubgraphPath,
       undoAvailable: this.deps.undo.canUndo,
@@ -229,7 +241,8 @@ export class WebMcpAdapter {
         category: component.category,
         inputs: component.inputs.map((port) => port.name),
         outputs: component.outputs.map((port) => port.name),
-        browserExecutable: true,
+        executionMode: component.executionMode ?? "browser",
+        browserExecutable: (component.executionMode ?? "browser") === "browser",
       }));
     return { resultCount: results.length, results };
   }

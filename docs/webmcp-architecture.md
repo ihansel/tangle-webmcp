@@ -95,3 +95,16 @@ and evaluates held-out JSON validity, exact structured labels, evidence
 grounding, and difficult customer slices. The public inference class scales to
 zero and permits at most one container. An agent-triggered hosted run uses the
 same one-time visible approval control as a local run.
+
+The separate fine-tuning workflow on the dashboard is an honest replay of that
+completed run. Its teacher, training, evaluation, and deployment nodes expose
+the shape and measured artifacts of the experiment, while the final inference
+node calls the protected endpoint. Opening or running this public workflow does
+not create a Modal GPU job or incur a new training run.
+
+For a user-owned run, Modal API credentials (`MODAL_TOKEN_ID` and
+`MODAL_TOKEN_SECRET`) must be available only to a trusted local or server
+runtime that invokes the deployed Modal functions. They are distinct from the
+restricted proxy token used to call the HTTPS inference endpoint. Neither kind
+of credential belongs in browser storage, a pipeline argument, WebMCP tool
+output, or a `VITE_` environment variable.

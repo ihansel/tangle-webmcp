@@ -312,8 +312,9 @@ export function BuyerProfileReport({
           </p>
           <p className="mt-1 text-xs leading-5 text-emerald-200/70">
             Only the fixed synthetic demo IDs can reach Modal. Training is not
-            exposed publicly, model access is proxy-authenticated, and generated
-            results are cached to cap GPU use.
+            exposed publicly, no Modal credential is sent to the browser, model
+            access is proxy-authenticated, and generated results are cached to
+            cap GPU use.
           </p>
         </div>
       </div>

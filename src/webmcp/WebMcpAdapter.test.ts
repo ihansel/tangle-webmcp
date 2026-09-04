@@ -110,6 +110,32 @@ describe("WebMcpAdapter", () => {
     );
   });
 
+  it("builds the safe fine-tuning replay without exposing it as browser training", async () => {
+    const { adapter, spec, undo } = createHarness();
+    const recipe = DEMO_RECIPE_BY_ID.get("fine-tune");
+    if (!recipe) throw new Error("Fine-tuning recipe is missing");
+
+    const result = adapter.addPipelineTasks(recipe.batch);
+
+    expect(result.created).toHaveLength(8);
+    expect(spec.bindings).toHaveLength(10);
+    expect(undo.undoLevels).toBe(1);
+    await expect(adapter.validatePipeline()).resolves.toEqual(
+      expect.objectContaining({ browserExecutable: true }),
+    );
+
+    const search = adapter.searchComponents({ query: "fine-tune" });
+    expect(search.results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          componentId: "fine-tune-profile-model",
+          executionMode: "reference",
+          browserExecutable: false,
+        }),
+      ]),
+    );
+  });
+
   it("returns summaries without raw component specs or data", async () => {
     const { adapter } = createHarness();
     adapter.addPipelineTasks({ tasks: FAILURE_DEMO_BATCH.tasks.slice(0, 1) });

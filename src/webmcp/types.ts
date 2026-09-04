@@ -17,6 +17,10 @@ export type CuratedComponentId =
   | "multivariate-forecast"
   | "compare-forecasts"
   | "build-profile-timeline"
+  | "generate-profile-training-data"
+  | "fine-tune-profile-model"
+  | "evaluate-profile-model"
+  | "publish-profile-endpoint"
   | "generate-buyer-profiles"
   | "validate-buyer-profiles"
   | "evaluate-buyer-profiles";

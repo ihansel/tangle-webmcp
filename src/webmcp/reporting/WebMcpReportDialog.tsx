@@ -75,7 +75,9 @@ export function WebMcpReportDialog({ result }: { result: BrowserRunResult }) {
                   {result.durationMs.toLocaleString()} ms
                 </p>
                 <p className="text-[10px] uppercase tracking-wide text-slate-500">
-                  local runtime
+                  {result.kind === "buyer-profiles"
+                    ? "workflow runtime"
+                    : "local runtime"}
                 </p>
               </div>
             </div>

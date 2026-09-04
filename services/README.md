@@ -26,5 +26,19 @@ uvx --from modal modal run services/modal_buyer_profile_lab.py
 uvx --from modal modal deploy services/modal_buyer_profile_lab.py
 ```
 
-The endpoint requires a Modal proxy token. Tangle's Sites Worker stores that
-token server-side and only allows the fixed public demo customer IDs through.
+Modal's CLI and SDK read a user-owned API token from the active
+`~/.modal.toml` profile or from `MODAL_TOKEN_ID` and `MODAL_TOKEN_SECRET`.
+Those credentials can deploy or invoke functions and must stay in the trusted
+local or server process that owns the workflow. Do not expose them through a
+`VITE_` variable, browser storage, pipeline configuration, or WebMCP output.
+
+The HTTPS inference endpoint uses a separate Modal proxy token. Tangle's Sites
+Worker stores its `Modal-Key` and `Modal-Secret` as server-side secrets and only
+allows the fixed public demo customer IDs through. A proxy token can call the
+protected endpoint but cannot be used as the API token that deploys the app.
+
+The public fine-tuning workflow replays the measured reference run and invokes
+only the protected sample endpoint. It cannot launch training. A real
+user-owned training button would require an authenticated server-side control
+plane, per-user secret storage, cost limits, job status, cancellation, and
+auditing; exported keys in browser JavaScript are not a safe substitute.

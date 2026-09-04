@@ -10,8 +10,10 @@ This branch turns Tangle into a WebMCP workspace for practical machine learning.
 A person can ask an agent to help with work such as predictions, churn,
 forecasting, customer groups, product relationships, or structured buyer
 profiles. The agent builds on the same visible canvas and the person approves
-each run. Four workflows keep rows in the page; the buyer-profile lab sends only
-a fixed synthetic sample to a protected Modal endpoint.
+each run. Four workflows keep rows in the page; two buyer-profile demos send
+only a fixed synthetic sample to a protected Modal endpoint. The training demo
+replays the completed reference run and never starts a GPU job from the public
+site.
 
 ![Tangle WebMCP commerce demo](submission/assets/gallery/01-home.png)
 
@@ -45,6 +47,8 @@ The registered tools are:
 - Learn which products are bought together and surface similar items.
 - Turn purchase timelines into evidence-linked profiles with a fine-tuned
   Qwen3.5-0.8B adapter, then compare it with the base model by customer slice.
+- Inspect the complete teacher-data, LoRA fine-tuning, held-out evaluation, and
+  protected deployment workflow using the measured 19-minute reference run.
 - Review charts and operational recommendations produced by the local and
   clearly marked hosted runtimes.
 
@@ -64,8 +68,8 @@ pnpm install --frozen-lockfile
 pnpm start
 ```
 
-No backend or API key is required for the four curated local demos. The hosted
-buyer-profile example uses the private service described in
+No backend or API key is required for the four curated local demos or the two
+public hosted demos. The hosted buyer-profile examples use the private service described in
 [services/README.md](services/README.md). With a supporting client, open an
 experiment in the v2 editor to discover the WebMCP tools. To run the verification
 suite:

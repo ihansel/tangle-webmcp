@@ -3,7 +3,13 @@ import type { IconName } from "@/components/ui/icon";
 import type { AddPipelineTasksInput } from "./WebMcpAdapter";
 
 export type DemoRecipeId =
-  "failure" | "churn" | "forecast" | "segments" | "embeddings" | "profiles";
+  | "failure"
+  | "churn"
+  | "forecast"
+  | "segments"
+  | "embeddings"
+  | "profiles"
+  | "fine-tune";
 
 export interface DemoRecipe {
   id: DemoRecipeId;
@@ -262,6 +268,145 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           sourcePort: "dataset",
           targetClientId: "evaluate",
           targetPort: "dataset",
+        },
+      ],
+    },
+  },
+  {
+    id: "fine-tune",
+    title: "Fine-tune and deploy a buyer profile model",
+    shortTitle: "Fine-tuning workflow",
+    description:
+      "Replay the completed Modal run from teacher-data generation through LoRA training, held-out checks, deployment and live profiles.",
+    outcome: "19-minute reference run · 96.8 score · protected endpoint",
+    eyebrow: "Hosted training",
+    icon: "CloudCog",
+    accent: "sky",
+    pipelineName: "Buyer profile training workflow",
+    steps: [
+      "Generate teacher data",
+      "Fine-tune on H100",
+      "Evaluate and deploy",
+    ],
+    batch: {
+      tasks: [
+        {
+          clientId: "load",
+          componentId: "load-csv",
+          name: "Load synthetic customer histories",
+          configuration: {
+            dataset_path: "/datasets/northstar-commerce/buyer-profiles.csv",
+          },
+        },
+        {
+          clientId: "timeline",
+          componentId: "build-profile-timeline",
+          name: "Build compact purchase timelines",
+        },
+        {
+          clientId: "teacher",
+          componentId: "generate-profile-training-data",
+          name: "Generate 960 teacher profiles",
+          configuration: {
+            sample_count: 960,
+            teacher_model: "Qwen3.5-4B",
+          },
+        },
+        {
+          clientId: "tune",
+          componentId: "fine-tune-profile-model",
+          name: "Fine-tune Qwen3.5-0.8B with LoRA",
+          configuration: {
+            base_model: "Qwen3.5-0.8B",
+            max_steps: 300,
+            gpu: "H100",
+          },
+        },
+        {
+          clientId: "evaluate",
+          componentId: "evaluate-profile-model",
+          name: "Evaluate 80 unseen customers",
+        },
+        {
+          clientId: "publish",
+          componentId: "publish-profile-endpoint",
+          name: "Publish protected Modal endpoint",
+        },
+        {
+          clientId: "profile",
+          componentId: "generate-buyer-profiles",
+          name: "Run eight approved profiles",
+          configuration: {
+            sample_size: 8,
+            runtime: "Modal L4 · protected",
+          },
+        },
+        {
+          clientId: "validate",
+          componentId: "validate-buyer-profiles",
+          name: "Verify schema and citations",
+        },
+      ],
+      connections: [
+        {
+          sourceClientId: "load",
+          sourcePort: "dataset",
+          targetClientId: "timeline",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "timeline",
+          sourcePort: "timelines",
+          targetClientId: "teacher",
+          targetPort: "timelines",
+        },
+        {
+          sourceClientId: "teacher",
+          sourcePort: "training_set",
+          targetClientId: "tune",
+          targetPort: "training_set",
+        },
+        {
+          sourceClientId: "tune",
+          sourcePort: "model",
+          targetClientId: "evaluate",
+          targetPort: "model",
+        },
+        {
+          sourceClientId: "load",
+          sourcePort: "dataset",
+          targetClientId: "evaluate",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "tune",
+          sourcePort: "model",
+          targetClientId: "publish",
+          targetPort: "model",
+        },
+        {
+          sourceClientId: "evaluate",
+          sourcePort: "evaluation",
+          targetClientId: "publish",
+          targetPort: "evaluation",
+        },
+        {
+          sourceClientId: "timeline",
+          sourcePort: "timelines",
+          targetClientId: "profile",
+          targetPort: "timelines",
+        },
+        {
+          sourceClientId: "publish",
+          sourcePort: "endpoint",
+          targetClientId: "profile",
+          targetPort: "endpoint",
+        },
+        {
+          sourceClientId: "profile",
+          sourcePort: "profiles",
+          targetClientId: "validate",
+          targetPort: "profiles",
         },
       ],
     },

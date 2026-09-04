@@ -31,9 +31,13 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
       : null;
   const preferredForecastTaskId =
     run.result?.kind === "forecasting" ? run.result.preferredModelTaskId : null;
-  const hostedProfilePipeline = adapter
-    .createPipelineSnapshot()
-    .tasks.some((task) => task.componentId === "generate-buyer-profiles");
+  const pipelineTasks = adapter.createPipelineSnapshot().tasks;
+  const hostedProfilePipeline = pipelineTasks.some(
+    (task) => task.componentId === "generate-buyer-profiles",
+  );
+  const fineTuneReplay = pipelineTasks.some(
+    (task) => task.componentId === "fine-tune-profile-model",
+  );
   const modelContextLabel = registration.registered
     ? `${registration.toolCount} tools shared`
     : registration.available
@@ -88,9 +92,11 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                 tone="subdued"
                 className="block uppercase tracking-wide"
               >
-                {hostedProfilePipeline
-                  ? "Hosted model run"
-                  : "Runs in this browser"}
+                {fineTuneReplay
+                  ? "Completed training replay"
+                  : hostedProfilePipeline
+                    ? "Hosted model run"
+                    : "Runs in this browser"}
               </Text>
               <Text
                 as="span"
@@ -112,9 +118,11 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
               </Button>
             ) : (
               <Button className="w-full" size="xs" onClick={handleManualRun}>
-                {hostedProfilePipeline
-                  ? "Run hosted profiles"
-                  : "Run in browser"}
+                {fineTuneReplay
+                  ? "Replay training run"
+                  : hostedProfilePipeline
+                    ? "Run hosted profiles"
+                    : "Run in browser"}
               </Button>
             )}
           </div>
@@ -122,8 +130,9 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
           {hostedProfilePipeline && run.status !== "running" && (
             <div className="mb-3 flex gap-2 rounded-md border border-violet-200 bg-violet-50 px-2.5 py-2 text-xs leading-5 text-violet-900 dark:border-violet-900 dark:bg-violet-950 dark:text-violet-100">
               <Icon name="CloudCog" className="mt-0.5 size-4 shrink-0" />
-              Sends only eight fixed synthetic customers to the protected Modal
-              endpoint.
+              {fineTuneReplay
+                ? "Replays the completed 19-minute experiment, then sends eight fixed synthetic customers to its protected endpoint. It does not start a new GPU job."
+                : "Sends only eight fixed synthetic customers to the protected Modal endpoint."}
             </div>
           )}
 
@@ -154,7 +163,11 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
             >
               <span>
                 Allow the next agent-triggered{" "}
-                {hostedProfilePipeline ? "hosted " : ""}run
+                {fineTuneReplay
+                  ? "training replay"
+                  : hostedProfilePipeline
+                    ? "hosted run"
+                    : "run"}
               </span>
               <Icon name="ShieldCheck" className="size-4" />
             </button>
@@ -348,7 +361,9 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <Text size="xs" weight="semibold" className="block">
-                          Fine-tuned buyer profiles
+                          {fineTuneReplay
+                            ? "Completed fine-tuning workflow"
+                            : "Fine-tuned buyer profiles"}
                         </Text>
                         <Text size="xs" tone="subdued" className="block">
                           {run.result.profiles.length} live examples ·{" "}

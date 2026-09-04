@@ -119,6 +119,10 @@ export function createWebMcpToolDefinitions(
                     "multivariate-forecast",
                     "compare-forecasts",
                     "build-profile-timeline",
+                    "generate-profile-training-data",
+                    "fine-tune-profile-model",
+                    "evaluate-profile-model",
+                    "publish-profile-endpoint",
                     "generate-buyer-profiles",
                     "validate-buyer-profiles",
                     "evaluate-buyer-profiles",
@@ -229,7 +233,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "run_browser_pipeline",
       description:
-        "Run a validated curated pipeline in a cancellable worker. Most models stay local; the buyer-profile component sends only approved synthetic demo IDs to the protected hosted endpoint. The person must first allow the next agent run in the visible panel.",
+        "Run a validated curated pipeline in a cancellable worker. Most models stay local; buyer-profile workflows send only approved synthetic demo IDs to the protected hosted endpoint. Fine-tuning nodes replay a completed reference run and never start a new GPU job. The person must first allow the next agent run in the visible panel.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(false),
       execute: execute("run_browser_pipeline", (input) => {

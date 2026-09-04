@@ -212,8 +212,8 @@ export function DashboardHomeView() {
               <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400">
                 Ask for a prediction, churn check, forecast or customer groups.
                 Your agent builds the steps on a canvas you can see, then runs
-                most of them in your browser. The advanced profile lab uses only
-                a fixed synthetic sample with a protected hosted model.
+                most of them in your browser. The two profile labs use only a
+                fixed synthetic sample with a protected hosted model.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button
@@ -240,9 +240,9 @@ export function DashboardHomeView() {
 
             <div className="mt-10 grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-5">
               {[
-                ["5", "retail examples"],
+                ["6", "retail examples"],
                 ["25+", "charts and reports"],
-                ["4 + 1", "local · hosted"],
+                ["4 + 2", "local · hosted"],
               ].map(([value, label]) => (
                 <div key={label} className="px-4 first:pl-0">
                   <p className="text-lg font-semibold text-slate-100">
@@ -305,7 +305,7 @@ export function DashboardHomeView() {
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Icon name="Laptop" size="sm" />
-            Four local examples · one protected hosted model
+            Four local examples · two protected hosted demos
           </div>
         </div>
 
@@ -318,6 +318,45 @@ export function DashboardHomeView() {
               onLaunch={launchRecipe}
             />
           ))}
+        </div>
+      </section>
+
+      <section className="mt-10 overflow-hidden rounded-xl border border-slate-800 bg-[#0b0b0d] text-white">
+        <div className="grid md:grid-cols-[0.9fr_2.1fr]">
+          <div className="border-b border-slate-800 p-6 md:border-r md:border-b-0 lg:p-8">
+            <Icon name="KeyRound" className="text-sky-300" />
+            <h2 className="mt-4 text-xl font-semibold tracking-tight">
+              Bring your own Modal safely
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Your credentials belong in a trusted local or server process,
+              never in the browser or on the workflow canvas.
+            </p>
+          </div>
+          <div className="grid divide-y divide-slate-800 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            {[
+              [
+                "Server-held API token",
+                "MODAL_TOKEN_ID and MODAL_TOKEN_SECRET can launch your own deployed functions from a local or server runtime.",
+              ],
+              [
+                "Separate endpoint token",
+                "A restricted proxy token calls the model endpoint. It cannot be used to deploy code or start arbitrary jobs.",
+              ],
+              [
+                "Safe public replay",
+                "This site replays the completed training run and calls only eight allow-listed synthetic profiles. It never starts paid training.",
+              ],
+            ].map(([title, copy], index) => (
+              <div key={title} className="p-6 lg:p-7">
+                <p className="font-mono text-xs text-sky-300">0{index + 1}</p>
+                <h3 className="mt-3 text-sm font-semibold text-slate-100">
+                  {title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-400">{copy}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
