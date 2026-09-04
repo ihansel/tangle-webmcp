@@ -18,6 +18,10 @@ const productCsv = readFileSync(
   resolve(process.cwd(), "public/datasets/northstar-commerce/products.csv"),
   "utf8",
 );
+const dailySalesCsv = readFileSync(
+  resolve(process.cwd(), "public/datasets/northstar-commerce/daily-sales.csv"),
+  "utf8",
+);
 
 const pipeline: PipelineSnapshot = {
   name: "Equipment failure comparison",
@@ -202,5 +206,64 @@ describe("browser runner engine", () => {
     expect(first.training?.lossCurve).toEqual(second.training?.lossCurve);
     expect(first.products).toHaveLength(160);
     expect(first.points).toHaveLength(160);
+  });
+
+  it("compares deterministic univariate and multivariate demand forecasts", async () => {
+    const forecastPipeline: PipelineSnapshot = {
+      name: "Retail demand forecast",
+      bindingCount: 6,
+      tasks: [
+        {
+          id: "univariate",
+          name: "Sales history forecast",
+          componentId: "univariate-forecast",
+          arguments: {
+            date_column: "date",
+            target: "units_sold",
+            lags: "1,7,14,28",
+            horizon: "28",
+          },
+        },
+        {
+          id: "multivariate",
+          name: "Retail drivers forecast",
+          componentId: "multivariate-forecast",
+          arguments: {
+            date_column: "date",
+            target: "units_sold",
+            lags: "1,7,14,28",
+            features: "avg_price,promotion,holiday,temperature,day_of_week",
+            horizon: "28",
+          },
+        },
+      ],
+    };
+    const first = await executeBrowserPipeline(forecastPipeline, dailySalesCsv);
+    const second = await executeBrowserPipeline(
+      forecastPipeline,
+      dailySalesCsv,
+    );
+
+    expect(first.kind).toBe("forecasting");
+    expect(second.kind).toBe("forecasting");
+    if (first.kind !== "forecasting" || second.kind !== "forecasting")
+      throw new Error("Expected forecasting results");
+    expect(first.rowCount).toBe(730);
+    expect(first.trainingRowCount).toBe(702);
+    expect(first.horizon).toBe(28);
+    expect(first.points).toHaveLength(28);
+    expect(first.models).toHaveLength(2);
+    expect(first.models.map((model) => model.metrics)).toEqual(
+      second.models.map((model) => model.metrics),
+    );
+    expect(first.models.every((model) => model.metrics.mae > 0)).toBe(true);
+    expect(
+      first.models.find((model) => model.algorithm === "multivariate")?.metrics
+        .mae,
+    ).toBeLessThan(
+      first.models.find((model) => model.algorithm === "univariate")?.metrics
+        .mae ?? 0,
+    );
+    expect(first.improvement).toBeGreaterThan(0);
   });
 });

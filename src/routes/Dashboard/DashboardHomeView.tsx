@@ -239,8 +239,8 @@ export function DashboardHomeView() {
 
             <div className="mt-10 grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-5">
               {[
-                ["3", "retail examples"],
-                ["18", "charts and reports"],
+                ["4", "retail examples"],
+                ["20+", "charts and reports"],
                 ["100%", "in-browser runs"],
               ].map(([value, label]) => (
                 <div key={label} className="px-4 first:pl-0">
@@ -269,12 +269,13 @@ export function DashboardHomeView() {
             It is large enough to tell a useful story and safe to explore.
           </p>
         </div>
-        <div className="grid grid-cols-2 divide-x divide-y divide-slate-800 sm:grid-cols-4 sm:divide-y-0">
+        <div className="grid grid-cols-2 divide-x divide-y divide-slate-800 sm:grid-cols-5 sm:divide-y-0">
           {[
             ["1,800", "customers"],
             ["19,840", "orders"],
             ["41,626", "line items"],
             ["160", "products"],
+            ["730", "daily sales records"],
           ].map(([value, label]) => (
             <div
               key={label}

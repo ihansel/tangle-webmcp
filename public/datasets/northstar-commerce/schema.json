@@ -67,6 +67,20 @@
         "premium",
         "copurchase_skus"
       ]
+    },
+    "daily-sales.csv": {
+      "rowCount": 730,
+      "columns": [
+        "date",
+        "units_sold",
+        "orders",
+        "revenue",
+        "avg_price",
+        "promotion",
+        "holiday",
+        "temperature",
+        "day_of_week"
+      ]
     }
   }
 }

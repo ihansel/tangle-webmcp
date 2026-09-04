@@ -2,7 +2,8 @@ import type { IconName } from "@/components/ui/icon";
 
 import type { AddPipelineTasksInput } from "./WebMcpAdapter";
 
-export type DemoRecipeId = "failure" | "churn" | "segments" | "embeddings";
+export type DemoRecipeId =
+  "failure" | "churn" | "forecast" | "segments" | "embeddings";
 
 export interface DemoRecipe {
   id: DemoRecipeId;
@@ -275,6 +276,112 @@ export const DEMO_RECIPES: DemoRecipe[] = [
           sourcePort: "segments",
           targetClientId: "profile",
           targetPort: "segments",
+        },
+      ],
+    },
+  },
+  {
+    id: "forecast",
+    title: "Forecast daily product demand",
+    shortTitle: "Demand forecasting",
+    description:
+      "Compare a sales-history forecast with one that also knows about price, promotions, holidays and weather.",
+    outcome: "28-day outlook · error comparison · demand chart",
+    eyebrow: "Forecasting",
+    icon: "ChartNoAxesCombined",
+    accent: "violet",
+    pipelineName: "Retail demand forecast",
+    steps: ["Load daily sales", "Build two forecasts", "Compare accuracy"],
+    batch: {
+      tasks: [
+        {
+          clientId: "load",
+          componentId: "load-csv",
+          name: "Load daily retail sales",
+          configuration: {
+            dataset_path: "/datasets/northstar-commerce/daily-sales.csv",
+          },
+        },
+        {
+          clientId: "select",
+          componentId: "select-columns",
+          name: "Select demand signals",
+          configuration: {
+            columns:
+              "date,units_sold,orders,revenue,avg_price,promotion,holiday,temperature,day_of_week",
+          },
+        },
+        {
+          clientId: "fill",
+          componentId: "fill-missing",
+          name: "Fill missing daily values",
+        },
+        {
+          clientId: "univariate",
+          componentId: "univariate-forecast",
+          name: "Forecast from sales history",
+          configuration: {
+            date_column: "date",
+            target: "units_sold",
+            lags: "1,7,14,28",
+            horizon: 28,
+          },
+        },
+        {
+          clientId: "multivariate",
+          componentId: "multivariate-forecast",
+          name: "Forecast with retail drivers",
+          configuration: {
+            date_column: "date",
+            target: "units_sold",
+            lags: "1,7,14,28",
+            features: "avg_price,promotion,holiday,temperature,day_of_week",
+            horizon: 28,
+          },
+        },
+        {
+          clientId: "compare",
+          componentId: "compare-forecasts",
+          name: "Compare forecast accuracy",
+          configuration: { priority: "mae" },
+        },
+      ],
+      connections: [
+        {
+          sourceClientId: "load",
+          sourcePort: "dataset",
+          targetClientId: "select",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "select",
+          sourcePort: "dataset",
+          targetClientId: "fill",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "fill",
+          sourcePort: "dataset",
+          targetClientId: "univariate",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "fill",
+          sourcePort: "dataset",
+          targetClientId: "multivariate",
+          targetPort: "dataset",
+        },
+        {
+          sourceClientId: "univariate",
+          sourcePort: "forecast",
+          targetClientId: "compare",
+          targetPort: "univariate",
+        },
+        {
+          sourceClientId: "multivariate",
+          sourcePort: "forecast",
+          targetClientId: "compare",
+          targetPort: "multivariate",
         },
       ],
     },

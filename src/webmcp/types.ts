@@ -12,7 +12,10 @@ export type CuratedComponentId =
   | "profile-clusters"
   | "text-embedding"
   | "product2vec"
-  | "nearest-neighbors";
+  | "nearest-neighbors"
+  | "univariate-forecast"
+  | "multivariate-forecast"
+  | "compare-forecasts";
 
 export interface BrowserMetricSet {
   accuracy: number;
@@ -177,8 +180,47 @@ export interface EmbeddingRunResult extends BrowserRunBase {
   insight: string;
 }
 
+export interface ForecastMetricSet {
+  mae: number;
+  rmse: number;
+  mape: number;
+}
+
+export interface ForecastModelResult {
+  taskId: string;
+  taskName: string;
+  algorithm: "univariate" | "multivariate";
+  metrics: ForecastMetricSet;
+  driverNames: string[];
+}
+
+export interface ForecastPoint {
+  date: string;
+  actual: number;
+  univariate: number | null;
+  multivariate: number | null;
+}
+
+export interface ForecastingRunResult extends BrowserRunBase {
+  kind: "forecasting";
+  dateColumn: string;
+  targetColumn: string;
+  trainingRowCount: number;
+  horizon: number;
+  models: ForecastModelResult[];
+  preferredModelTaskId: string;
+  preferredModelName: string;
+  selectionReason: string;
+  points: ForecastPoint[];
+  improvement: number;
+  insight: string;
+}
+
 export type BrowserRunResult =
-  ClassificationRunResult | ClusteringRunResult | EmbeddingRunResult;
+  | ClassificationRunResult
+  | ClusteringRunResult
+  | EmbeddingRunResult
+  | ForecastingRunResult;
 
 export interface RunnerProgress {
   phase:
@@ -187,7 +229,8 @@ export interface RunnerProgress {
     | "training"
     | "evaluating"
     | "clustering"
-    | "embedding";
+    | "embedding"
+    | "forecasting";
   percent: number;
   message: string;
 }

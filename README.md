@@ -38,6 +38,8 @@ The registered tools are:
 ### Retail demo workflows
 
 - Compare two prediction methods to spot customers who may leave.
+- Compare a sales-history forecast with one that also uses price, promotions,
+  holidays, weather, and day of week.
 - Group 1,800 synthetic retail customers by shopping behaviour.
 - Learn which products are bought together and surface similar items.
 - Review charts and operational recommendations produced entirely in the browser.

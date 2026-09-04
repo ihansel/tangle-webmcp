@@ -424,11 +424,65 @@ for (const product of products) {
     .join("|");
 }
 
+const dailySales = [];
+for (let dayIndex = 0; dayIndex < 730; dayIndex++) {
+  const date = new Date(ANCHOR_DATE);
+  date.setUTCDate(date.getUTCDate() - (729 - dayIndex));
+  const dayOfWeek = date.getUTCDay();
+  const month = date.getUTCMonth();
+  const dayOfMonth = date.getUTCDate();
+  const promotion =
+    random() < 0.12 || dayIndex % 56 < 4 || (month === 10 && dayOfMonth > 22)
+      ? 1
+      : 0;
+  const holiday =
+    (month === 11 && dayOfMonth >= 20) ||
+    (month === 0 && dayOfMonth <= 3) ||
+    (month === 3 && dayOfMonth >= 7 && dayOfMonth <= 10)
+      ? 1
+      : 0;
+  const yearly = Math.sin((2 * Math.PI * dayIndex) / 365 - 0.8);
+  const temperature = round(22 + 8 * yearly + normal() * 2.2, 1);
+  const avgPrice = round(
+    118 -
+      promotion * 9 +
+      Math.sin((2 * Math.PI * dayIndex) / 31) * 2.5 +
+      normal() * 1.8,
+    2,
+  );
+  const weeklyMultiplier = [1.2, 0.88, 0.91, 0.95, 1, 1.08, 1.28][dayOfWeek];
+  const baseline = 94 + dayIndex * 0.035 + 16 * yearly;
+  const unitsSold = Math.max(
+    25,
+    Math.round(
+      baseline * weeklyMultiplier +
+        promotion * 34 +
+        holiday * 23 -
+        (avgPrice - 115) * 0.72 -
+        Math.abs(temperature - 22) * 0.18 +
+        normal() * 5.5,
+    ),
+  );
+  const orderCount = Math.max(12, Math.round(unitsSold / 1.56 + normal() * 2));
+  dailySales.push({
+    date: date.toISOString().slice(0, 10),
+    units_sold: unitsSold,
+    orders: orderCount,
+    revenue: round(unitsSold * avgPrice, 2),
+    avg_price: avgPrice,
+    promotion,
+    holiday,
+    temperature,
+    day_of_week: dayOfWeek,
+  });
+}
+
 const files = {
   "customers.csv": [customers, Object.keys(customers[0])],
   "orders.csv": [orders, Object.keys(orders[0])],
   "order-items.csv": [lineItems, Object.keys(lineItems[0])],
   "products.csv": [products, Object.keys(products[0])],
+  "daily-sales.csv": [dailySales, Object.keys(dailySales[0])],
 };
 
 await mkdir(OUTPUT_DIR, { recursive: true });
@@ -457,7 +511,7 @@ await writeFile(
 );
 await writeFile(
   resolve(OUTPUT_DIR, "provenance.md"),
-  `# Northstar Commerce synthetic dataset\n\n- Generated locally with deterministic JavaScript; no external model or private source records were used.\n- Seed: ${SEED}\n- Anchor date: ${ANCHOR_DATE.toISOString().slice(0, 10)}\n- Customers: ${customers.length}\n- Orders: ${orders.length}\n- Line items: ${lineItems.length}\n- Products: ${products.length}\n- Scenario: fictional Australian outdoor retailer with intentionally overlapping customer behaviours and probabilistic churn.\n- Validation: row counts, primary keys, foreign keys, numeric ranges, deterministic regeneration, and product co-purchase references.\n\nThe latent_segment field is retained for demo evaluation but is not used as a clustering feature. All names and identifiers are synthetic.\n`,
+  `# Northstar Commerce synthetic dataset\n\n- Generated locally with deterministic JavaScript; no external model or private source records were used.\n- Seed: ${SEED}\n- Anchor date: ${ANCHOR_DATE.toISOString().slice(0, 10)}\n- Customers: ${customers.length}\n- Orders: ${orders.length}\n- Line items: ${lineItems.length}\n- Products: ${products.length}\n- Daily sales records: ${dailySales.length}\n- Scenario: fictional Australian outdoor retailer with intentionally overlapping customer behaviours, probabilistic churn, and two years of daily demand.\n- Validation: row counts, primary keys, foreign keys, numeric ranges, chronological dates, deterministic regeneration, and product co-purchase references.\n\nThe latent_segment field is retained for demo evaluation but is not used as a clustering feature. Daily sales include known retail demand drivers for comparing univariate and multivariate forecasts. All names and identifiers are synthetic.\n`,
 );
 
 console.log(
@@ -466,6 +520,7 @@ console.log(
     orders: orders.length,
     lineItems: lineItems.length,
     products: products.length,
+    dailySales: dailySales.length,
     churnRate: round(
       customers.reduce((sum, customer) => sum + customer.churned, 0) /
         customers.length,

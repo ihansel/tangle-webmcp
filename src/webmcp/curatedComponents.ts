@@ -16,7 +16,8 @@ export interface CuratedComponent {
     | "training"
     | "evaluation"
     | "segmentation"
-    | "embeddings";
+    | "embeddings"
+    | "forecasting";
   inputs: InputSpec[];
   outputs: OutputSpec[];
 }
@@ -227,6 +228,54 @@ const components: CuratedComponent[] = [
       { name: "neighbors", type: "Integer", default: "3" },
     ],
     outputs: [{ name: "matches", type: "Report" }],
+  },
+  {
+    id: "univariate-forecast",
+    name: "Forecast from sales history",
+    description:
+      "Forecast one numeric series locally using only its own recent history.",
+    category: "forecasting",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "date_column", type: "String", default: "date" },
+      { name: "target", type: "String", default: "units_sold" },
+      { name: "lags", type: "String", default: "1,7,14,28" },
+      { name: "horizon", type: "Integer", default: "28" },
+    ],
+    outputs: [{ name: "forecast", type: "Forecast" }],
+  },
+  {
+    id: "multivariate-forecast",
+    name: "Forecast with known drivers",
+    description:
+      "Forecast a numeric series locally using its history plus known inputs such as price, promotions and holidays.",
+    category: "forecasting",
+    inputs: [
+      { name: "dataset", type: "DataFrame" },
+      { name: "date_column", type: "String", default: "date" },
+      { name: "target", type: "String", default: "units_sold" },
+      { name: "lags", type: "String", default: "1,7,14,28" },
+      {
+        name: "features",
+        type: "String",
+        default: "avg_price,promotion,holiday,temperature",
+      },
+      { name: "horizon", type: "Integer", default: "28" },
+    ],
+    outputs: [{ name: "forecast", type: "Forecast" }],
+  },
+  {
+    id: "compare-forecasts",
+    name: "Compare forecasts",
+    description:
+      "Compare forecast errors and present the strongest approach in a readable report.",
+    category: "evaluation",
+    inputs: [
+      { name: "univariate", type: "Forecast" },
+      { name: "multivariate", type: "Forecast" },
+      { name: "priority", type: "String", default: "mae" },
+    ],
+    outputs: [{ name: "report", type: "Report" }],
   },
 ];
 

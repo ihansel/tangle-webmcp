@@ -25,16 +25,31 @@ describe("Northstar Commerce synthetic dataset", () => {
   const orders = readCsv("orders.csv");
   const lineItems = readCsv("order-items.csv");
   const products = readCsv("products.csv");
+  const dailySales = readCsv("daily-sales.csv");
 
   it("contains the documented deterministic commerce world", () => {
     expect(customers).toHaveLength(1_800);
     expect(orders).toHaveLength(19_840);
     expect(lineItems).toHaveLength(41_626);
     expect(products).toHaveLength(160);
+    expect(dailySales).toHaveLength(730);
     expect(
       customers.reduce((sum, customer) => sum + Number(customer.churned), 0) /
         customers.length,
     ).toBeCloseTo(0.283, 3);
+  });
+
+  it("provides a complete chronological daily demand series", () => {
+    expect(dailySales[0].date).toBe("2024-07-01");
+    expect(dailySales.at(-1)?.date).toBe("2026-06-30");
+    expect(
+      dailySales.every(
+        (row) =>
+          Number(row.units_sold) > 0 &&
+          Number.isFinite(Number(row.avg_price)) &&
+          ["0", "1"].includes(row.promotion),
+      ),
+    ).toBe(true);
   });
 
   it("keeps primary keys unique and every relationship valid", () => {

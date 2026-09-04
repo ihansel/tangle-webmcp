@@ -13,11 +13,13 @@ import type { BrowserRunResult } from "../types";
 import { ClassificationReport } from "./ClassificationReport";
 import { ClusteringReport } from "./ClusteringReport";
 import { EmbeddingReport } from "./EmbeddingReport";
+import { ForecastingReport } from "./ForecastingReport";
 
 const titles = {
   classification: "Customer churn report",
   clustering: "Customer segmentation report",
   embedding: "Product intelligence report",
+  forecasting: "Retail demand forecast",
 };
 
 const descriptions = {
@@ -27,6 +29,8 @@ const descriptions = {
     "Segment shape, relative value, defining behaviours, representative customers, and recommended actions.",
   embedding:
     "Embedding training, learned neighbours, category cohesion, co-purchase structure, and bundle opportunities.",
+  forecasting:
+    "A 28-day demand outlook, accuracy comparison, retail drivers, and day-by-day forecast detail.",
 };
 
 export function WebMcpReportDialog({ result }: { result: BrowserRunResult }) {
@@ -78,6 +82,8 @@ export function WebMcpReportDialog({ result }: { result: BrowserRunResult }) {
             <ClassificationReport result={result} />
           ) : result.kind === "clustering" ? (
             <ClusteringReport result={result} />
+          ) : result.kind === "forecasting" ? (
+            <ForecastingReport result={result} />
           ) : (
             <EmbeddingReport result={result} />
           )}

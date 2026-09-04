@@ -34,6 +34,9 @@ const componentIds = [
   "text-embedding",
   "product2vec",
   "nearest-neighbors",
+  "univariate-forecast",
+  "multivariate-forecast",
+  "compare-forecasts",
 ] as const;
 
 const literalValueSchema = z.union([
@@ -398,7 +401,9 @@ export class WebMcpAdapter {
         id === "decision-tree" ||
         id === "k-means" ||
         id === "text-embedding" ||
-        id === "product2vec"
+        id === "product2vec" ||
+        id === "univariate-forecast" ||
+        id === "multivariate-forecast"
       );
     });
     const browserIssues = [
@@ -412,7 +417,7 @@ export class WebMcpAdapter {
             {
               code: "NO_BROWSER_WORKLOAD",
               message:
-                "Add a supported classifier, clustering, or embedding task before a local run.",
+                "Add a supported prediction, clustering, embedding, or forecasting task before a local run.",
             },
           ]
         : []),
@@ -490,6 +495,28 @@ export class WebMcpAdapter {
         insight: result.insight,
       };
     }
+    if (result.kind === "forecasting") {
+      return {
+        ...base,
+        dateColumn: result.dateColumn,
+        targetColumn: result.targetColumn,
+        trainingRowCount: result.trainingRowCount,
+        horizon: result.horizon,
+        models: result.models.map((model) => ({
+          ...model,
+          metrics: {
+            mae: round(model.metrics.mae),
+            rmse: round(model.metrics.rmse),
+            mape: round(model.metrics.mape),
+          },
+        })),
+        preferredModelTaskId: result.preferredModelTaskId,
+        preferredModelName: result.preferredModelName,
+        selectionReason: result.selectionReason,
+        improvement: round(result.improvement),
+        insight: result.insight,
+      };
+    }
     return {
       ...base,
       algorithm: result.algorithm,
@@ -509,7 +536,7 @@ export class WebMcpAdapter {
     if (!result) throw new Error("No completed browser run is available.");
     if (result.kind !== "classification") {
       throw new Error(
-        "The latest run is not a classifier. Use get_run_summary for clustering or embedding insights.",
+        "The latest run is not a classifier. Use get_run_summary for clustering, embedding, or forecasting insights.",
       );
     }
     const models = taskId

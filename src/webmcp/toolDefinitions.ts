@@ -115,6 +115,9 @@ export function createWebMcpToolDefinitions(
                     "text-embedding",
                     "product2vec",
                     "nearest-neighbors",
+                    "univariate-forecast",
+                    "multivariate-forecast",
+                    "compare-forecasts",
                   ],
                 },
                 name: { type: "string", minLength: 1, maxLength: 100 },
@@ -233,7 +236,7 @@ export function createWebMcpToolDefinitions(
     {
       name: "get_run_summary",
       description:
-        "Read bounded classification, clustering, or embedding insights for the current or latest local browser run without returning dataset rows.",
+        "Read bounded classification, clustering, embedding, or forecasting insights for the current or latest local browser run without returning dataset rows.",
       inputSchema: emptyObjectSchema,
       annotations: annotations(true),
       execute: execute("get_run_summary", (input) => {

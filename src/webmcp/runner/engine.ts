@@ -3,6 +3,7 @@ import type {
   BrowserModelResult,
   BrowserRunResult,
   EmbeddingRunResult,
+  ForecastingRunResult,
   PipelineSnapshot,
   RunnerProgress,
 } from "../types";
@@ -879,6 +880,262 @@ async function classification(
   };
 }
 
+function fitLinearForecast(
+  features: number[][],
+  targets: number[],
+  signal?: AbortSignal,
+) {
+  const means = features[0].map(
+    (_, column) =>
+      features.reduce((sum, row) => sum + row[column], 0) / features.length,
+  );
+  const deviations = means.map((mean, column) => {
+    const variance =
+      features.reduce((sum, row) => sum + (row[column] - mean) ** 2, 0) /
+      features.length;
+    return Math.sqrt(variance) || 1;
+  });
+  const targetMean =
+    targets.reduce((sum, value) => sum + value, 0) / targets.length;
+  const targetDeviation =
+    Math.sqrt(
+      targets.reduce((sum, value) => sum + (value - targetMean) ** 2, 0) /
+        targets.length,
+    ) || 1;
+  const scaled = features.map((row) =>
+    row.map((value, column) => (value - means[column]) / deviations[column]),
+  );
+  const scaledTargets = targets.map(
+    (value) => (value - targetMean) / targetDeviation,
+  );
+  const weights = new Array(features[0].length).fill(0);
+  let bias = 0;
+  const rate = 0.035;
+  const regularization = 0.001;
+  for (let iteration = 0; iteration < 1_200; iteration++) {
+    if (iteration % 50 === 0) guard(signal);
+    const gradient = new Array(weights.length).fill(0);
+    let biasGradient = 0;
+    scaled.forEach((row, rowIndex) => {
+      const prediction = row.reduce(
+        (sum, value, column) => sum + value * weights[column],
+        bias,
+      );
+      const error = prediction - scaledTargets[rowIndex];
+      row.forEach((value, column) => {
+        gradient[column] += error * value;
+      });
+      biasGradient += error;
+    });
+    weights.forEach((weight, column) => {
+      weights[column] -=
+        rate * (gradient[column] / features.length + regularization * weight);
+    });
+    bias -= (rate * biasGradient) / features.length;
+  }
+  return (row: number[]) => {
+    const scaledRow = row.map(
+      (value, column) => (value - means[column]) / deviations[column],
+    );
+    const scaledPrediction = scaledRow.reduce(
+      (sum, value, column) => sum + value * weights[column],
+      bias,
+    );
+    return targetMean + scaledPrediction * targetDeviation;
+  };
+}
+
+function forecastMetrics(actual: number[], predicted: number[]) {
+  const errors = actual.map((value, index) => predicted[index] - value);
+  return {
+    mae:
+      errors.reduce((sum, value) => sum + Math.abs(value), 0) / errors.length,
+    rmse: Math.sqrt(
+      errors.reduce((sum, value) => sum + value ** 2, 0) / errors.length,
+    ),
+    mape:
+      actual.reduce(
+        (sum, value, index) =>
+          sum +
+          Math.abs(predicted[index] - value) / Math.max(1, Math.abs(value)),
+        0,
+      ) / actual.length,
+  };
+}
+
+function forecasting(
+  pipeline: PipelineSnapshot,
+  sourceRows: Row[],
+  started: number,
+  options: EngineOptions,
+): ForecastingRunResult {
+  const tasks = pipeline.tasks.filter(
+    (task) =>
+      task.componentId === "univariate-forecast" ||
+      task.componentId === "multivariate-forecast",
+  );
+  if (!tasks.length)
+    throw new Error(
+      "Add a univariate or multivariate forecast before running this pipeline.",
+    );
+  const dateColumn = stringArg(tasks[0], "date_column", "date");
+  const targetColumn = stringArg(tasks[0], "target", "units_sold");
+  if (!(dateColumn in sourceRows[0]))
+    throw new Error(`Date column ${dateColumn} was not found.`);
+  if (!(targetColumn in sourceRows[0]))
+    throw new Error(`Target column ${targetColumn} was not found.`);
+  const rows = [...sourceRows].sort(
+    (a, b) => Date.parse(a[dateColumn]) - Date.parse(b[dateColumn]),
+  );
+  if (rows.some((row) => !Number.isFinite(Date.parse(row[dateColumn]))))
+    throw new Error(`Every value in ${dateColumn} must be a valid date.`);
+  const target = rows.map((row) => Number(row[targetColumn]));
+  if (target.some((value) => !Number.isFinite(value)))
+    throw new Error(`Every value in ${targetColumn} must be numeric.`);
+  const horizon = Math.min(
+    90,
+    Math.max(7, Math.round(numberArg(tasks[0], "horizon", 28))),
+  );
+  if (rows.length < horizon + 45)
+    throw new Error(
+      `Forecasting needs at least ${horizon + 45} chronological rows for this horizon.`,
+    );
+  const trainingRowCount = rows.length - horizon;
+  const actual = target.slice(trainingRowCount);
+  const predictionByAlgorithm = new Map<
+    "univariate" | "multivariate",
+    number[]
+  >();
+  const models: ForecastingRunResult["models"] = [];
+
+  tasks.forEach((task, taskIndex) => {
+    const algorithm =
+      task.componentId === "multivariate-forecast"
+        ? ("multivariate" as const)
+        : ("univariate" as const);
+    const lags = [
+      ...new Set(
+        listArg(task, "lags", ["1", "7", "14", "28"])
+          .map(Number)
+          .filter(
+            (value) => Number.isInteger(value) && value > 0 && value <= 90,
+          ),
+      ),
+    ].sort((a, b) => a - b);
+    if (!lags.length)
+      throw new Error(`${task.name} needs at least one valid lag.`);
+    const drivers =
+      algorithm === "multivariate"
+        ? listArg(task, "features", [
+            "avg_price",
+            "promotion",
+            "holiday",
+            "temperature",
+          ]).slice(0, 12)
+        : [];
+    for (const driver of drivers) {
+      if (!(driver in rows[0]))
+        throw new Error(`Feature ${driver} was not found.`);
+      if (rows.some((row) => !Number.isFinite(Number(row[driver]))))
+        throw new Error(`Feature ${driver} must be numeric.`);
+    }
+    const maxLag = Math.max(...lags);
+    if (trainingRowCount <= maxLag + 10)
+      throw new Error(
+        `${task.name} does not have enough history for its lags.`,
+      );
+    const trainingFeatures: number[][] = [];
+    const trainingTargets: number[] = [];
+    for (let index = maxLag; index < trainingRowCount; index++) {
+      trainingFeatures.push([
+        ...lags.map((lag) => target[index - lag]),
+        ...drivers.map((driver) => Number(rows[index][driver])),
+      ]);
+      trainingTargets.push(target[index]);
+    }
+    report(
+      options,
+      "forecasting",
+      28 + Math.round((taskIndex / tasks.length) * 48),
+      `Building ${task.name}`,
+    );
+    const predict = fitLinearForecast(
+      trainingFeatures,
+      trainingTargets,
+      options.signal,
+    );
+    const history = target.slice(0, trainingRowCount);
+    const predicted: number[] = [];
+    for (let step = 0; step < horizon; step++) {
+      guard(options.signal);
+      const rowIndex = trainingRowCount + step;
+      const featureRow = [
+        ...lags.map((lag) => history[rowIndex - lag]),
+        ...drivers.map((driver) => Number(rows[rowIndex][driver])),
+      ];
+      const value = Math.max(0, predict(featureRow));
+      history.push(value);
+      predicted.push(value);
+    }
+    predictionByAlgorithm.set(algorithm, predicted);
+    models.push({
+      taskId: task.id,
+      taskName: task.name,
+      algorithm,
+      metrics: forecastMetrics(actual, predicted),
+      driverNames: drivers,
+    });
+  });
+
+  report(options, "evaluating", 90, "Comparing forecast error");
+  const preferred = [...models].sort(
+    (a, b) => a.metrics.mae - b.metrics.mae || a.metrics.rmse - b.metrics.rmse,
+  )[0];
+  const runnerUp = [...models]
+    .sort((a, b) => a.metrics.mae - b.metrics.mae)
+    .find((model) => model.taskId !== preferred.taskId);
+  const univariate = models.find((model) => model.algorithm === "univariate");
+  const multivariate = models.find(
+    (model) => model.algorithm === "multivariate",
+  );
+  const improvement =
+    univariate && multivariate
+      ? (univariate.metrics.mae - multivariate.metrics.mae) /
+        Math.max(Number.EPSILON, univariate.metrics.mae)
+      : 0;
+  const selectionReason = runnerUp
+    ? `${preferred.taskName} has the lower average error at ${preferred.metrics.mae.toFixed(1)} units versus ${runnerUp.metrics.mae.toFixed(1)}.`
+    : `${preferred.taskName} averages ${preferred.metrics.mae.toFixed(1)} units of error across the holdout period.`;
+  const points = actual.map((value, index) => ({
+    date: rows[trainingRowCount + index][dateColumn],
+    actual: value,
+    univariate: predictionByAlgorithm.get("univariate")?.[index] ?? null,
+    multivariate: predictionByAlgorithm.get("multivariate")?.[index] ?? null,
+  }));
+  report(options, "evaluating", 100, "Demand forecast ready");
+  return {
+    kind: "forecasting",
+    runId: `browser-${Date.now().toString(36)}`,
+    seed: 42,
+    rowCount: rows.length,
+    durationMs: Math.round(performance.now() - started),
+    dateColumn,
+    targetColumn,
+    trainingRowCount,
+    horizon,
+    models,
+    preferredModelTaskId: preferred.taskId,
+    preferredModelName: preferred.taskName,
+    selectionReason,
+    points,
+    improvement,
+    insight:
+      improvement > 0
+        ? `Known retail drivers reduce average error by ${Math.round(improvement * 100)}% compared with sales history alone.`
+        : selectionReason,
+  };
+}
+
 function clustering(
   pipeline: PipelineSnapshot,
   rows: Row[],
@@ -1274,6 +1531,14 @@ export async function executeBrowserPipeline(
   report(options, "loading", 5, "Reading the local CSV");
   guard(options.signal);
   const rows = parseCsv(csvText);
+  if (
+    pipeline.tasks.some(
+      (task) =>
+        task.componentId === "univariate-forecast" ||
+        task.componentId === "multivariate-forecast",
+    )
+  )
+    return forecasting(pipeline, rows, started, options);
   if (pipeline.tasks.some((task) => task.componentId === "k-means"))
     return clustering(pipeline, rows, started, options);
   if (

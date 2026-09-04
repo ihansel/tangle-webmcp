@@ -29,6 +29,8 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
     run.result?.kind === "classification"
       ? run.result.preferredModelTaskId
       : null;
+  const preferredForecastTaskId =
+    run.result?.kind === "forecasting" ? run.result.preferredModelTaskId : null;
   const modelContextLabel = registration.registered
     ? `${registration.toolCount} tools shared`
     : registration.available
@@ -266,6 +268,59 @@ export const WebMcpStatusPanel = observer(function WebMcpStatusPanel({
                         </Text>
                       </div>
                     ))}
+                  </div>
+                </>
+              )}
+              {run.result.kind === "forecasting" && (
+                <>
+                  <div className="flex items-center justify-between rounded-md border border-violet-300 bg-violet-50 px-2.5 py-2 dark:border-violet-800 dark:bg-violet-950">
+                    <div>
+                      <Text size="xs" weight="semibold" className="block">
+                        {run.result.horizon}-day demand forecast
+                      </Text>
+                      <Text size="xs" tone="subdued" className="block">
+                        {run.result.trainingRowCount.toLocaleString()} days used
+                        for training
+                      </Text>
+                    </div>
+                    <Icon
+                      name="ChartNoAxesCombined"
+                      className="text-violet-500"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {run.result.models.map((model) => (
+                      <div
+                        key={model.taskId}
+                        className={cn(
+                          "rounded-md border px-2.5 py-2",
+                          model.taskId === preferredForecastTaskId
+                            ? "border-emerald-300 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950"
+                            : "border-slate-200 dark:border-slate-800",
+                        )}
+                      >
+                        <Text size="xs" weight="semibold" className="block">
+                          {model.algorithm === "univariate"
+                            ? "History only"
+                            : "Retail drivers"}
+                        </Text>
+                        <Text size="xs" tone="subdued" className="block">
+                          MAE {model.metrics.mae.toFixed(1)} units
+                        </Text>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-md bg-slate-100 px-2.5 py-2 dark:bg-slate-900">
+                    <Text size="xs" weight="semibold" className="block">
+                      Preferred: {run.result.preferredModelName}
+                    </Text>
+                    <Text
+                      size="xs"
+                      tone="subdued"
+                      className="mt-1 block leading-relaxed"
+                    >
+                      {run.result.insight}
+                    </Text>
                   </div>
                 </>
               )}

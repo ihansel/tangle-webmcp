@@ -4,6 +4,7 @@ import { ComponentSpec } from "@/models/componentSpec";
 import { UndoStore } from "@/routes/v2/pages/Editor/store/undoStore";
 import { EDITOR_POSITION_ANNOTATION } from "@/utils/annotations";
 
+import { DEMO_RECIPE_BY_ID } from "./demoRecipes";
 import { FAILURE_DEMO_BATCH } from "./failureDemoFixture";
 import { createWebMcpToolDefinitions } from "./toolDefinitions";
 import { WebMcpAdapter } from "./WebMcpAdapter";
@@ -78,6 +79,20 @@ describe("WebMcpAdapter", () => {
         tasks: [{ clientId: "unsafe", componentId: "arbitrary-python" }],
       }),
     ).toThrow();
+  });
+
+  it("builds the two-model retail forecasting graph with valid ports", async () => {
+    const { adapter, spec } = createHarness();
+    const recipe = DEMO_RECIPE_BY_ID.get("forecast");
+    if (!recipe) throw new Error("Forecast recipe is missing");
+
+    const result = adapter.addPipelineTasks(recipe.batch);
+
+    expect(result.created).toHaveLength(6);
+    expect(spec.bindings).toHaveLength(6);
+    await expect(adapter.validatePipeline()).resolves.toEqual(
+      expect.objectContaining({ browserExecutable: true }),
+    );
   });
 
   it("returns summaries without raw component specs or data", async () => {
