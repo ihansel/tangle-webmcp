@@ -6,9 +6,9 @@ type TitleConfig = {
 };
 
 const defaultTitles: TitleConfig = {
-  "/": "Tangle - Pipeline Studio",
-  "/editor/$name": (params) => `Tangle - ${params.name || "New Pipeline"}`,
-  "/runs/$id": (params) => `Tangle - ${params.id}`,
+  "/": "Strand - WebMCP ML workspace",
+  "/editor/$name": (params) => `Strand - ${params.name || "New Pipeline"}`,
+  "/runs/$id": (params) => `Strand - ${params.id}`,
 };
 
 function setDocumentTitle(title: string, suffix?: string) {

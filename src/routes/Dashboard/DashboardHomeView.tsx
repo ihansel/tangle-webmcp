@@ -1,12 +1,14 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { StrandLogo, StrandMark } from "@/components/brand/StrandLogo";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { getDefaultEditorPath } from "@/routes/editorRoutes";
 import { writeComponentToFileListFromText } from "@/utils/componentStore";
 import {
   defaultPipelineYamlWithName,
+  TANGLE_UI_REPO_URL,
   USER_PIPELINES_LIST_NAME,
 } from "@/utils/constants";
 import {
@@ -202,18 +204,20 @@ export function DashboardHomeView() {
         <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
           <div className="flex min-h-[400px] flex-col justify-between p-7 sm:p-10 lg:p-12">
             <div>
-              <div className="mb-8 flex items-center gap-2 text-xs font-medium text-slate-400">
-                <span className="size-2 rounded-full bg-violet-400" />
-                WebMCP for machine learning
+              <div className="mb-8 flex items-center justify-between gap-4">
+                <StrandLogo tone="light" showByline />
+                <span className="hidden text-xs font-medium text-slate-400 sm:block">
+                  WebMCP for machine learning
+                </span>
               </div>
               <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl">
-                Build useful ML workflows with an agent.
+                Turn business questions into visible ML workflows.
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-7 text-slate-400">
-                Ask for a prediction, churn check, forecast or customer groups.
-                Your agent builds the steps on a canvas you can see, then runs
-                most of them in your browser. The two profile labs use only a
-                fixed synthetic sample with a protected hosted model.
+                Ask Strand for a prediction, churn check, forecast or customer
+                groups. Your agent builds the steps on Tangle&apos;s canvas so
+                you can see the work, approve the run and understand the result.
+                Most examples run entirely in your browser.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button
@@ -299,8 +303,9 @@ export function DashboardHomeView() {
               Choose a retail example
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-              Each example opens as a real Tangle workflow. Change the steps,
-              ask an agent to help, then run it in your browser.
+              Each example opens as a real Strand workflow on Tangle&apos;s
+              open-source canvas. Change the steps, ask an agent to help, then
+              run it in your browser.
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -397,6 +402,25 @@ export function DashboardHomeView() {
           ))}
         </div>
       </section>
+
+      <footer className="mt-10 flex flex-col gap-4 border-t border-border px-1 pt-7 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex max-w-3xl items-start gap-3">
+          <StrandMark className="mt-0.5 size-7" />
+          <p className="text-sm leading-6 text-muted-foreground">
+            Strand is an independent WebMCP experiment built on the open-source
+            Tangle interface by TangleML. It is not an official TangleML
+            release.
+          </p>
+        </div>
+        <a
+          href={TANGLE_UI_REPO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          View upstream Tangle →
+        </a>
+      </footer>
     </main>
   );
 }

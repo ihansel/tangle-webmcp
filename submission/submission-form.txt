@@ -4,10 +4,10 @@ OVERALL STATUS
 NOT READY — ACTION REQUIRED
 
 PROJECT NAME
-Tangle WebMCP
+Strand
 
 ELEVATOR PITCH
-Tangle gives people and agents one visible ML canvas: WebMCP tools build and undo pipelines, then train classifiers, clusters and Product2Vec locally without exposing data.
+Strand gives people and agents one visible ML canvas: WebMCP tools build and undo pipelines, then train classifiers, clusters and Product2Vec locally without exposing data.
 
 CHARACTER COUNT
 172 characters, including spaces and punctuation.
@@ -20,7 +20,7 @@ ABOUT — INSPIRATION
 Visual ML tools make pipelines understandable, but agents usually interact with them through brittle clicking and scraping. Tangle already had the right human surface: a real graph, typed components, validation, and undo. We wanted to make that same workspace legible and safely actionable to any WebMCP-capable agent, without replacing the canvas with a private chat protocol or moving the data to a backend.
 
 ABOUT — WHAT IT DOES
-Tangle WebMCP lets a person or agent assemble, configure, validate, run, and interpret a curated machine-learning pipeline in the browser. Four prepared stories cover equipment failure, customer churn, customer clustering, and product embeddings. Advanced commerce reports include classifier comparisons, confusion matrices, threshold curves, segment maps, heatmaps, Product2Vec training loss, embedding maps, learned neighbours, and merchandising ideas.
+Strand lets a person or agent assemble, configure, validate, run, and interpret a curated machine-learning pipeline in the browser. It is an independent WebMCP experiment built on Tangle, not an official TangleML release. Four prepared stories cover equipment failure, customer churn, customer clustering, and product embeddings. Advanced commerce reports include classifier comparisons, confusion matrices, threshold curves, segment maps, heatmaps, Product2Vec training loss, embedding maps, learned neighbours, and merchandising ideas.
 
 ABOUT — WHY WEBMCP
 A graph editor is hostile terrain for coordinate automation: nodes move, ports are small, labels truncate, and screenshots cannot reveal stable task identity or undo state. Tangle registers ten structured, discoverable tools with bounded schemas, stable IDs, named ports, typed results, and explicit errors. This makes compound graph and analysis workflows more reliable than scraping while keeping the capability surface narrow.

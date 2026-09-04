@@ -2,13 +2,14 @@
 
 ## 1. Project name
 
-**Final recommendation:** Tangle WebMCP
+**Final recommendation:** Strand
 
-Alternatives: Tangle Agent Canvas; Tangle Local Lab.
+Positioning: An independent WebMCP experiment built on Tangle; not an official
+TangleML release.
 
 ## 2. Elevator pitch
 
-> Tangle gives people and agents one visible ML canvas: WebMCP tools build and
+> Strand gives people and agents one visible ML canvas: WebMCP tools build and
 > undo pipelines, then train classifiers, clusters and Product2Vec locally
 > without exposing data.
 
@@ -32,7 +33,7 @@ backend.
 
 ### What it does
 
-Tangle WebMCP lets a person or agent assemble, configure, validate, run, and
+Strand lets a person or agent assemble, configure, validate, run, and
 interpret a curated machine-learning pipeline in the browser. Four prepared
 stories cover equipment failure, customer churn, customer clustering, and
 product embeddings. The advanced commerce demos use a deterministic synthetic
@@ -128,7 +129,7 @@ Schema is not enough by itself: safety-critical handlers should also validate at
 runtime. And browser-local ML becomes far more persuasive when its output is
 both agent-readable and genuinely explorable by a person.
 
-### What’s next for Tangle WebMCP
+### What’s next for Strand
 
 First, publish the reviewed branch and make the demo accessible to judges.
 Next, deploy the strict empty-input guard and make the run tool return the same

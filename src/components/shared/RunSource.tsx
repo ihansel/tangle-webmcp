@@ -18,8 +18,8 @@ const SOURCE_BUCKETS: Record<RunSourceBucket, SourceConfig> = {
   "web-app": {
     icon: "AppWindow",
     label: "Web app",
-    tooltip: "Submitted via the Tangle web app",
-    message: "Submitted via the Tangle web app",
+    tooltip: "Submitted via the Strand web app",
+    message: "Submitted via the Strand web app",
   },
   programmatic: {
     icon: "Bot",

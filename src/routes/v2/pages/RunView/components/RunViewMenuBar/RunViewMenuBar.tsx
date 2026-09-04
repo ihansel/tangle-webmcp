@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 
-import logo from "/Tangle_Icon_White.png";
+import { StrandMark } from "@/components/brand/StrandLogo";
 import { BlockStack, InlineStack } from "@/components/ui/layout";
 import { Link } from "@/components/ui/link";
 import { Text } from "@/components/ui/typography";
@@ -43,11 +43,7 @@ export const RunViewMenuBar = observer(function RunViewMenuBar() {
             className="shrink-0"
             {...tracking("v2.run_view.menu_bar.home")}
           >
-            <img
-              src={logo}
-              alt="logo"
-              className="h-8 cursor-pointer shrink-0"
-            />
+            <StrandMark className="size-8 cursor-pointer" />
           </Link>
 
           <BlockStack className="min-w-0">

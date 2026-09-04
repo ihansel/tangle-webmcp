@@ -79,7 +79,7 @@ const PipelineRunContent = () => {
 
   useDocumentTitle({
     "/runs/$id": (params) =>
-      `Tangle - ${componentSpec?.name || ""} - ${params.id}`,
+      `Strand - ${componentSpec?.name || ""} - ${params.id}`,
   });
 
   useTrackRecentlyViewedRun(runId, componentSpec?.name);

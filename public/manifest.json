@@ -1,15 +1,15 @@
 {
-  "short_name": "Tangle",
-  "name": "Tangle WebMCP ML",
+  "short_name": "Strand",
+  "name": "Strand — WebMCP ML workspace",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
+      "src": "strand-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#111114",
+  "background_color": "#111114"
 }

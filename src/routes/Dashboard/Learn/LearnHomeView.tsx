@@ -17,7 +17,7 @@ export function LearnHomeView() {
       <BlockStack gap="4">
         <LearnPageHeader
           title="Learning Hub"
-          description="Everything you need to get the most out of Tangle, all in one place."
+          description="Learn the Strand workspace and the Tangle canvas it is built on."
           icon="GraduationCap"
         />
         <BlockStack gap="3">

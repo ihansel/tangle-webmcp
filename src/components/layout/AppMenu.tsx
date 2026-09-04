@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-router";
 import { useState } from "react";
 
-import logo from "/Tangle_white.png";
+import { StrandLogo } from "@/components/brand/StrandLogo";
 import { OnboardingNavPill } from "@/components/Onboarding/OnboardingNavPill";
 import { isAuthorizationRequired } from "@/components/shared/Authentication/helpers";
 import { TopBarAuthentication } from "@/components/shared/Authentication/TopBarAuthentication";
@@ -73,11 +73,7 @@ const DefaultAppMenu = () => {
             className="shrink-0"
             {...tracking("header.logo")}
           >
-            <img
-              src={logo}
-              alt="logo"
-              className="h-8 filter cursor-pointer shrink-0"
-            />
+            <StrandLogo tone="light" className="cursor-pointer" />
           </Link>
 
           {title && (

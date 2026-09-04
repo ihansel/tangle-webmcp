@@ -1,5 +1,6 @@
 import { Link, Outlet } from "@tanstack/react-router";
 
+import { StrandLogo } from "@/components/brand/StrandLogo";
 import { TipOfTheDay } from "@/components/Learn/TipOfTheDay";
 import { isAuthorizationRequired } from "@/components/shared/Authentication/helpers";
 import { TopBarAuthentication } from "@/components/shared/Authentication/TopBarAuthentication";
@@ -18,6 +19,7 @@ import {
   GIT_REPO_URL,
   GIVE_FEEDBACK_URL,
   PRIVACY_POLICY_URL,
+  TANGLE_UI_REPO_URL,
   TOP_NAV_HEIGHT,
 } from "@/utils/constants";
 
@@ -88,11 +90,9 @@ export function DashboardLayout() {
     >
       {/* Sidebar — fixed height, independent scroll */}
       <div className="hidden w-56 shrink-0 border-r border-border lg:flex lg:flex-col lg:overflow-y-auto">
-        {/* Dashboard heading */}
+        {/* Product identity */}
         <div className="px-6 pt-6 pb-4 shrink-0">
-          <Text size="lg" weight="semibold">
-            Tangle workspace
-          </Text>
+          <StrandLogo showByline />
         </div>
 
         <BlockStack gap="1" className="px-3">
@@ -162,8 +162,13 @@ export function DashboardLayout() {
 
           {/* Footer links */}
           <BlockStack className="gap-0.5 pt-2 mt-1 border-t border-border">
+            <p className="px-3 pb-2 text-xs leading-5 text-muted-foreground">
+              Independent WebMCP experiment built on the open-source Tangle
+              interface.
+            </p>
             {[
               { label: "About", href: ABOUT_URL },
+              { label: "Upstream Tangle", href: TANGLE_UI_REPO_URL },
               { label: "Give feedback", href: GIVE_FEEDBACK_URL },
               { label: "Privacy policy", href: PRIVACY_POLICY_URL },
             ].map(({ label, href }) => (

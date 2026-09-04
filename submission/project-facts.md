@@ -2,7 +2,9 @@
 
 ## Identity
 
-- **Recommended name:** Tangle WebMCP
+- **Project name:** Strand
+- **Positioning:** An independent WebMCP experiment built on Tangle; not an
+  official TangleML release.
 - **Base product:** Tangle UI, an open-source visual machine-learning pipeline
   editor.
 - **Intended users:** analysts, ML practitioners, commerce teams, and people who

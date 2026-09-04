@@ -1,10 +1,10 @@
 class FaviconManager {
-  private defaultFavicon = "/favicon.ico";
+  private defaultFavicon = "/strand-mark.svg";
   private statusIcons = {
-    success: "/favicon-success.ico",
-    failed: "/favicon-failed.ico",
-    loading: "/favicon-loading.ico",
-    paused: "/favicon-paused.ico",
+    success: "/strand-mark-success.svg",
+    failed: "/strand-mark-failed.svg",
+    loading: "/strand-mark-loading.svg",
+    paused: "/strand-mark-paused.svg",
   };
 
   updateFavicon(
@@ -14,7 +14,7 @@ class FaviconManager {
       (document.querySelector("link[rel*='icon']") as HTMLLinkElement) ||
       document.createElement("link");
 
-    link.type = "image/x-icon";
+    link.type = "image/svg+xml";
     link.rel = "shortcut icon";
     link.href =
       status === "default" ? this.defaultFavicon : this.statusIcons[status];

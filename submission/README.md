@@ -1,4 +1,4 @@
-# Tangle WebMCP submission package
+# Strand submission package
 
 Overall status: **NOT READY — ACTION REQUIRED**
 
@@ -16,8 +16,10 @@ GitHub detected the Apache-2.0 license.
 
 ## Recommended submission copy
 
-- **Project:** Tangle WebMCP
-- **Elevator pitch (172 characters):** Tangle gives people and agents one visible
+- **Project:** Strand
+- **Attribution:** An independent WebMCP experiment built on Tangle; not an
+  official TangleML release.
+- **Elevator pitch (172 characters):** Strand gives people and agents one visible
   ML canvas: WebMCP tools build and undo pipelines, then train classifiers,
   clusters and Product2Vec locally without exposing data.
 - **App status:** Functional beta; an existing open-source project substantially

@@ -76,7 +76,7 @@ async function handleBuyerProfile(
     return jsonResponse(
       {
         error:
-          "The hosted buyer-profile model is not connected yet. The local Tangle examples are still available.",
+          "The hosted buyer-profile model is not connected yet. The local Strand examples are still available.",
       },
       503,
     );

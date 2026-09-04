@@ -2,11 +2,12 @@
 
 ## Title
 
-Tangle WebMCP — Visible, Agent-Built Machine Learning in the Browser
+Strand — Visible, Agent-Built Machine Learning in the Browser
 
 ## Description
 
-Tangle WebMCP extends the open-source Tangle visual pipeline editor with ten
+Strand is an independent experiment that extends the open-source Tangle visual
+pipeline editor with ten
 structured browser tools. A WebMCP-capable agent can inspect and edit the same
 graph as the person, validate it, request a one-time approved local run, and read
 bounded model results.

@@ -1,12 +1,15 @@
-# Tangle app (Frontend)
+# Strand — WebMCP ML workspace
 
-Tangle is a web app that allows the users to build and run Machine Learning pipelines using drag and drop without having to set up development environment.
+Strand is an independent WebMCP experiment built on the open-source
+[Tangle](https://github.com/TangleML/tangle-ui) visual pipeline editor. It lets
+people and agents build, inspect and run practical machine-learning workflows on
+the same visible canvas. Strand is not an official TangleML release.
 
 [![image](https://github.com/user-attachments/assets/0ce7ccc0-dad7-4f6a-8677-f2adcd83f558)](https://tangleml-tangle.hf.space/#/quick-start)
 
-## WebMCP hackathon demo
+## WebMCP demo
 
-This branch turns Tangle into a WebMCP workspace for practical machine learning.
+Strand adds a bounded WebMCP layer to Tangle for practical machine learning.
 A person can ask an agent to help with work such as predictions, churn,
 forecasting, customer groups, product relationships, or structured buyer
 profiles. The agent builds on the same visible canvas and the person approves
@@ -15,7 +18,7 @@ only a fixed synthetic sample to a protected Modal endpoint. The training demo
 replays the completed reference run and never starts a GPU job from the public
 site.
 
-![Tangle WebMCP commerce demo](submission/assets/gallery/01-home.png)
+![Strand commerce ML workspace](submission/assets/gallery/01-home.png)
 
 - Public hosted build: <https://tangle-webmcp.ian347727.chatgpt.site>
 - Public source: <https://github.com/ihansel/tangle-webmcp>

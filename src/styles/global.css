@@ -60,8 +60,9 @@ code {
   --sidebar-ring: oklch(0.708 0 0);
   --edge-selected: #5b2ef4;
 
-  /* Brand accent (the logo purple) — reserved for deliberate brand usage. */
-  --brand: #5b2ef4;
+  /* Strand keeps Tangle's violet lineage and adds a bright woven-path accent. */
+  --brand: #7759ff;
+  --brand-secondary: #35c9e8;
 
   /* Canvas (ReactFlow pane) — subtly distinct from card so nodes read against it. */
   --canvas: oklch(0.985 0 0);

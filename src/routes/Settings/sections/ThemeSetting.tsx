@@ -20,7 +20,7 @@ export function ThemeSetting() {
       <BlockStack>
         <Paragraph>Appearance</Paragraph>
         <Paragraph size="sm" tone="subdued">
-          Choose how Tangle looks. System follows your device settings.
+          Choose how Strand looks. System follows your device settings.
         </Paragraph>
       </BlockStack>
       <div

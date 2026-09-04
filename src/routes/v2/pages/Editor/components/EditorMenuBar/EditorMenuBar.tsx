@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 
-import logo from "/Tangle_Icon_White.png";
+import { StrandMark } from "@/components/brand/StrandLogo";
 import { PipelineNameDialog } from "@/components/shared/Dialogs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -75,11 +75,7 @@ export const EditorMenuBar = observer(function EditorMenuBar() {
             className="shrink-0"
             {...tracking("v2.pipeline_editor.menubar.home")}
           >
-            <img
-              src={logo}
-              alt="logo"
-              className="h-8 cursor-pointer shrink-0"
-            />
+            <StrandMark className="size-8 cursor-pointer" />
           </Link>
 
           {displayMenu && (

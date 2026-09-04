@@ -1,4 +1,4 @@
-# Tangle WebMCP demo script
+# Strand demo script
 
 **Target runtime:** 2:38 (158 seconds)  
 **Hard limit:** 2:59 after the final edit  
@@ -6,14 +6,14 @@
 
 ## 0:00–0:14 — Hook and problem (14 s)
 
-**On screen:** Begin on the clean Tangle WebMCP home page. Slowly move the cursor
+**On screen:** Begin on the clean Strand home page. Slowly move the cursor
 across “A commerce story agents can build, run and explain.”
 
 **Narration:**
 
 > Machine-learning pipelines are visual for a reason: people need to see what
 > changed. But an agent that only clicks pixels has to guess at nodes, ports, and
-> state. Tangle WebMCP gives both of us one trustworthy canvas.
+> state. Strand gives both of us one trustworthy canvas, built on Tangle.
 
 ## 0:14–0:30 — Product introduction (16 s)
 
@@ -88,7 +88,7 @@ thumbnail or Tangle graph.
 
 **Narration:**
 
-> Tangle WebMCP turns agent automation into visible collaboration: structured
+> Strand turns agent automation into visible collaboration: structured
 > tools for the agent, one-run control and normal undo for the person, and useful
 > machine learning that stays in the browser.
 

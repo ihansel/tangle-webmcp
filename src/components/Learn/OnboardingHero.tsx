@@ -76,13 +76,13 @@ export function OnboardingHero({ className }: { className?: string }) {
               aria-hidden="true"
             />
             <Heading level={2}>
-              {isComplete ? "You're all set up!" : "Welcome to Tangle"}
+              {isComplete ? "You're all set up!" : "Welcome to Strand"}
             </Heading>
           </InlineStack>
           <Paragraph tone="subdued" size="sm">
             {isComplete
               ? "Onboarding complete - explore tours and tips below to keep going."
-              : "Follow a few quick steps to get from zero to your first pipeline run."}
+              : "Follow a few quick steps from your first business question to a visible pipeline run."}
           </Paragraph>
         </BlockStack>
 

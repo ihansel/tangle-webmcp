@@ -30,7 +30,7 @@ export function OnboardingNavPill() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-96">
         <BlockStack gap="3">
-          <Heading level={3}>Get started with Tangle</Heading>
+          <Heading level={3}>Get started with Strand</Heading>
           <OnboardingChecklist />
           <Separator />
           <InlineStack align="end">

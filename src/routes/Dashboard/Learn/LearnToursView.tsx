@@ -7,7 +7,7 @@ export function LearnToursView() {
     <BlockStack gap="8">
       <LearnPageHeader
         title="Guided Tours"
-        description="Interactive step-by-step walkthroughs of features across Tangle."
+        description="Interactive walkthroughs of Strand and the underlying Tangle canvas."
         icon="Compass"
         backTo="/learn"
       />

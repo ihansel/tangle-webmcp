@@ -1,5 +1,6 @@
 /* Environment Config */
 export const TANGLE_WEBSITE_URL = "https://tangleml.com/";
+export const TANGLE_UI_REPO_URL = "https://github.com/TangleML/tangle-ui";
 
 export const ABOUT_URL = import.meta.env.VITE_ABOUT_URL || TANGLE_WEBSITE_URL;
 

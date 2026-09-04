@@ -1,5 +1,6 @@
 import { Link, Navigate } from "@tanstack/react-router";
 
+import { StrandLogo } from "@/components/brand/StrandLogo";
 import { OnboardingHero } from "@/components/Learn/OnboardingHero";
 import { BlockStack } from "@/components/ui/layout";
 import { Spinner } from "@/components/ui/spinner";
@@ -30,6 +31,17 @@ export function OnboardingWelcome() {
       className="h-full w-full"
     >
       <div className="w-full max-w-2xl">
+        <div className="mb-6 text-center">
+          <StrandLogo
+            showByline
+            className="justify-center"
+            markClassName="size-10"
+          />
+          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
+            An independent WebMCP ML workspace built on Tangle&apos;s
+            open-source visual pipeline editor.
+          </p>
+        </div>
         <OnboardingHero />
       </div>
       <Link

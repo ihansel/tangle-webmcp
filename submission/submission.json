@@ -1,7 +1,8 @@
 {
-  "project_name": "Tangle WebMCP",
-  "alternative_names": ["Tangle Agent Canvas", "Tangle Local Lab"],
-  "pitch": "Tangle gives people and agents one visible ML canvas: WebMCP tools build and undo pipelines, then train classifiers, clusters and Product2Vec locally without exposing data.",
+  "project_name": "Strand",
+  "alternative_names": ["Threadline", "Loom"],
+  "attribution": "An independent WebMCP experiment built on Tangle; not an official TangleML release.",
+  "pitch": "Strand gives people and agents one visible ML canvas: WebMCP tools build and undo pipelines, then train classifiers, clusters and Product2Vec locally without exposing data.",
   "pitch_character_count": 172,
   "about": {
     "inspiration": "Visual ML tools make pipelines understandable, but coordinate-based agents have to guess at nodes, ports, and state. Tangle already had a real graph, validation, and undo, so the project makes that same workspace structured and safely actionable through WebMCP.",
